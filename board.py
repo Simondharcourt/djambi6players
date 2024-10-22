@@ -18,6 +18,7 @@ WHITE = (255, 255, 255)
 CENTRAL_WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
+FONT_SIZE=36
 COLORS = {
     'purple': (128, 0, 128),
     'blue': (0, 0, 255),
@@ -669,6 +670,23 @@ def draw_player_turn(screen, player_color):
     # Dessiner un jeton coloré à côté du texte
     pygame.draw.circle(screen, player_color, (text_rect.right + PIECE_RADIUS, text_rect.centery), 15)  # Jeton de 15px de rayon
 
+def draw_legend(screen):
+    font = pygame.font.Font(None, FONT_SIZE)
+    legend_items = [
+        ("Space", "Play"),
+        ("<-", "Undo"),
+        ("->", "Redo")
+    ]
+    
+    total_width = sum(font.size(f"{key}: {value}")[0] for key, value in legend_items) + 20 * (len(legend_items) - 1)
+    start_x = (WINDOW_WIDTH - total_width) // 2
+    y = WINDOW_HEIGHT - 100
+    
+    for key, value in legend_items:
+        text = font.render(f"{key}: {value}", True, WHITE)
+        screen.blit(text, (start_x, y))
+        start_x += text.get_width() + 20  # Espace entre les éléments
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -679,7 +697,7 @@ def main():
 
     # Initialiser la police pour le texte
     pygame.font.init()
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font(None, FONT_SIZE)
 
     # Sauvegarder l'état initial explicitement
     board.save_state(current_player_index)
@@ -729,6 +747,9 @@ def main():
 
             # Dessiner le plateau et les pièces
             board.draw(screen)
+            
+            # Ajouter la légende
+            draw_legend(screen)
         else:
             # Afficher le message de victoire
             win_text = font.render(f"Le joueur {winner.color} a gagné !", True, WHITE)
