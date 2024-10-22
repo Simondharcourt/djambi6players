@@ -4,7 +4,6 @@ import math
 import logging
 import random
 import cairosvg
-import pygame
 from io import BytesIO
 # Paramètres du jeu
 BOARD_SIZE = 7  # Nombre de cases par ligne/colonne sur le plateau
