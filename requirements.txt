@@ -1,7 +1,5 @@
 aiohttp==3.10.5
 CairoSVG==2.7.1
-gym==0.26.2
 numpy==1.23.5
 pygame==2.6.1
-tensorflow==2.12.0
 websockets==10.4
