@@ -713,10 +713,6 @@ class Board:
                     if isinstance(target_piece, ChiefPiece):
                         self.chief_killed(target_piece, self.get_chief_of_color(piece.color))
                         logging.info(f"Le chef {target_piece.name} a été tué par le {piece.piece_class} {piece.name}.")
-                        
-                        # if target_piece.on_central_cell:
-                        #     target_piece.leave_central_cell(self)
-                        #     logging.info(f"Le chef {target_piece.name} mort quitte la case centrale.")
                             
                     if target_piece.on_central_cell and isinstance(piece, ChiefPiece):
                         piece.enter_central_cell(self)
