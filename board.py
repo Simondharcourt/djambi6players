@@ -17,6 +17,7 @@ WHITE = (255, 255, 255)
 CENTRAL_WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
+DARKER_GREY = (100, 100, 100)
 FONT_SIZE=36
 COLORS = {
     'purple': (128, 0, 128),
@@ -33,6 +34,7 @@ NAMES = {
     (255, 105, 180): 'Rose',
     (255, 255, 0): 'Jaune',
     (0, 255, 0): 'Vert',
+    DARKER_GREY: 'Mort',
 }
 ORDER_PLAYERS = list(COLORS)
 ADJACENT_DIRECTIONS = [
@@ -42,6 +44,8 @@ DIAG_DIRECTIONS = [
     (2, -1), (1, -2), (-1, -1), (-2, 1), (-1, 2), (1, 1)  # Nouvelles directions diagonales
 ]
 ALL_DIRECTIONS = ADJACENT_DIRECTIONS + DIAG_DIRECTIONS
+
+HIGHLIGHT_WIDTH = 3  # Épaisseur du cercle de surbrillance
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -55,11 +59,13 @@ class Piece:
         self.piece_class = piece_class  # Classe de la pièce (e.g., 'assassin', 'chief')
         self.svg_path = svg_path  # Ajout de cet attribut
         self.class_image = None  # Ne pas stocker l'image ici
+        self.name = NAMES[color]
+        self.on_central_cell = False  # Nouvel attribut pour suivre si le chef est sur la case centrale
 
     def die(self):
         """Marque la pièce comme morte et change sa couleur en gris."""
         self.is_dead = True
-        self.color = GREY  # Couleur grise pour les pièces mortes
+        self.color = DARKER_GREY  # Couleur grise pour les pièces mortes
         logging.info(f"Pièce en {self.q}, {self.r} est morte")
 
 
@@ -81,16 +87,19 @@ class Piece:
         # Charger l'image seulement quand nécessaire
         self.class_image = self.load_svg_as_surface(self.svg_path)
 
-    def draw(self, screen):
+    def draw(self, screen, is_current_player):
         x, y = hex_to_pixel(self.q, self.r)
         
         if not self.is_dead:
             pygame.draw.circle(screen, self.color, (x, y), PIECE_RADIUS)
             class_image_rect = self.class_image.get_rect(center=(x, y))
             screen.blit(self.class_image, class_image_rect)
+            
+            # Dessiner le cercle de surbrillance si c'est le tour du joueur
+            if is_current_player:
+                pygame.draw.circle(screen, GREY, (x, y), PIECE_RADIUS + 2, HIGHLIGHT_WIDTH)
         else:
             pygame.draw.circle(screen, GREY, (x, y), PIECE_RADIUS)
-        logging.debug(f"Pièce dessinée : q={self.q}, r={self.r}, x={x}, y={y}, classe={self.piece_class}")
 
     def all_possible_moves(self, board):
         """Retourne une liste de toutes les cases possibles où la pièce peut aller."""
@@ -150,7 +159,7 @@ class MilitantPiece(Piece):
                     if piece_at_position.color != self.color and not piece_at_position.is_dead:
                         possible_moves.append((new_q, new_r))
                     break
-                elif not (new_q == 0 and new_r == 0):
+                elif not (new_q == 0 and new_r == 0) or (board.is_occupied(0, 0) and not isinstance(piece_at_position, ChiefPiece) and not piece_at_position.is_dead): # possibilité d'enlever cette dernière condition selon les règles.
                     possible_moves.append((new_q, new_r))
         return possible_moves
                 
@@ -185,7 +194,7 @@ class AssassinPiece(Piece):
         """Retourne tous les mouvements possibles pour l'assassin, y compris les cases occupées par des ennemis,
         et en traversant les pièces alliées."""
         if self.is_dead:
-            return [] # ne peut se déplacer.
+            return [] # ne peut se dplacer.
         possible_moves = []
         for dq, dr in ALL_DIRECTIONS:
             step = 1
@@ -203,7 +212,7 @@ class AssassinPiece(Piece):
                             possible_moves.append((new_q, new_r))  # L'assassin peut se déplacer sur une pièce ennemie
                         break  # Arrêter après avoir rencontré une pièce ennemie
                     # Si c'est une pièce alliée, on continue sans l'ajouter aux mouvements possibles
-                elif not (new_q == 0 and new_r == 0):
+                elif not (new_q == 0 and new_r == 0) or (board.is_occupied(0, 0) and not isinstance(piece_at_position, ChiefPiece) and not piece_at_position.is_dead):
                     possible_moves.append((new_q, new_r))
                 step += 1
         return possible_moves
@@ -230,10 +239,8 @@ class ChiefPiece(Piece):
         super().__init__(q, r, color, piece_class, svg_path)
 
     def all_possible_moves(self, board):
-        """Retourne tous les mouvements possibles pour l'assassin, y compris les cases occupées par des ennemis,
-        et en traversant les pièces alliées."""
         if self.is_dead:
-            return [] # ne peut se déplacer.
+            return []  # ne peut se déplacer. # Le chef ne bouge plus s'il est sur la case centrale
         possible_moves = []
         for dq, dr in ALL_DIRECTIONS:
             step = 1
@@ -248,21 +255,18 @@ class ChiefPiece(Piece):
                 if piece_at_position:
                     if piece_at_position.color != self.color:
                         if not piece_at_position.is_dead:
-                            possible_moves.append((new_q, new_r))  # L'assassin peut se déplacer sur une pièce ennemie
+                            possible_moves.append((new_q, new_r))
                     break
-                    # Si c'est une pièce alliée, on continue sans l'ajouter aux mouvements possibles
                 else:
                     possible_moves.append((new_q, new_r))
                 step += 1
         return possible_moves
 
     def move(self, new_q, new_r, board):
-        """Déplace l'assassin et tue la pièce ennemie si présente."""
         original_q, original_r = self.q, self.r
         target_piece = board.get_piece_at(new_q, new_r)
 
         if target_piece and target_piece.color != self.color and not target_piece.is_dead:
-            # Tuer la pièce ennemie
             if isinstance(target_piece, ChiefPiece):
                 board.chief_killed(target_piece, board.get_chief_of_color(self.color))
             target_piece.die()
@@ -274,6 +278,34 @@ class ChiefPiece(Piece):
         # Déplacer le chef
         self.q, self.r = new_q, new_r
         logging.info(f"Le chef s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+
+        # Vérifier si le chef est sur la case centrale
+        if self.q == 0 and self.r == 0:
+            self.enter_central_cell(board)
+        else:
+            self.leave_central_cell(board)
+
+    def enter_central_cell(self, board):
+        self.on_central_cell = True
+        logging.info(f"Le chef {self.name} est arrivé sur la case centrale!")
+        new_order = []
+        for player_index in range(board.current_player_index + 1, len(board.players) + board.current_player_index):
+            new_order.append(board.players[player_index%len(board.players)])
+            new_order.append(board.get_player_of_color(self.color))
+        board.players = new_order
+        board.current_player_index = -1
+
+    def leave_central_cell(self, board):
+        self.on_central_cell = False
+        logging.info(f"Le chef {self.name} n'est plus sur la case centrale.")
+        new_order = []
+        for player_index in range(board.current_player_index + 1, len(board.players) + board.current_player_index):
+            player = board.players[player_index%len(board.players)]
+            if player.color != self.color:
+                new_order.append(player)
+        new_order.append(board.get_player_of_color(self.color))
+        board.players = new_order
+        board.current_player_index = -1
 
 class DiplomatPiece(Piece):
     """Ajoute un comportement spécifique pour les diplomates."""
@@ -298,7 +330,7 @@ class DiplomatPiece(Piece):
                     if not piece_at_position.is_dead: # toutes les pièces sont accessibles
                         possible_moves.append((new_q, new_r))  # L'assassin peut se déplacer sur une pièce ennemie
                     break  # Arrêter dans cette direction après avoir rencontré une pièce
-                elif not (new_q == 0 and new_r == 0):
+                elif not (new_q == 0 and new_r == 0) or (board.is_occupied(0, 0) and not isinstance(piece_at_position, ChiefPiece) and not piece_at_position.is_dead):
                     possible_moves.append((new_q, new_r))
                 step += 1
         return possible_moves
@@ -313,7 +345,11 @@ class DiplomatPiece(Piece):
             new_position = random.choice(unoccupied_cells)
             # Déplacer la pièce rencontrée vers la nouvelle position
             target_piece.q, target_piece.r = new_position
-            logging.info(f"Le diplomate a déplacé la pièce de {new_q}, {new_r} vers {new_position}")
+            logging.info(f"Le diplomate {self.name} a déplacé le {target_piece.piece_class} {target_piece.name} de {new_q}, {new_r} vers {new_position}")
+            
+            if isinstance(target_piece, ChiefPiece) and target_piece.on_central_cell:
+                target_piece.leave_central_cell(board)
+                
         # Déplacer le diplomate
         self.q, self.r = new_q, new_r
         logging.info(f"Le diplomate s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
@@ -340,7 +376,7 @@ class NecromobilePiece(Piece):
                     if piece_at_position.is_dead: # toutes les pièces sont accessibles
                         possible_moves.append((new_q, new_r))  # L'assassin peut se déplacer sur une pièce ennemie
                     break  # Arrêter dans cette direction après avoir rencontré une pièce
-                elif not (new_q == 0 and new_r == 0):
+                elif not (new_q == 0 and new_r == 0) or (board.is_occupied(0, 0) and piece_at_position.is_dead):
                     possible_moves.append((new_q, new_r))
                 step += 1
         return possible_moves
@@ -422,7 +458,7 @@ class Player:
 
         # Si aucun mouvement n'est possible, passer le tour
         if not all_moves:
-            logging.debug(f"Joueur {self.color}: aucun mouvement possible, tour passé.")
+            logging.debug(f"Joueur {self.name}: aucun mouvement possible, tour passé.")
             return
 
         # Choisir une pièce et un mouvement aléatoire
@@ -431,7 +467,7 @@ class Player:
 
         # Appliquer le mouvement à la pièce
         new_q, new_r = move
-        logging.debug(f"Joueur {self.color} déplace la pièce de {piece.q},{piece.r} vers {new_q},{new_r}")
+        logging.debug(f"Joueur {self.name} déplace la pièce de {piece.q},{piece.r} vers {new_q},{new_r}")
         piece.move(new_q, new_r, board)
         
     def change_color(self, new_color):
@@ -463,13 +499,13 @@ def hex_to_pixel(q, r):
         int(x + WINDOW_WIDTH // 2),
         int(y + (WINDOW_HEIGHT // 2) - VERTICAL_OFFSET)
     )
-    logging.debug(f"Conversion hex to pixel : q={q}, r={r} -> {pixel_coords}")
     return pixel_coords
 
 class Board:
-    def __init__(self):
+    def __init__(self, current_player_index):
         self.hexagons = []
         self.pieces = []
+        self.current_player_index = current_player_index
         logging.info("Initialisation du plateau")
         
         # Initialisation des hexagones du plateau
@@ -482,6 +518,8 @@ class Board:
         self.initialize_pieces()
         self.history = []
         self.future = []
+        self.piece_to_place = None  # Pièce tuée à placer manuellement
+        self.available_cells = []  # Cellules disponibles pour placer la pièce tuée
 
     def initialize_pieces(self):
         # Position de départ des pièces (exemple arbitraire)
@@ -595,7 +633,7 @@ class Board:
     def chief_on_central_cell(self):
         for player in self.players:
             for piece in player.pieces:
-                if isinstance(piece, ChiefPiece) and piece.q == 0 and piece.r == 0:
+                if isinstance(piece, ChiefPiece) and piece.q == 0 and piece.r == 0 and piece.on_central_cell:
                     return player
         return None
 
@@ -619,13 +657,12 @@ class Board:
         killed_player.pieces.clear()
 
         # Retirer le joueur tué de la liste des joueurs
-        self.players.remove(killed_player)
-        logging.info(f"Le chef {killed_chief.color} a été tué par le chef {killer_chief.color}. Toutes ses pièces sont maintenant contrôlées par {killer_chief.color}.")
+        self.players = [player for player in self.players if player.color != killed_chief.color]
+        logging.info(f"Le chef {killed_chief.name} a été tué par le chef {killer_chief.name}. Toutes ses pièces sont maintenant contrôlées par {killer_chief.name}.")
 
 
-    def draw(self, screen):
+    def draw(self, screen, selected_piece=None, piece_to_place=None):
         # Dessiner le plateau
-        logging.debug("Début du dessin du plateau")
         for hex_coord in self.hexagons:
             q, r = hex_coord
             x, y = hex_to_pixel(q, r)
@@ -638,13 +675,13 @@ class Board:
                 pygame.draw.polygon(screen, WHITE, self.hex_corners(x, y), 1)  # Seulement le contour
 
         # Dessiner les pièces
+        current_player_color = self.players[self.current_player_index].color
         for piece in self.pieces:
-            piece.draw(screen)
-
+            is_current_player = (piece.color == current_player_color and selected_piece is None and piece_to_place is None)
+            piece.draw(screen, is_current_player)
 
     def hex_corners(self, x, y):
         """Retourne les coins de l'hexagone en fonction de sa position pixel."""
-        logging.debug(f"Calcul des coins de l'hexagone : x={x}, y={y}")
         corners = []
         for i in range(6):
             angle_deg = 60 * i
@@ -653,6 +690,96 @@ class Board:
             corner_y = y + HEX_RADIUS * math.sin(angle_rad)
             corners.append((corner_x, corner_y))
         return corners
+
+    def select_piece(self, q, r):
+        """Sélectionne une pièce à la position (q, r)."""
+        piece = self.get_piece_at(q, r)
+        if piece and piece.color == self.players[self.current_player_index].color:
+            return piece
+        return None
+
+    def get_possible_moves(self, piece):
+        """Retourne les mouvements possibles pour une pièce."""
+        return piece.all_possible_moves(self)
+
+    def move_piece(self, piece, new_q, new_r):
+        """Déplace une pièce vers une nouvelle position."""
+        if (new_q, new_r) in self.get_possible_moves(piece):
+            target_piece = self.get_piece_at(new_q, new_r)
+            logging.info(f"Le {piece.piece_class} {piece.name} se déplace de {piece.q},{piece.r} à {new_q},{new_r}")
+            if target_piece and isinstance(piece, (MilitantPiece, ChiefPiece, DiplomatPiece, NecromobilePiece)):
+                # Tuer la pièce ennemie
+                if isinstance(piece, (MilitantPiece, ChiefPiece)):
+                    if isinstance(target_piece, ChiefPiece):
+                        self.chief_killed(target_piece, self.get_chief_of_color(piece.color))
+                        logging.info(f"Le chef {target_piece.name} a été tué par le {piece.piece_class} {piece.name}.")
+                        
+                        # if target_piece.on_central_cell:
+                        #     target_piece.leave_central_cell(self)
+                        #     logging.info(f"Le chef {target_piece.name} mort quitte la case centrale.")
+                            
+                    if target_piece.on_central_cell and isinstance(piece, ChiefPiece):
+                        piece.enter_central_cell(self)
+                        logging.info(f"Le chef {piece.name} entre sur la case centrale.")
+                        
+                    target_piece.die()
+                    logging.info(f"Le {target_piece.piece_class} {target_piece.name} a été tué par le {piece.piece_class} {piece.name}.") 
+                        
+                if isinstance(piece, DiplomatPiece) and isinstance(target_piece, ChiefPiece) and target_piece.on_central_cell and not target_piece.is_dead:
+                    logging.info(f"Le diplomate {piece.name} fait quitter le chef {target_piece.name} de la case centrale.")
+                    target_piece.leave_central_cell(self)
+                    
+                self.piece_to_place = target_piece  # Stocker la pièce tuée pour un placement manuel
+                self.available_cells = self.get_unoccupied_cells() + [(piece.q, piece.r)]  # Obtenir les cellules disponibles
+                # Déplacer la pièce qui a tué à la position de la cible
+                piece.q, piece.r = new_q, new_r
+            else:
+                piece.move(new_q, new_r, self)
+                self.current_player_index = (self.current_player_index + 1) % len(self.players)
+                self.save_state(self.current_player_index)
+            return True
+        return False
+
+    def place_dead_piece(self, new_q, new_r):
+        """Place une pièce morte à une nouvelle position."""
+        if self.piece_to_place and (new_q, new_r) in self.available_cells:
+            self.piece_to_place.q = new_q
+            self.piece_to_place.r = new_r
+            self.piece_to_place = None
+            self.available_cells = []
+            self.current_player_index = (self.current_player_index + 1) % len(self.players)
+            self.save_state(self.current_player_index)
+            if self.piece_to_place:
+                logging.info(f"La pièce {self.piece_to_place.piece_class} {self.piece_to_place.name} a été placée à {new_q},{new_r}.")
+            return True
+        return False
+
+    def draw_available_cells(self, screen):
+        """Dessine les cellules disponibles pour placer la pièce tuée."""
+        for q, r in self.available_cells:
+            x, y = hex_to_pixel(q, r)
+            pygame.draw.circle(screen, GREY, (int(x), int(y)), 10)
+
+    def pixel_to_hex(self, x, y):
+        """Convertit les coordonnées pixel en coordonnées hexagonales."""
+        x = (x - WINDOW_WIDTH // 2) / (HEX_RADIUS * 3/2)
+        y = (y - (WINDOW_HEIGHT // 2 - VERTICAL_OFFSET)) / (HEX_RADIUS * math.sqrt(3))
+        q = x
+        r = y - x/2
+        return round(q), round(r)
+
+    def draw_possible_moves(self, screen, possible_moves):
+        """Dessine les mouvements possibles sur l'écran."""
+        for q, r in possible_moves:
+            x, y = hex_to_pixel(q, r)
+            pygame.draw.circle(screen, (100, 100, 100), (int(x), int(y)), 10)
+
+    def get_player_of_color(self, color):
+        """Retourne le joueur correspondant à la couleur donnée."""
+        for player in self.players:
+            if player.color == color:
+                return player
+        return None  # Retourne None si aucun joueur ne correspond à la couleur
 
 def draw_player_turn(screen, player_color):
     """Affiche le tour du joueur en cours avec un jeton de la couleur du joueur."""
@@ -691,8 +818,8 @@ def main():
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption("Djambi")
     clock = pygame.time.Clock()
-    board = Board()
-    current_player_index = 0
+    current_player_index = 4
+    board = Board(current_player_index)
 
     # Initialiser la police pour le texte
     pygame.font.init()
@@ -705,6 +832,9 @@ def main():
     running = True
     game_over = False
     winner = None
+    selected_piece = None
+    possible_moves = []
+
     while running:
         screen.fill(BLACK)
 
@@ -713,20 +843,47 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
+                # Effacer les mouvements possibles à chaque pression de touche
+                selected_piece = None
+                possible_moves = []
+                board.piece_to_place = None
+                board.available_cells = []
+                
                 if event.key == pygame.K_ESCAPE:
                     running = False
                 elif event.key == pygame.K_SPACE and not game_over:
-                    current_player.play_turn(board)
-                    current_player_index = (current_player_index + 1) % len(board.players)
-                    board.save_state(current_player_index)  # Sauvegarder l'état après avoir joué
+                    board.players[board.current_player_index].play_turn(board)
+                    board.current_player_index = (board.current_player_index + 1) % len(board.players)
+                    board.save_state(board.current_player_index)
                 elif event.key == pygame.K_LEFT:  # Flèche gauche pour annuler
                     new_index = board.undo()
                     if new_index is not None:
-                        current_player_index = new_index
+                        board.current_player_index = new_index
                 elif event.key == pygame.K_RIGHT:  # Flèche droite pour rétablir
                     new_index = board.redo()
                     if new_index is not None:
-                        current_player_index = new_index
+                        board.current_player_index = new_index
+            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+                x, y = pygame.mouse.get_pos()
+                q, r = board.pixel_to_hex(x, y)
+                
+                if board.piece_to_place:
+                    if board.place_dead_piece(q, r):
+                        selected_piece = None
+                        possible_moves = []
+                elif selected_piece:
+                    if board.move_piece(selected_piece, q, r):
+                        selected_piece = None
+                        possible_moves = []
+                    else:
+                        new_piece = board.select_piece(q, r)
+                        if new_piece:
+                            selected_piece = new_piece
+                            possible_moves = board.get_possible_moves(selected_piece)
+                else:
+                    selected_piece = board.select_piece(q, r)
+                    if selected_piece:
+                        possible_moves = board.get_possible_moves(selected_piece)
 
         # Vérifier s'il ne reste qu'un seul joueur
         if len(board.players) == 1 and not game_over:
@@ -735,23 +892,21 @@ def main():
 
         if not game_over:
             # Récupérer le joueur actuel
-            current_player = board.players[current_player_index]
+            current_player = board.players[board.current_player_index]
             draw_player_turn(screen, current_player.color)
-            
-            if board.chief_on_central_cell():
-                player_with_chief_on_center = board.chief_on_central_cell()
-                if player_with_chief_on_center != current_player and player_with_chief_on_center != (current_player+1)%len(board.players):
-                    player_with_chief_on_center.play_turn(board)
-                    board.save_state(board.players.index(player_with_chief_on_center))
 
             # Dessiner le plateau et les pièces
-            board.draw(screen)
+            board.draw(screen, selected_piece, board.piece_to_place)
+            if selected_piece:
+                board.draw_possible_moves(screen, possible_moves)
+            if board.piece_to_place:
+                board.draw_available_cells(screen)
             
             # Ajouter la légende
             draw_legend(screen)
         else:
             # Afficher le message de victoire
-            win_text = font.render(f"Le joueur {winner.color} a gagné !", True, WHITE)
+            win_text = font.render(f"Le joueur {winner.name} a gagné !", True, WHITE)
             win_rect = win_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
             screen.blit(win_text, win_rect)
 
