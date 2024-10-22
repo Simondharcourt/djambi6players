@@ -1,1 +1,5 @@
 /labo.ipynb
+__pycache__/
+*.pyc
+venv/
+.env

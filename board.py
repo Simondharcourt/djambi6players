@@ -362,7 +362,7 @@ class NecromobilePiece(Piece):
 
     def all_possible_moves(self, board):
         if self.is_dead:
-            return [] # ne peut se déplacer.
+            return [] # ne peut se d��placer.
         possible_moves = []
         for dq, dr in ALL_DIRECTIONS:
             step = 1
@@ -776,6 +776,20 @@ class Board:
             if player.color == color:
                 return player
         return None  # Retourne None si aucun joueur ne correspond à la couleur
+
+    def to_json(self):
+        return {
+            'pieces': [
+                {
+                    'q': piece.q,
+                    'r': piece.r,
+                    'color': piece.color,
+                    'piece_class': piece.piece_class,
+                    'is_dead': piece.is_dead
+                } for piece in self.pieces
+            ],
+            'current_player_index': self.current_player_index
+        }
 
 def draw_player_turn(screen, player_color):
     """Affiche le tour du joueur en cours avec un jeton de la couleur du joueur."""
