@@ -166,13 +166,20 @@ function isWithinBoard(q, r) {
 
 // Fonction pour dessiner les pièces
 function drawPieces() {
-    console.log('Dessin des pièces');
     if (gameState && gameState.pieces) {
         gameState.pieces.forEach(piece => {
-            console.log('Dessin de la pièce:', piece);
             const [x, y] = hexToPixel(piece.q, piece.r);
+            // Déterminer la couleur à utiliser
+            let pieceColor;
+            if (piece.is_dead) {
+                pieceColor = 'rgb(100, 100, 100)'; // Gris pour les pièces mortes
+            } else if (Array.isArray(piece.color)) {
+                pieceColor = `rgb(${piece.color[0]}, ${piece.color[1]}, ${piece.color[2]})`;
+            } else {
+                pieceColor = COLORS[piece.color] || piece.color;
+            }
             // Dessiner le cercle de la pièce
-            ctx.fillStyle = piece.is_dead ? 'gray' : piece.color;
+            ctx.fillStyle = pieceColor;
             ctx.beginPath();
             ctx.arc(x, y, PIECE_RADIUS, 0, 2 * Math.PI);
             ctx.fill();
@@ -180,8 +187,6 @@ function drawPieces() {
             const img = pieceImages[piece.piece_class];
             if (allImagesLoaded) {
                 ctx.drawImage(img, x - SIZE_IMAGE / 2, y - SIZE_IMAGE / 2, SIZE_IMAGE, SIZE_IMAGE);
-            } else {
-                console.log(`Image pour ${piece.piece_class} pas encore chargée`);
             }
         });
     }
@@ -254,6 +259,26 @@ function sendMove(piece, new_q, new_r) {
     ws.send(JSON.stringify(action));
 }
 
+// Fonction pour dessiner l'indicateur de tour du joueur
+function drawPlayerTurn() {
+    if (gameState && gameState.players) {
+        const playerColor = getCurrentPlayerColor();
+        const colorName = NAMES[playerColor];
+
+        // Configurer le texte
+        ctx.font = '24px Arial';
+        ctx.fillStyle = 'white';
+        const text = `Tour du joueur : ${colorName}`;
+        ctx.fillText(text, 20, 30);
+
+        // Dessiner un cercle de la couleur du joueur
+        ctx.beginPath();
+        ctx.arc(200, 25, 15, 0, 2 * Math.PI);
+        ctx.fillStyle = playerColor;
+        ctx.fill();
+    }
+}
+
 // Fonction principale de dessin
 function draw() {
     console.log('Fonction draw appelée');
@@ -269,6 +294,7 @@ function draw() {
         // Optionnel : dessiner les mouvements possibles
         // drawPossibleMoves();
     }
+    drawPlayerTurn(); // Ajouter cette ligne
 }
 // Fonction pour initialiser un état par défaut
 function initializeDefaultState() {
@@ -325,4 +351,3 @@ function initializeDefaultState() {
 
 // Appeler draw() immédiatement pour dessiner au moins le plateau
 draw();
-
