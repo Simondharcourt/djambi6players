@@ -574,7 +574,7 @@ class Board:
     def save_state(self, current_player_index):
         state = {
             'pieces': [(p.q, p.r, p.color, p.piece_class, p.svg_path, p.is_dead) for p in self.pieces],
-            'players': [{'color': p.color, 'pieces': [piece.piece_class for piece in p.pieces]} for p in self.players],
+            'players': [{'color': p.color, 'pieces': [piece.piece_class for piece in p.pieces]} for p in self.players if p is not None],
             'current_player_index': current_player_index
         }
         self.history.append(state)
