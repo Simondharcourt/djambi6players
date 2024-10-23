@@ -1,25 +1,35 @@
 import asyncio
 import json
 import websockets
-from board import Board
+from board import Board, COLORS
 
 class DjambiServer:
     def __init__(self):
         self.board = Board(0)  # Initialiser le plateau de jeu
-        self.clients = set()
+        self.clients = {}  # Dictionnaire pour stocker les clients avec leur couleur
         self.current_player_index = 0
         self.lock = asyncio.Lock()
+        self.available_colors = list(COLORS.keys())
 
     async def register(self, websocket):
-        self.clients.add(websocket)
-        await self.send_board_state(websocket)
+        if self.available_colors:
+            color = self.available_colors.pop(0)
+            self.clients[websocket] = color
+            await self.send_board_state(websocket)
+            await websocket.send(json.dumps({"type": "player_color", "color": color}))
+        else:
+            await websocket.send(json.dumps({"type": "error", "message": "La partie est pleine"}))
+            await websocket.close()
 
     async def unregister(self, websocket):
-        self.clients.remove(websocket)
+        if websocket in self.clients:
+            color = self.clients.pop(websocket)
+            self.available_colors.append(color)
 
     async def send_board_state(self, websocket):
         state = self.board.to_json()
         state['type'] = 'state'
+        print("Sending state:", state)  # Ajoutez cette ligne pour le débogage
         await websocket.send(json.dumps(state))
 
     async def broadcast(self, message):
