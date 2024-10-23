@@ -76,9 +76,10 @@ ws.onerror = function(error) {
 
 ws.onmessage = function(event) {
     const data = JSON.parse(event.data);
+    console.log("Message reçu du serveur:", data);
     if (data.type === 'state') {
-        // Mettre à jour l'état du jeu
         gameState = data;
+        console.log("Nouvel état du jeu:", gameState);
         draw();
     } else if (data.type === 'error') {
         alert(data.message);
@@ -233,11 +234,18 @@ function selectPiece(q, r) {
 
 // Fonction pour obtenir la couleur du joueur actuel
 function getCurrentPlayerColor() {
-    if (gameState && gameState.players) {
+    console.log("Fonction getCurrentPlayerColor appelée");
+    console.log("État du jeu:", gameState);
+    if (gameState && gameState.players && gameState.current_player_index !== undefined) {
         const playerIndex = gameState.current_player_index;
-        return gameState.players[playerIndex].color;
+        const player = gameState.players[playerIndex];
+        if (player && player.color) {
+            console.log("Couleur du joueur actuel:", player.color);
+            return player.color;
+        }
     }
-    return null;
+    console.log("Aucune couleur de joueur trouvée, utilisation de la couleur par défaut");
+    return "white"; // Couleur par défaut
 }
 
 // Fonction pour envoyer un mouvement au serveur
@@ -261,28 +269,54 @@ function sendMove(piece, new_q, new_r) {
 
 // Fonction pour dessiner l'indicateur de tour du joueur
 function drawPlayerTurn() {
-    if (gameState && gameState.players) {
-        const playerColor = getCurrentPlayerColor();
-        const colorName = NAMES[playerColor];
+    console.log("Fonction drawPlayerTurn appelée");
+    console.log("État du jeu actuel:", gameState);
+
+    if (gameState && gameState.current_player_index !== undefined) {
+        let playerColor = "white"; // Couleur par défaut
+        let playerText = `Joueur ${gameState.current_player_index + 1}`;
+
+        if (gameState.players && gameState.players[gameState.current_player_index]) {
+            const player = gameState.players[gameState.current_player_index];
+            if (player.color) {
+                playerColor = Array.isArray(player.color) 
+                    ? `rgb(${player.color[0]}, ${player.color[1]}, ${player.color[2]})`
+                    : player.color;
+            }
+            if (player.name) {
+                playerText = player.name;
+            }
+        }
 
         // Configurer le texte
-        ctx.font = '24px Arial';
+        ctx.font = 'bold 24px Arial';
         ctx.fillStyle = 'white';
-        const text = `Tour du joueur : ${colorName}`;
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        const text = `Tour du ${playerText}`;
+        
+        // Dessiner le texte avec un contour pour une meilleure visibilité
+        ctx.strokeText(text, 20, 30);
         ctx.fillText(text, 20, 30);
 
         // Dessiner un cercle de la couleur du joueur
         ctx.beginPath();
-        ctx.arc(200, 25, 15, 0, 2 * Math.PI);
+        ctx.arc(250, 20, 15, 0, 2 * Math.PI);
         ctx.fillStyle = playerColor;
         ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    } else {
+        console.log("Données insuffisantes pour afficher le tour du joueur");
     }
 }
-
 // Fonction principale de dessin
 function draw() {
-    console.log('Fonction draw appelée');
-    console.log('État du jeu :', gameState);
+    console.log("Fonction draw appelée");
+    console.log("État du jeu complet :", gameState);
+    console.log("Joueurs :", gameState?.players);
+    console.log("Index du joueur actuel :", gameState?.current_player_index);
     drawBoard();
     if (gameState && gameState.pieces) {
         console.log('Nombre de pièces :', gameState.pieces.length);
@@ -351,3 +385,4 @@ function initializeDefaultState() {
 
 // Appeler draw() immédiatement pour dessiner au moins le plateau
 draw();
+
