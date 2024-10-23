@@ -362,7 +362,7 @@ class NecromobilePiece(Piece):
 
     def all_possible_moves(self, board):
         if self.is_dead:
-            return [] # ne peut se d��placer.
+            return [] # ne peut se dplacer.
         possible_moves = []
         for dq, dr in ALL_DIRECTIONS:
             step = 1
@@ -882,7 +882,11 @@ def main():
                         selected_piece = None
                         possible_moves = []
                 elif selected_piece:
-                    if board.move_piece(selected_piece, q, r):
+                    if (q, r) == (selected_piece.q, selected_piece.r):
+                        # Désélectionner la pièce si on clique dessus à nouveau
+                        selected_piece = None
+                        possible_moves = []
+                    elif board.move_piece(selected_piece, q, r):
                         selected_piece = None
                         possible_moves = []
                     else:
