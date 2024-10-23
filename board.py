@@ -772,7 +772,7 @@ class Board:
             self.piece_to_place.r = new_r
             self.piece_to_place = None
             self.available_cells = []
-            self.current_player_index = (self.current_player_index + 1) % len(self.players)
+            #self.current_player_index = (self.current_player_index + 1) % len(self.players)
             self.save_state(self.current_player_index)
             if self.piece_to_place:
                 logging.info(f"La pièce {self.piece_to_place.piece_class} {self.piece_to_place.name} a été placée à {new_q},{new_r}.")
