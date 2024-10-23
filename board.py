@@ -129,6 +129,7 @@ class Piece:
         # Effectuer le déplacement
         self.q = new_q
         self.r = new_r
+
         
 
 class MilitantPiece(Piece):
@@ -288,9 +289,9 @@ class ChiefPiece(Piece):
         logging.info(f"Le chef s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
 
         # Vérifier si le chef est sur la case centrale
-        if self.q == 0 and self.r == 0:
+        if not self.on_central_cell and self.q == 0 and self.r == 0:
             self.enter_central_cell(board)
-        else:
+        elif self.on_central_cell and (self.q != 0 or self.r != 0):
             self.leave_central_cell(board)
 
     def enter_central_cell(self, board):
@@ -672,14 +673,17 @@ class Board:
         # Changer la couleur de toutes les pièces du joueur tué
         for piece in killed_player.pieces:
             piece.color = killer_player.color
-            piece.name = NAMES[killer_player.color]  # Mettre à jour le nom de la pièce
-            piece.load_image()  # Recharger l'image avec la nouvelle couleur
+            piece.name = NAMES[killer_player.color]
+            piece.load_image()
 
         # Transférer toutes les pièces au joueur qui a tué le chef
         killer_player.pieces.extend(killed_player.pieces)
 
-        # Retirer le joueur tué de la liste des joueurs
-        self.players = [player for player in self.players if player is not killed_player]
+        # Trouver l'index du joueur tué
+        killed_player_index = self.players.index(killed_player)
+
+        # Animer l'élimination du joueur
+        animate_player_elimination(pygame.display.get_surface(), self.players, killed_player_index, self)
 
         logging.info(f"Le chef {killed_chief.name} a été tué par le chef {killer_chief.name}. Toutes ses pièces sont maintenant contrôlées par {killer_chief.name}.")
 
@@ -733,6 +737,7 @@ class Board:
         """Déplace une pièce vers une nouvelle position."""
         if (new_q, new_r) in self.get_possible_moves(piece):
             target_piece = self.get_piece_at(new_q, new_r)
+            original_q, original_r = piece.q, piece.r
             logging.info(f"Le {piece.piece_class} {piece.name} se déplace de {piece.q},{piece.r} à {new_q},{new_r}")
             if target_piece and isinstance(piece, (MilitantPiece, ChiefPiece, DiplomatPiece, NecromobilePiece)):
                 # Tuer la pièce ennemie
@@ -753,15 +758,14 @@ class Board:
                     target_piece.leave_central_cell(self)
                     
                 self.piece_to_place = target_piece  # Stocker la pièce tuée pour un placement manuel
-                self.available_cells = self.get_unoccupied_cells() + [(piece.q, piece.r)]  # Obtenir les cellules disponibles
+                self.available_cells = self.get_unoccupied_cells() + [(original_q, original_r)]  # Obtenir les cellules disponibles
                 # Déplacer la pièce qui a tué à la position de la cible
-                self.animate_move(pygame.display.get_surface(), piece, piece.q, piece.r, new_q, new_r)
+                self.animate_move(pygame.display.get_surface(), piece, original_q, original_r, new_q, new_r)
                 piece.q, piece.r = new_q, new_r
             else:
-                self.animate_move(pygame.display.get_surface(), piece, piece.q, piece.r, new_q, new_r)
                 piece.move(new_q, new_r, self)
-            self.current_player_index = (self.current_player_index + 1) % len(self.players)
-            self.save_state(self.current_player_index)
+                self.current_player_index = (self.current_player_index + 1) % len(self.players)
+                self.save_state(self.current_player_index)
             return True
         return False
 
@@ -772,7 +776,7 @@ class Board:
             self.piece_to_place.r = new_r
             self.piece_to_place = None
             self.available_cells = []
-            #self.current_player_index = (self.current_player_index + 1) % len(self.players)
+            self.current_player_index = (self.current_player_index + 1) % len(self.players)
             self.save_state(self.current_player_index)
             if self.piece_to_place:
                 logging.info(f"La pièce {self.piece_to_place.piece_class} {self.piece_to_place.name} a été placée à {new_q},{new_r}.")
@@ -825,6 +829,8 @@ class Board:
         logging.info(f"Animation de déplacement de {piece.piece_class} {piece.name} de {start_q},{start_r} à {end_q},{end_r}")
         
         original_q, original_r = piece.q, piece.r  # Sauvegarder la position originale
+        current_player_index = self.current_player_index
+        next_player_index = (current_player_index + 1) % len(self.players)
         
         for i in range(frames + 1):
             t = i / frames
@@ -845,6 +851,9 @@ class Board:
                 class_image_rect = piece.class_image.get_rect(center=(int(x), int(y)))
                 screen.blit(piece.class_image, class_image_rect)
             
+            # Dessiner l'ordre des joueurs avec l'animation de la flèche
+            draw_player_turn(screen, self.players, current_player_index, next_player_index, t)
+            
             pygame.display.flip()
             pygame.time.wait(5)  # Attendre 5ms entre chaque frame
         
@@ -854,22 +863,43 @@ class Board:
         # Redessiner une dernière fois pour s'assurer que tout est à jour
         screen.fill(BLACK)
         self.draw(screen)
+        draw_player_turn(screen, self.players, next_player_index)
         pygame.display.flip()
 
-def draw_player_turn(screen, player_color):
-    """Affiche le tour du joueur en cours avec un jeton de la couleur du joueur."""
-    # Initialiser la police de caractères
-    font = pygame.font.Font(None, 36)  # Police par défaut, taille 36
-    text = font.render("Player's turn", True, WHITE)  # Texte en blanc
+def draw_player_turn(screen, players, current_player_index, next_player_index=None, t=None):
+    """Affiche l'ordre des joueurs avec des jetons colorés et une flèche animée pour le joueur actuel."""
+    jeton_radius = 15
+    spacing = 10
+    start_x = 20
+    start_y = 300
+    arrow_size = 20
 
-    # Position du texte dans le coin supérieur gauche
-    text_rect = text.get_rect(topleft=(20, 20))
+    for i, player in enumerate(players):
+        # Position du jeton
+        x = start_x
+        y = start_y + i * (jeton_radius * 2 + spacing)
+        
+        # Dessiner le jeton
+        pygame.draw.circle(screen, player.color, (x, y), jeton_radius)
 
-    # Dessiner le texte sur l'écran
-    screen.blit(text, text_rect)
+    # Dessiner la flèche animée
+    if next_player_index is not None and t is not None:
+        current_y = start_y + current_player_index * (jeton_radius * 2 + spacing)
+        next_y = start_y + next_player_index * (jeton_radius * 2 + spacing)
+        arrow_y = current_y + (next_y - current_y) * t
+        draw_arrow(screen, start_x, arrow_y, arrow_size, jeton_radius, spacing)
+    else:
+        arrow_y = start_y + current_player_index * (jeton_radius * 2 + spacing)
+        draw_arrow(screen, start_x, arrow_y, arrow_size, jeton_radius, spacing)
 
-    # Dessiner un jeton coloré à côté du texte
-    pygame.draw.circle(screen, player_color, (text_rect.right + PIECE_RADIUS, text_rect.centery), 15)  # Jeton de 15px de rayon
+def draw_arrow(screen, x, y, arrow_size, jeton_radius, spacing):
+    """Dessine une flèche à la position spécifiée."""
+    arrow_points = [
+        (x + jeton_radius + spacing, y),
+        (x + jeton_radius + spacing + arrow_size, y - arrow_size // 2),
+        (x + jeton_radius + spacing + arrow_size, y + arrow_size // 2)
+    ]
+    pygame.draw.polygon(screen, WHITE, arrow_points)
 
 def draw_legend(screen):
     font = pygame.font.Font(None, FONT_SIZE)
@@ -887,6 +917,49 @@ def draw_legend(screen):
         text = font.render(f"{key}: {value}", True, WHITE)
         screen.blit(text, (start_x, y))
         start_x += text.get_width() + 20  # Espace entre les éléments
+
+def animate_player_elimination(screen, players, eliminated_player_index, board):
+    jeton_radius = 15
+    spacing = 10
+    start_x = 20
+    start_y = 300
+    fall_duration = 60  # Nombre de frames pour l'animation de chute
+    
+    for frame in range(fall_duration):
+        screen.fill(BLACK)  # Effacer l'écran
+        
+        # Redessiner le plateau
+        board.draw(screen)
+        
+        for i, player in enumerate(players):
+            x = start_x
+            y = start_y + i * (jeton_radius * 2 + spacing)
+            
+            if i == eliminated_player_index:
+                # Animer la chute du jeton éliminé
+                fall_distance = (frame / fall_duration) ** 2 * WINDOW_HEIGHT  # Accélération de la chute
+                y += fall_distance
+            
+            if y < WINDOW_HEIGHT:  # Ne dessiner le jeton que s'il est encore visible
+                pygame.draw.circle(screen, player.color, (int(x), int(y)), jeton_radius)
+        
+        # Dessiner la flèche pour le joueur actuel
+        current_player_index = board.current_player_index % len(players)
+        arrow_y = start_y + current_player_index * (jeton_radius * 2 + spacing)
+        draw_arrow(screen, start_x, arrow_y, 20, jeton_radius, spacing)
+        
+        pygame.display.flip()
+        pygame.time.wait(16)  # Environ 60 FPS
+    
+    # Supprimer le joueur éliminé de la liste des joueurs
+    del players[eliminated_player_index]
+
+def draw_button(screen, text, x, y, width, height, color, text_color):
+    pygame.draw.rect(screen, color, (x, y, width, height))
+    font = pygame.font.Font(None, 36)
+    text_surface = font.render(text, True, text_color)
+    text_rect = text_surface.get_rect(center=(x + width // 2, y + height // 2))
+    screen.blit(text_surface, text_rect)
 
 def main():
     pygame.init()
@@ -910,6 +983,11 @@ def main():
     selected_piece = None
     possible_moves = []
     auto_play = False
+
+    # Définir les dimensions et la position du bouton
+    button_width, button_height = 200, 50
+    button_x = (WINDOW_WIDTH - button_width) // 2
+    button_y = WINDOW_HEIGHT // 2 + 50
 
     while running:
         screen.fill(BLACK)
@@ -951,7 +1029,6 @@ def main():
                         possible_moves = []
                 elif selected_piece:
                     if (q, r) == (selected_piece.q, selected_piece.r):
-                        # Désélectionner la pièce si on clique dessus à nouveau
                         selected_piece = None
                         possible_moves = []
                     elif board.move_piece(selected_piece, q, r):
@@ -981,7 +1058,7 @@ def main():
             
             # Récupérer le joueur actuel
             current_player = board.players[board.current_player_index]
-            draw_player_turn(screen, current_player.color)
+            draw_player_turn(screen, board.players, board.current_player_index)
 
             # Dessiner le plateau et les pièces
             board.draw(screen, selected_piece, board.piece_to_place)
@@ -995,8 +1072,25 @@ def main():
         else:
             # Afficher le message de victoire
             win_text = font.render(f"Le joueur {winner.name} a gagné !", True, WHITE)
-            win_rect = win_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2))
+            win_rect = win_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 3))
             screen.blit(win_text, win_rect)
+
+            # Dessiner le bouton "Rejouer"
+            draw_button(screen, "Rejouer", button_x, button_y, button_width, button_height, WHITE, BLACK)
+
+            # Vérifier si le bouton "Rejouer" est cliqué
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                if button_x <= mouse_x <= button_x + button_width and button_y <= mouse_y <= button_y + button_height:
+                    # Réinitialiser le jeu
+                    current_player_index = 4
+                    board = Board(current_player_index)
+                    board.save_state(current_player_index)
+                    game_over = False
+                    winner = None
+                    selected_piece = None
+                    possible_moves = []
+                    auto_play = False
 
         # Afficher "Player's turn" avec le jeton du joueur actuel ou le message de victoire
         pygame.display.flip()
