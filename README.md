@@ -35,3 +35,4 @@ train the model on a platform.
 small stuff: kill a chief by surronding, end game if a chief is sourrounded in the middle.
 implement 2 and 3 players game
 improve playability
+fix some bugs.

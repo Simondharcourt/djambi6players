@@ -165,10 +165,12 @@ class MilitantPiece(Piece):
                 
     
     def move(self, new_q, new_r, board):
-        """Déplace le militant et tue la pièce ennemie si présente."""
         original_q, original_r = self.q, self.r
         target_piece = board.get_piece_at(new_q, new_r)
 
+        # Supprimer l'appel à animate_move ici
+        board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
+        
         if target_piece and target_piece.color != self.color and not target_piece.is_dead:
             # Tuer la pièce ennemie
             if isinstance(target_piece, ChiefPiece):
@@ -222,6 +224,9 @@ class AssassinPiece(Piece):
         original_q, original_r = self.q, self.r
         target_piece = board.get_piece_at(new_q, new_r)
 
+        # Ajouter l'animation du mouvement
+        board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
+        
         if target_piece and target_piece.color != self.color and not target_piece.is_dead:
             if isinstance(target_piece, ChiefPiece):
                 board.chief_killed(target_piece, board.get_chief_of_color(self.color))
@@ -266,6 +271,9 @@ class ChiefPiece(Piece):
         original_q, original_r = self.q, self.r
         target_piece = board.get_piece_at(new_q, new_r)
 
+        # Ajouter l'animation du mouvement
+        board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
+        
         if target_piece and target_piece.color != self.color and not target_piece.is_dead:
             if isinstance(target_piece, ChiefPiece):
                 board.chief_killed(target_piece, board.get_chief_of_color(self.color))
@@ -301,7 +309,7 @@ class ChiefPiece(Piece):
         new_order = []
         for player_index in range(board.current_player_index + 1, len(board.players) + board.current_player_index):
             player = board.players[player_index%len(board.players)]
-            if player.color != self.color:
+            if player and player.color != self.color:
                 new_order.append(player)
         new_order.append(board.get_player_of_color(self.color))
         board.players = new_order
@@ -329,7 +337,7 @@ class DiplomatPiece(Piece):
                 if piece_at_position:
                     if not piece_at_position.is_dead: # toutes les pièces sont accessibles
                         possible_moves.append((new_q, new_r))  # L'assassin peut se déplacer sur une pièce ennemie
-                    break  # Arrêter dans cette direction après avoir rencontré une pièce
+                    break  # Arrêter dans cette direction aprs avoir rencontré une pièce
                 elif not (new_q == 0 and new_r == 0) or (board.is_occupied(0, 0) and not isinstance(piece_at_position, ChiefPiece) and not piece_at_position.is_dead):
                     possible_moves.append((new_q, new_r))
                 step += 1
@@ -339,6 +347,9 @@ class DiplomatPiece(Piece):
         original_q, original_r = self.q, self.r
         target_piece = board.get_piece_at(new_q, new_r)
 
+        # Ajouter l'animation du mouvement
+        board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
+        
         if target_piece and not target_piece.is_dead:
             # Trouver une case libre aléatoire
             unoccupied_cells = board.get_unoccupied_cells()
@@ -386,6 +397,9 @@ class NecromobilePiece(Piece):
         original_q, original_r = self.q, self.r
         target_piece = board.get_piece_at(new_q, new_r)
 
+        # Ajouter l'animation du mouvement
+        board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
+        
         if target_piece and target_piece.is_dead:
             # Trouver une case libre aléatoire
             unoccupied_cells = board.get_unoccupied_cells()
@@ -408,8 +422,12 @@ class ReporterPiece(Piece):
     def move(self, new_q, new_r, board):
         """Déplace le reporter et tue les pièces adverses autour de sa nouvelle position."""
         # Effectuer le déplacement
+        original_q, original_r = self.q, self.r
         self.q = new_q
         self.r = new_r
+        
+        # Ajouter l'animation du mouvement
+        board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
         
         # Tuer les ennemis adjacents après le déplacement
         for dq, dr in ADJACENT_DIRECTIONS:
@@ -644,21 +662,30 @@ class Board:
         return None
 
     def chief_killed(self, killed_chief, killer_chief):
-        killed_player = next(player for player in self.players if player.color == killed_chief.color)
-        killer_player = next(player for player in self.players if player.color == killer_chief.color)
+        killed_player = next((player for player in self.players if player.color == killed_chief.color), None)
+        killer_player = next((player for player in self.players if player.color == killer_chief.color), None)
+
+        if killed_player is None or killer_player is None:
+            logging.error(f"Erreur : Impossible de trouver le joueur tué ou le tueur. Killed chief color: {killed_chief.color}, Killer chief color: {killer_chief.color}")
+            return
 
         # Changer la couleur de toutes les pièces du joueur tué
         for piece in killed_player.pieces:
             piece.color = killer_player.color
+            piece.name = NAMES[killer_player.color]  # Mettre à jour le nom de la pièce
             piece.load_image()  # Recharger l'image avec la nouvelle couleur
 
         # Transférer toutes les pièces au joueur qui a tué le chef
         killer_player.pieces.extend(killed_player.pieces)
-        killed_player.pieces.clear()
 
         # Retirer le joueur tué de la liste des joueurs
-        self.players = [player for player in self.players if player.color != killed_chief.color]
+        self.players = [player for player in self.players if player is not killed_player]
+
         logging.info(f"Le chef {killed_chief.name} a été tué par le chef {killer_chief.name}. Toutes ses pièces sont maintenant contrôlées par {killer_chief.name}.")
+
+        # Mettre à jour l'index du joueur courant si nécessaire
+        if self.current_player_index >= len(self.players):
+            self.current_player_index = 0
 
 
     def draw(self, screen, selected_piece=None, piece_to_place=None):
@@ -719,7 +746,7 @@ class Board:
                         logging.info(f"Le chef {piece.name} entre sur la case centrale.")
                         
                     target_piece.die()
-                    logging.info(f"Le {target_piece.piece_class} {target_piece.name} a été tué par le {piece.piece_class} {piece.name}.") 
+                    logging.info(f"Le {target_piece.piece_class} {target_piece.name} a té tué par le {piece.piece_class} {piece.name}.") 
                         
                 if isinstance(piece, DiplomatPiece) and isinstance(target_piece, ChiefPiece) and target_piece.on_central_cell and not target_piece.is_dead:
                     logging.info(f"Le diplomate {piece.name} fait quitter le chef {target_piece.name} de la case centrale.")
@@ -728,11 +755,13 @@ class Board:
                 self.piece_to_place = target_piece  # Stocker la pièce tuée pour un placement manuel
                 self.available_cells = self.get_unoccupied_cells() + [(piece.q, piece.r)]  # Obtenir les cellules disponibles
                 # Déplacer la pièce qui a tué à la position de la cible
+                self.animate_move(pygame.display.get_surface(), piece, piece.q, piece.r, new_q, new_r)
                 piece.q, piece.r = new_q, new_r
             else:
+                self.animate_move(pygame.display.get_surface(), piece, piece.q, piece.r, new_q, new_r)
                 piece.move(new_q, new_r, self)
-                self.current_player_index = (self.current_player_index + 1) % len(self.players)
-                self.save_state(self.current_player_index)
+            self.current_player_index = (self.current_player_index + 1) % len(self.players)
+            self.save_state(self.current_player_index)
             return True
         return False
 
@@ -791,6 +820,42 @@ class Board:
             'current_player_index': self.current_player_index
         }
 
+    def animate_move(self, screen, piece, start_q, start_r, end_q, end_r):
+        frames = 30  # Nombre de frames pour l'animation
+        logging.info(f"Animation de déplacement de {piece.piece_class} {piece.name} de {start_q},{start_r} à {end_q},{end_r}")
+        
+        original_q, original_r = piece.q, piece.r  # Sauvegarder la position originale
+        
+        for i in range(frames + 1):
+            t = i / frames
+            current_q = start_q + (end_q - start_q) * t
+            current_r = start_r + (end_r - start_r) * t
+            
+            # Mettre à jour temporairement la position de la pièce
+            piece.q, piece.r = current_q, current_r
+            
+            # Redessiner le plateau complet
+            screen.fill(BLACK)
+            self.draw(screen)
+            
+            # Dessiner la pièce en mouvement par-dessus
+            x, y = hex_to_pixel(current_q, current_r)
+            pygame.draw.circle(screen, piece.color, (int(x), int(y)), PIECE_RADIUS)
+            if piece.class_image:
+                class_image_rect = piece.class_image.get_rect(center=(int(x), int(y)))
+                screen.blit(piece.class_image, class_image_rect)
+            
+            pygame.display.flip()
+            pygame.time.wait(5)  # Attendre 5ms entre chaque frame
+        
+        # Remettre la pièce à sa position finale
+        piece.q, piece.r = end_q, end_r
+        
+        # Redessiner une dernière fois pour s'assurer que tout est à jour
+        screen.fill(BLACK)
+        self.draw(screen)
+        pygame.display.flip()
+
 def draw_player_turn(screen, player_color):
     """Affiche le tour du joueur en cours avec un jeton de la couleur du joueur."""
     # Initialiser la police de caractères
@@ -844,6 +909,7 @@ def main():
     winner = None
     selected_piece = None
     possible_moves = []
+    auto_play = False
 
     while running:
         screen.fill(BLACK)
@@ -861,10 +927,12 @@ def main():
                 
                 if event.key == pygame.K_ESCAPE:
                     running = False
-                elif event.key == pygame.K_SPACE and not game_over:
+                elif event.key == pygame.K_SPACE and not game_over and not auto_play:
                     board.players[board.current_player_index].play_turn(board)
                     board.current_player_index = (board.current_player_index + 1) % len(board.players)
                     board.save_state(board.current_player_index)
+                elif event.key == pygame.K_RETURN:
+                    auto_play = not auto_play  # Basculer l'état de auto_play
                 elif event.key == pygame.K_LEFT:  # Flèche gauche pour annuler
                     new_index = board.undo()
                     if new_index is not None:
@@ -873,7 +941,7 @@ def main():
                     new_index = board.redo()
                     if new_index is not None:
                         board.current_player_index = new_index
-            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over and not auto_play:
                 x, y = pygame.mouse.get_pos()
                 q, r = board.pixel_to_hex(x, y)
                 
@@ -903,17 +971,23 @@ def main():
         if len(board.players) == 1 and not game_over:
             game_over = True
             winner = board.players[0]
+            auto_play = False
 
         if not game_over:
+            if auto_play:
+                board.players[board.current_player_index].play_turn(board)
+                board.current_player_index = (board.current_player_index + 1) % len(board.players)
+                board.save_state(board.current_player_index)
+            
             # Récupérer le joueur actuel
             current_player = board.players[board.current_player_index]
             draw_player_turn(screen, current_player.color)
 
             # Dessiner le plateau et les pièces
             board.draw(screen, selected_piece, board.piece_to_place)
-            if selected_piece:
+            if selected_piece and not auto_play:
                 board.draw_possible_moves(screen, possible_moves)
-            if board.piece_to_place:
+            if board.piece_to_place and not auto_play:
                 board.draw_available_cells(screen)
             
             # Ajouter la légende
@@ -927,8 +1001,8 @@ def main():
         # Afficher "Player's turn" avec le jeton du joueur actuel ou le message de victoire
         pygame.display.flip()
 
-        # Limiter la vitesse à 4 FPS
-        clock.tick(4)
+        # Limiter la vitesse à 30 FPS
+        clock.tick(30)
 
     # Quitter proprement
     pygame.quit()
