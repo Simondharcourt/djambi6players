@@ -211,24 +211,42 @@ canvas.addEventListener('click', (event) => {
         const [q, r] = pixelToHex(x, y);
 
         if (selectedPiece) {
-            sendMove(selectedPiece, q, r);
-            selectedPiece = null;
-            possibleMoves = [];
+            if (selectedPiece.q === q && selectedPiece.r === r) {
+                // Si on reclique sur la pièce sélectionnée, on la désélectionne
+                selectedPiece = null;
+                possibleMoves = [];
+            } else {
+                // Sinon, on tente de déplacer la pièce
+                sendMove(selectedPiece, q, r);
+            }
         } else {
+            // Si aucune pièce n'est sélectionnée, on essaie d'en sélectionner une
             selectPiece(q, r);
         }
+        draw(); // Redessiner le plateau après chaque action
     }
 });
 
 // Fonction pour sélectionner une pièce
 function selectPiece(q, r) {
     if (gameState) {
-        const piece = gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead && p.color === getCurrentPlayerColor());
+        const piece = gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead);
         if (piece) {
             selectedPiece = piece;
-            // Optionnel : obtenir les mouvements possibles
-            // getPossibleMoves(piece);
+            // Ici, vous pouvez ajouter une logique pour calculer les mouvements possibles
+            // possibleMoves = calculatePossibleMoves(piece);
         }
+    }
+}
+
+function drawSelectedPieceHalo() {
+    if (selectedPiece) {
+        const [x, y] = hexToPixel(selectedPiece.q, selectedPiece.r);
+        ctx.strokeStyle = 'yellow';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(x, y, PIECE_RADIUS + 5, 0, 2 * Math.PI);
+        ctx.stroke();
     }
 }
 
@@ -324,10 +342,7 @@ function draw() {
     } else {
         console.log('Aucune pièce à dessiner');
     }
-    if (selectedPiece) {
-        // Optionnel : dessiner les mouvements possibles
-        // drawPossibleMoves();
-    }
+    drawSelectedPieceHalo(); // Ajouter cette ligne
     drawPlayerTurn(); // Ajouter cette ligne
 }
 // Fonction pour initialiser un état par défaut
@@ -385,4 +400,3 @@ function initializeDefaultState() {
 
 // Appeler draw() immédiatement pour dessiner au moins le plateau
 draw();
-
