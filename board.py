@@ -555,13 +555,13 @@ class Player:
         piece_values = {
             'militant': 10,
             'assassin': 10,
-            'chief': 20,
+            'chief': 25,
             'diplomat': 10,
             'necromobile': 10,
             'reporter': 5,
         }
         score = sum(piece_values[piece.piece_class] for piece in self.pieces if not piece.is_dead)
-        if any(piece.piece_class == 'chief' and not piece.is_dead for piece in self.pieces):
+        if any(piece.piece_class == 'chief' and not piece.is_dead and piece.on_central_cell for piece in self.pieces):
             score = score * 2 # * nb players could be better.
         return score
 
