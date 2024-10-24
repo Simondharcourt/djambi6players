@@ -588,6 +588,29 @@ class Board:
         self.future = []
         self.piece_to_place = None  # Pièce tuée à placer manuellement
         self.available_cells = []  # Cellules disponibles pour placer la pièce tuée
+        self.board_surface = self.create_board_surface()
+        self.hex_pixel_positions = self.calculate_hex_pixel_positions()
+
+    def create_board_surface(self):
+        board_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+        board_surface.fill(BLACK)
+        for hex_coord in self.hexagons:
+            q, r = hex_coord
+            x, y = hex_to_pixel(q, r)
+            pygame.draw.polygon(board_surface, WHITE, self.hex_corners(x, y), 1)
+            if q == 0 and r == 0:
+                pygame.draw.polygon(board_surface, CENTRAL_WHITE, self.hex_corners(x, y), 0)
+            else:
+                pygame.draw.polygon(board_surface, WHITE, self.hex_corners(x, y), 1)
+        return board_surface
+
+    def calculate_hex_pixel_positions(self):
+        positions = {}
+        for q, r in self.hexagons:
+            x, y = hex_to_pixel(q, r)
+            positions[(q, r)] = (x, y)
+        return positions
+
 
     def initialize_pieces(self):
         # Position de départ des pièces (exemple arbitraire)
@@ -746,10 +769,10 @@ class Board:
 
 
     def draw(self, screen, selected_piece=None, piece_to_place=None):
-        # Dessiner le plateau
+        # Utiliser les positions pré-calculées
         for hex_coord in self.hexagons:
+            x, y = self.hex_pixel_positions[hex_coord]
             q, r = hex_coord
-            x, y = hex_to_pixel(q, r)
             pygame.draw.polygon(screen, WHITE, self.hex_corners(x, y), 1)
 
             # Si la case est la case centrale, la dessiner en blanc
@@ -763,6 +786,7 @@ class Board:
         for piece in self.pieces:
             is_current_player = (piece.color == current_player_color and selected_piece is None and piece_to_place is None)
             piece.draw(screen, is_current_player)
+
 
     def hex_corners(self, x, y):
         """Retourne les coins de l'hexagone en fonction de sa position pixel."""
