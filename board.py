@@ -63,7 +63,7 @@ class Piece:
         self.on_central_cell = False  # Nouvel attribut pour suivre si le chef est sur la case centrale
 
     def die(self):
-        """Marque la pièce comme morte et change sa couleur en gris."""
+        """Marque la pièce comme morte et change sa couleur en grise."""
         self.is_dead = True
         self.color = DARKER_GREY  # Couleur grise pour les pièces mortes
         logging.info(f"Pièce en {self.q}, {self.r} est morte")
@@ -344,6 +344,11 @@ class ChiefPiece(Piece):
         new_order.append(board.get_player_of_color(self.color))
         board.players = new_order
         board.current_player_index = -1
+
+    def is_surrounded(self, board, visited=None):
+        if self.on_central_cell:
+            return False  # Le chef n'est jamais considéré comme encerclé s'il est sur la case centrale
+        return super().is_surrounded(board, visited)
 
 class DiplomatPiece(Piece):
     """Ajoute un comportement spécifique pour les diplomates."""
@@ -693,20 +698,24 @@ class Board:
 
     def chief_killed(self, killed_chief, killer_chief):
         killed_player = next((player for player in self.players if player.color == killed_chief.color), None)
-        killer_player = next((player for player in self.players if player.color == killer_chief.color), None)
+        killer_player = next((player for player in self.players if player.color == killer_chief.color), None) if killer_chief else None
 
-        if killed_player is None or killer_player is None:
-            logging.error(f"Erreur : Impossible de trouver le joueur tué ou le tueur. Killed chief color: {killed_chief.color}, Killer chief color: {killer_chief.color}")
+        if killed_player is None:
+            logging.error(f"Erreur : Impossible de trouver le joueur tué. Killed chief color: {killed_chief.color}")
             return
 
         # Changer la couleur de toutes les pièces du joueur tué
         for piece in killed_player.pieces:
-            piece.color = killer_player.color
-            piece.name = NAMES[killer_player.color]
-            piece.load_image()
+            if killer_player:
+                piece.color = killer_player.color
+                piece.name = NAMES[killer_player.color]
+                piece.load_image()
+            else:
+                piece.die()  # Si pas de tueur spécifique, les pièces meurent simplement
 
-        # Transférer toutes les pièces au joueur qui a tué le chef
-        killer_player.pieces.extend(killed_player.pieces)
+        # Transférer toutes les pièces au joueur qui a tué le chef, s'il y en a un
+        if killer_player:
+            killer_player.pieces.extend(killed_player.pieces)
 
         # Supprimer toutes les occurrences du joueur tué
         while killed_player in self.players:
@@ -714,7 +723,7 @@ class Board:
             animate_player_elimination(pygame.display.get_surface(), self.players, killed_player_index, self)
             self.players.pop(killed_player_index)
 
-        logging.info(f"Le chef {killed_chief.name} a été tué par le chef {killer_chief.name}. Toutes ses pièces sont maintenant contrôlées par {killer_chief.name}.")
+        logging.info(f"Le chef {killed_chief.name} a été tué{'.' if not killer_chief else f' par le chef {killer_chief.name}.'} Toutes ses pièces sont maintenant {'mortes' if not killer_chief else f'contrôlées par {killer_chief.name}'}.")
 
         # Mettre à jour l'index du joueur courant si nécessaire
         if self.current_player_index >= len(self.players):
@@ -762,6 +771,12 @@ class Board:
         """Retourne les mouvements possibles pour une pièce."""
         return piece.all_possible_moves(self)
 
+    def next_player(self):
+        """Passe au joueur suivant et effectue les vérifications nécessaires."""
+        self.check_surrounded_chiefs()
+        self.current_player_index = (self.current_player_index + 1) % len(self.players)
+        self.save_state(self.current_player_index)
+
     def move_piece(self, piece, new_q, new_r):
         """Déplace une pièce vers une nouvelle position."""
         if (new_q, new_r) in self.get_possible_moves(piece):
@@ -793,10 +808,17 @@ class Board:
                 piece.q, piece.r = new_q, new_r
             else:
                 piece.move(new_q, new_r, self)
-                self.current_player_index = (self.current_player_index + 1) % len(self.players)
-                self.save_state(self.current_player_index)
+                self.next_player()
             return True
         return False
+
+    def check_surrounded_chiefs(self):
+        for player in self.players:
+            chief = next((piece for piece in player.pieces if isinstance(piece, ChiefPiece)), None)
+            if chief and not chief.on_central_cell:
+                if chief.is_surrounded(self):
+                    logging.info(f"Le chef {chief.name} a été éliminé car il était encerclé!")
+                    self.chief_killed(chief, None)
 
     def place_dead_piece(self, new_q, new_r):
         """Place une pièce morte à une nouvelle position."""
@@ -805,10 +827,7 @@ class Board:
             self.piece_to_place.r = new_r
             self.piece_to_place = None
             self.available_cells = []
-            self.current_player_index = (self.current_player_index + 1) % len(self.players)
-            self.save_state(self.current_player_index)
-            if self.piece_to_place:
-                logging.info(f"La pièce {self.piece_to_place.piece_class} {self.piece_to_place.name} a été placée à {new_q},{new_r}.")
+            self.next_player()
             return True
         return False
 
@@ -1080,8 +1099,7 @@ def main():
         if not game_over:
             if auto_play:
                 board.players[board.current_player_index].play_turn(board)
-                board.current_player_index = (board.current_player_index + 1) % len(board.players)
-                board.save_state(board.current_player_index)
+                board.next_player()  # Utiliser la nouvelle méthode ici aussi
             
             # Récupérer le joueur actuel
             current_player = board.players[board.current_player_index]
