@@ -548,6 +548,22 @@ class Player:
         self.color = color
         self.pieces = pieces
         self.name = NAMES[color]
+        self.score = self.compute_score()
+
+    def compute_score(self):  # get a constant score overall in the game. With board as a parameter ?
+        """Calcule le score actuel du joueur en fonction des pièces qu'il possède."""
+        piece_values = {
+            'militant': 10,
+            'assassin': 10,
+            'chief': 30,
+            'diplomat': 10,
+            'necromobile': 10,
+            'reporter': 5,
+        }
+        score = sum(piece_values[piece.piece_class] for piece in self.pieces if not piece.is_dead)
+        if any(piece.piece_class == 'chief' and not piece.is_dead for piece in self.pieces):
+            score = score * 2 # * nb players could be better.
+        return score
 
     def play_turn(self, board):
         """Joue un tour : déplace une de ses pièces aléatoirement parmi les mouvements possibles."""
@@ -1003,6 +1019,7 @@ def draw_player_turn(screen, players, current_player_index, next_player_index=No
     start_x = 20
     start_y = 300
     arrow_size = 20
+    font = pygame.font.Font(None, 36)  # Assurez-vous d'initialiser la police
 
     for i, player in enumerate(players):
         # Position du jeton
@@ -1011,6 +1028,10 @@ def draw_player_turn(screen, players, current_player_index, next_player_index=No
         
         # Dessiner le jeton
         pygame.draw.circle(screen, player.color, (x, y), jeton_radius)
+
+        # Afficher le score à côté du jeton
+        score_text = font.render(str(player.compute_score()), True, WHITE)
+        screen.blit(score_text, (x + jeton_radius + spacing, y - score_text.get_height() // 2))
 
     # Dessiner la flèche animée
     if next_player_index is not None and t is not None:
@@ -1024,10 +1045,11 @@ def draw_player_turn(screen, players, current_player_index, next_player_index=No
 
 def draw_arrow(screen, x, y, arrow_size, jeton_radius, spacing):
     """Dessine une flèche à la position spécifiée."""
+    offset = 50  # Décalage vers la droite en pixels
     arrow_points = [
-        (x + jeton_radius + spacing, y),
-        (x + jeton_radius + spacing + arrow_size, y - arrow_size // 2),
-        (x + jeton_radius + spacing + arrow_size, y + arrow_size // 2)
+        (x + jeton_radius + spacing + offset, y),
+        (x + jeton_radius + spacing + arrow_size + offset, y - arrow_size // 2),
+        (x + jeton_radius + spacing + arrow_size + offset, y + arrow_size // 2)
     ]
     pygame.draw.polygon(screen, WHITE, arrow_points)
 
