@@ -10,13 +10,11 @@ from gym import spaces
 
 def get_legal_actions_mask(self):
     mask = np.zeros((len(self.board.pieces), BOARD_SIZE * 2 - 1, BOARD_SIZE * 2 - 1, BOARD_SIZE * 2, BOARD_SIZE * 2), dtype=np.int8)
-    
     for piece_index, piece in enumerate(self.board.pieces):
         if piece.color == self.current_player.color and not piece.is_dead:
             legal_moves = piece.all_possible_moves(self.board)
             for new_q, new_r in legal_moves:
                 mask[piece_index, new_q + BOARD_SIZE - 1, new_r + BOARD_SIZE - 1, :, :] = 1
-                
                 # Si le mouvement implique de tuer une pièce, ajoutez les positions légales pour la pièce tuée
                 target_piece = self.board.get_piece_at(new_q, new_r)
                 if target_piece and target_piece.color != piece.color:
@@ -31,12 +29,14 @@ def get_legal_actions_mask(self):
 
 class DjambiEnv:
     def __init__(self):
-        self.board = Board()
         self.current_player_index = 0
+        self.board = Board(self.current_player_index)
+        self.board.rl = True
 
     def reset(self):
-        self.board = Board()
         self.current_player_index = 0
+        self.board = Board(self.current_player_index)
+        self.board.rl = True
         return self.get_state()
 
     def get_state(self):
@@ -52,10 +52,10 @@ class DjambiEnv:
         return state
 
     def step(self, action):
-        legal_actions_mask = self.get_legal_actions_mask()
-        if legal_actions_mask[tuple(action)] == 0:
-            # L'action est illégale, appliquez une pénalité et ne changez pas l'état du jeu
-            return self.get_state(), -10, False, {"illegal_move": True, "undo": True}
+        # legal_actions_mask = self.get_legal_actions_mask()
+        # if legal_actions_mask[tuple(action)] == 0:
+        #     # L'action est illégale, appliquez une pénalité et ne changez pas l'état du jeu
+        #     return self.get_state(), -10, False, {"illegal_move": True, "undo": True}
 
         # Sauvegardez l'état actuel avant d'exécuter l'action
         previous_state = self.board.copy()
@@ -63,23 +63,22 @@ class DjambiEnv:
         
         # Exécuter l'action
         piece, new_position, killed_piece_position = self.decode_action(action)
-        piece.move(new_position[0], new_position[1], self.board)
-        
-        # Exécuter l'action et retourner new_state, reward, done, info
-        new_state = self.get_state()
-        reward = self.calculate_reward()
-        done = len(self.board.players) == 1
-        # Ne changez pas le joueur actuel si l'action était illégale
-        if not legal_actions_mask[tuple(action)] == 0:
-            self.current_player_index = (self.current_player_index + 1) % len(self.board.players)
-        
-        info = {
-            "illegal_move": False,
-            "undo": False,
-            "previous_state": previous_state,
-            "previous_player_index": previous_player_index
-        }
-        return new_state, reward, done, info
+        if not piece.move(new_position[0], new_position[1], self.board, killed_piece_position):
+            return self.get_state(), -10, False, {"illegal_move": True, "undo": True}
+        else:
+            self.board.next_player() # handle possible chief surrounding.
+            # Exécuter l'action et retourner new_state, reward, done, info
+            new_state = self.get_state()
+            reward = self.calculate_reward()
+            done = len(self.board.players) == 1
+            
+            info = {
+                "illegal_move": False,
+                "undo": False,
+                "previous_state": previous_state,
+                "previous_player_index": previous_player_index
+            }
+            return new_state, reward, done, info
 
     # Ajoutez une nouvelle méthode pour annuler le dernier mouvement
     def undo_last_move(self, previous_state, previous_player_index):

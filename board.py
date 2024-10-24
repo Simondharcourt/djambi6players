@@ -142,8 +142,11 @@ class Piece:
 
     def move(self, new_q, new_r, board):
         # Effectuer le déplacement
+        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+            return False # new_q, new_r is not a valid move.
         self.q = new_q
         self.r = new_r
+        return True
 
     def is_surrounded(self, board, visited=None):
         if visited is None:
@@ -209,8 +212,10 @@ class MilitantPiece(Piece):
         return possible_moves
                 
     
-    def move(self, new_q, new_r, board):
+    def move(self, new_q, new_r, board, moved_piece_position=None):
         original_q, original_r = self.q, self.r
+        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+            return False # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
 
         # Supprimer l'appel à animate_move ici
@@ -222,7 +227,12 @@ class MilitantPiece(Piece):
                 board.chief_killed(target_piece, board.get_chief_of_color(self.color))
             target_piece.die()
             unoccupied_cells = board.get_unoccupied_cells()
-            new_position = random.choice(unoccupied_cells)
+            if not moved_piece_position:
+                new_position = random.choice(unoccupied_cells)
+            elif moved_piece_position in unoccupied_cells:
+                new_position = moved_piece_position
+            else:
+                return False # moved_piece_position is not a valid position.
             # Déplacer la pièce rencontrée vers la nouvelle position
             target_piece.q, target_piece.r = new_position
             # Déplacer la pièce tuée à la position d'origine de l'assassin
@@ -232,6 +242,7 @@ class MilitantPiece(Piece):
         # Déplacer le militant
         self.q, self.r = new_q, new_r
         logging.info(f"Le militant s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        return True
 
 class AssassinPiece(Piece):
     def __init__(self, q, r, color, piece_class, svg_path):
@@ -267,6 +278,8 @@ class AssassinPiece(Piece):
     def move(self, new_q, new_r, board):
         """Déplace l'assassin et tue la pièce ennemie si présente."""
         original_q, original_r = self.q, self.r
+        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+            return False # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
 
         # Ajouter l'animation du mouvement
@@ -283,7 +296,8 @@ class AssassinPiece(Piece):
         # Déplacer l'assassin
         self.q, self.r = new_q, new_r
         logging.info(f"L'assassin s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
-
+        return True
+    
 class ChiefPiece(Piece):
     def __init__(self, q, r, color, piece_class, svg_path):
         super().__init__(q, r, color, piece_class, svg_path)
@@ -312,8 +326,10 @@ class ChiefPiece(Piece):
                 step += 1
         return possible_moves
 
-    def move(self, new_q, new_r, board):
+    def move(self, new_q, new_r, board, moved_piece_position=None):
         original_q, original_r = self.q, self.r
+        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+            return False # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
 
         # Ajouter l'animation du mouvement
@@ -324,7 +340,12 @@ class ChiefPiece(Piece):
                 board.chief_killed(target_piece, board.get_chief_of_color(self.color))
             target_piece.die()
             unoccupied_cells = board.get_unoccupied_cells()
-            new_position = random.choice(unoccupied_cells)
+            if not moved_piece_position:
+                new_position = random.choice(unoccupied_cells)
+            elif moved_piece_position in unoccupied_cells:
+                new_position = moved_piece_position
+            else:
+                return False # moved_piece_position is not a valid position.
             target_piece.q, target_piece.r = new_position
             logging.info(f"Le chef a tué la pièce en {new_q}, {new_r} et l'a déplacée en {target_piece.q,}, {target_piece.r}")
 
@@ -337,6 +358,7 @@ class ChiefPiece(Piece):
             self.enter_central_cell(board)
         elif self.on_central_cell and (self.q != 0 or self.r != 0):
             self.leave_central_cell(board)
+        return True
 
     def enter_central_cell(self, board):
         self.on_central_cell = True
@@ -393,17 +415,23 @@ class DiplomatPiece(Piece):
                 step += 1
         return possible_moves
 
-    def move(self, new_q, new_r, board):
+    def move(self, new_q, new_r, board, moved_piece_position=None):
         original_q, original_r = self.q, self.r
+        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+            return False # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
-
-        # Ajouter l'animation du mouvement
+        
         board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
         
         if target_piece and not target_piece.is_dead:
             # Trouver une case libre aléatoire
             unoccupied_cells = board.get_unoccupied_cells()
-            new_position = random.choice(unoccupied_cells)
+            if not moved_piece_position:
+                new_position = random.choice(unoccupied_cells)
+            elif moved_piece_position in unoccupied_cells:
+                new_position = moved_piece_position
+            else:
+                return False # moved_piece_position is not a valid position.
             # Déplacer la pièce rencontrée vers la nouvelle position
             target_piece.q, target_piece.r = new_position
             logging.info(f"Le diplomate {self.name} a déplacé le {target_piece.piece_class} {target_piece.name} de {new_q}, {new_r} vers {new_position}")
@@ -414,7 +442,8 @@ class DiplomatPiece(Piece):
         # Déplacer le diplomate
         self.q, self.r = new_q, new_r
         logging.info(f"Le diplomate s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
-
+        return True
+        
 class NecromobilePiece(Piece):
     """Ajoute un comportement spécifique pour les necromobiles."""
     
@@ -443,24 +472,31 @@ class NecromobilePiece(Piece):
         return possible_moves
     
 
-    def move(self, new_q, new_r, board):
+    def move(self, new_q, new_r, board,  moved_piece_position=None):
         original_q, original_r = self.q, self.r
+        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+            return False # new_q, new_r is not a valid move.
+        
         target_piece = board.get_piece_at(new_q, new_r)
-
-        # Ajouter l'animation du mouvement
         board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
         
         if target_piece and target_piece.is_dead:
             # Trouver une case libre aléatoire
             unoccupied_cells = board.get_unoccupied_cells()
-            new_position = random.choice(unoccupied_cells)
+            if not moved_piece_position:
+                new_position = random.choice(unoccupied_cells)
+            elif moved_piece_position in unoccupied_cells:
+                new_position = moved_piece_position
+            else:
+                return False # moved_piece_position is not a valid position.
             # Déplacer la pièce rencontrée vers la nouvelle position
             target_piece.q, target_piece.r = new_position
             logging.info(f"Le necromobile a déplacé la pièce de {new_q}, {new_r} vers {new_position}")
         # Déplacer le necromobile
         self.q, self.r = new_q, new_r
         logging.info(f"Le necromobile s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
-    
+        return True
+
 class ReporterPiece(Piece):
     def __init__(self, q, r, color, piece_class, svg_path):
         super().__init__(q, r, color, piece_class, svg_path)
@@ -584,6 +620,7 @@ class Board:
 
         # Ajouter des pièces aux positions de départ
         self.initialize_pieces()
+        self.rl = False
         self.history = []
         self.future = []
         self.piece_to_place = None  # Pièce tuée à placer manuellement
@@ -655,7 +692,6 @@ class Board:
             'necromobile': 'assets/necromobile.svg',
             'reporter': 'assets/reporter.svg'
         }
-        
         self.players = []
         for color in COLORS.keys():
             pieces = [create_piece(q, r, COLORS[color], cl, class_svg_paths[cl]) for q, r, c, cl in start_positions if c == color]
@@ -769,7 +805,8 @@ class Board:
 
 
     def draw(self, screen, selected_piece=None, piece_to_place=None):
-        # Utiliser les positions pré-calculées
+        if self.rl:
+            return
         for hex_coord in self.hexagons:
             x, y = self.hex_pixel_positions[hex_coord]
             q, r = hex_coord
@@ -872,6 +909,8 @@ class Board:
 
     def draw_available_cells(self, screen):
         """Dessine les cellules disponibles pour placer la pièce tuée."""
+        if self.rl:
+            return
         for q, r in self.available_cells:
             x, y = hex_to_pixel(q, r)
             pygame.draw.circle(screen, GREY, (int(x), int(y)), 10)
@@ -886,6 +925,8 @@ class Board:
 
     def draw_possible_moves(self, screen, possible_moves):
         """Dessine les mouvements possibles sur l'écran."""
+        if self.rl:
+            return
         for q, r in possible_moves:
             x, y = hex_to_pixel(q, r)
             pygame.draw.circle(screen, (100, 100, 100), (int(x), int(y)), 10)
@@ -912,6 +953,8 @@ class Board:
         }
 
     def animate_move(self, screen, piece, start_q, start_r, end_q, end_r):
+        if self.rl:
+            return
         frames = 30  # Nombre de frames pour l'animation
         logging.info(f"Animation de déplacement de {piece.piece_class} {piece.name} de {start_q},{start_r} à {end_q},{end_r}")
         
