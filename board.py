@@ -130,6 +130,35 @@ class Piece:
         self.q = new_q
         self.r = new_r
 
+    def is_surrounded(self, board, visited=None):
+        if visited is None:
+            visited = set()
+
+        if (self.q, self.r) in visited:
+            return True
+        visited.add((self.q, self.r))
+
+        for dq, dr in ALL_DIRECTIONS:
+            new_q = self.q + dq
+            new_r = self.r + dr
+
+            if not is_within_board(new_q, new_r):
+                continue  # Case hors du plateau, considérée comme non-encerclement
+            piece_at_position = board.get_piece_at(new_q, new_r)
+
+            if piece_at_position is None:
+                return False  # Il y a une case vide, donc pas encerclé
+
+            if piece_at_position.is_dead:
+                continue  # Continue d'examiner les autres directions
+
+            # Pour une pièce alliée, vérifie si elle est encerclée
+            if piece_at_position.color == self.color:
+                if not piece_at_position.is_surrounded(board, visited):
+                    return False  # Trouvé une pièce alliée qui n'est pas encerclée
+
+        return True  # Toutes les directions sont bloquées ou conduisent à des pièces mortes/alliées encerclées
+
         
 
 class MilitantPiece(Piece):
