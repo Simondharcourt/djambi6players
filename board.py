@@ -679,11 +679,11 @@ class Board:
         # Transférer toutes les pièces au joueur qui a tué le chef
         killer_player.pieces.extend(killed_player.pieces)
 
-        # Trouver l'index du joueur tué
-        killed_player_index = self.players.index(killed_player)
-
-        # Animer l'élimination du joueur
-        animate_player_elimination(pygame.display.get_surface(), self.players, killed_player_index, self)
+        # Supprimer toutes les occurrences du joueur tué
+        while killed_player in self.players:
+            killed_player_index = self.players.index(killed_player)
+            animate_player_elimination(pygame.display.get_surface(), self.players, killed_player_index, self)
+            self.players.pop(killed_player_index)
 
         logging.info(f"Le chef {killed_chief.name} a été tué par le chef {killer_chief.name}. Toutes ses pièces sont maintenant contrôlées par {killer_chief.name}.")
 
@@ -950,9 +950,7 @@ def animate_player_elimination(screen, players, eliminated_player_index, board):
         
         pygame.display.flip()
         pygame.time.wait(16)  # Environ 60 FPS
-    
-    # Supprimer le joueur éliminé de la liste des joueurs
-    del players[eliminated_player_index]
+
 
 def draw_button(screen, text, x, y, width, height, color, text_color):
     pygame.draw.rect(screen, color, (x, y, width, height))
