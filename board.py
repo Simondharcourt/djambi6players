@@ -18,7 +18,7 @@ CENTRAL_WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 DARKER_GREY = (100, 100, 100)
-FONT_SIZE=36
+FONT_SIZE = 36
 COLORS = {
     'purple': (128, 0, 128),
     'blue': (0, 0, 255),
@@ -51,6 +51,8 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 
 
 class Piece:
+    necromobile_image = None
+
     def __init__(self, q, r, color, piece_class, svg_path):
         self.q = q  # Coordonnée hexagonale q
         self.r = r  # Coordonnée hexagonale r
@@ -68,8 +70,8 @@ class Piece:
         self.color = DARKER_GREY  # Couleur grise pour les pièces mortes
         logging.info(f"Pièce en {self.q}, {self.r} est morte")
 
-
-    def load_svg_as_surface(self, svg_path, target_size=(SIZE_IMAGE, SIZE_IMAGE)):
+    @staticmethod
+    def load_svg_as_surface(svg_path, target_size=(SIZE_IMAGE, SIZE_IMAGE)):
         """Charge le fichier SVG et le convertit directement à la taille désirée."""
         # Lire le fichier SVG et convertir en PNG avec CairoSVG à la taille souhaitée
         with open(svg_path, 'rb') as f:
@@ -87,6 +89,14 @@ class Piece:
         # Charger l'image seulement quand nécessaire
         self.class_image = self.load_svg_as_surface(self.svg_path)
 
+    @classmethod
+    def load_necromobile_image(cls):
+        if cls.necromobile_image is None:
+            cls.necromobile_image = pygame.transform.scale(
+                cls.load_svg_as_surface('assets/necromobile.svg'),
+                (SIZE_IMAGE // 2, SIZE_IMAGE // 2)
+            )
+
     def draw(self, screen, is_current_player):
         x, y = hex_to_pixel(self.q, self.r)
         
@@ -100,6 +110,11 @@ class Piece:
                 pygame.draw.circle(screen, GREY, (x, y), PIECE_RADIUS + 2, HIGHLIGHT_WIDTH)
         else:
             pygame.draw.circle(screen, GREY, (x, y), PIECE_RADIUS)
+            
+            if Piece.necromobile_image is None:
+                Piece.load_necromobile_image()
+            necromobile_rect = Piece.necromobile_image.get_rect(center=(x, y))
+            screen.blit(Piece.necromobile_image, necromobile_rect)
 
     def all_possible_moves(self, board):
         """Retourne une liste de toutes les cases possibles où la pièce peut aller."""
@@ -954,7 +969,8 @@ def draw_legend(screen):
     legend_items = [
         ("Space", "Play"),
         ("<-", "Undo"),
-        ("->", "Redo")
+        ("->", "Redo"),
+        ("Return", "Auto play")
     ]
     
     total_width = sum(font.size(f"{key}: {value}")[0] for key, value in legend_items) + 20 * (len(legend_items) - 1)
