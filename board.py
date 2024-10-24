@@ -555,7 +555,7 @@ class Player:
         piece_values = {
             'militant': 10,
             'assassin': 10,
-            'chief': 30,
+            'chief': 20,
             'diplomat': 10,
             'necromobile': 10,
             'reporter': 5,
