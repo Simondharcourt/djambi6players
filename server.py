@@ -15,9 +15,10 @@ class DjambiServer:
         if self.available_colors:
             color = self.available_colors.pop(0)
             self.clients[websocket] = color
+            index_color = list(COLORS.keys()).index(color)
             await self.send_board_state(websocket)
             # Envoyer la couleur assignée au client
-            await websocket.send(json.dumps({"type": "color_assignment", "color": color}))
+            await websocket.send(json.dumps({"type": "color_assignment", "color": color, "index": index_color}))
         else:
             await websocket.send(json.dumps({"type": "error", "message": "La partie est pleine"}))
             await websocket.close()

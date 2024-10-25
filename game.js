@@ -75,6 +75,7 @@ ws.onerror = function(error) {
 
 // Variable globale pour stocker la couleur assignée
 let clientAssignedColor = "white"; // Couleur par défaut
+let clientAssignedIndex = 0;
 
 ws.onmessage = function(event) {
     console.log("Message reçu du serveur:", event.data);
@@ -82,7 +83,9 @@ ws.onmessage = function(event) {
     if (data.type === 'color_assignment') {
         // Assigner la couleur reçue à une variable ou un état
         clientAssignedColor = data.color; // Stocker la couleur assignée
+        clientAssignedIndex = data.index;
         console.log("Couleur assignée:", clientAssignedColor);
+        console.log("Index assigné:", clientAssignedIndex);
         draw();
     } else if (data.type === 'state') {
         gameState = data;
@@ -96,16 +99,6 @@ ws.onmessage = function(event) {
 ws.onclose = function() {
     console.log('Déconnecté du serveur WebSocket');
 };
-
-// Fonction pour convertir les coordonnées hexagonales en pixels
-function hexToPixel(q, r) {
-    const x = HEX_RADIUS * 3 / 2 * q;
-    const y = HEX_RADIUS * Math.sqrt(3) * (r + q / 2);
-    return [
-        x + WINDOW_WIDTH / 2,
-        y + WINDOW_HEIGHT / 2 - VERTICAL_OFFSET
-    ];
-}
 
 // Fonction pour dessiner le plateau
 function drawBoard() {
@@ -126,6 +119,9 @@ function drawBoard() {
             }
         }
     }
+
+    // Dessiner la flèche pour indiquer le tour du joueur
+    drawPlayerTurnArrow();
 }
 
 // Fonction pour dessiner un hexagone
@@ -222,12 +218,39 @@ function drawAvailableCells() {
     }
 }
 
+
+
+// Fonction pour convertir les coordonnées hexagonales en pixels
+function hexToPixel(q, r) {
+    const x = HEX_RADIUS * 3 / 2 * q;
+    const y = HEX_RADIUS * Math.sqrt(3) * (r + q / 2);
+
+    // Appliquer la rotation de pi/3
+    const angle = Math.PI / 3 * (clientAssignedIndex+2);
+    const rotatedX = x * Math.cos(angle) - y * Math.sin(angle);
+    const rotatedY = x * Math.sin(angle) + y * Math.cos(angle);
+
+    return [
+        rotatedX + WINDOW_WIDTH / 2,
+        rotatedY + WINDOW_HEIGHT / 2 - VERTICAL_OFFSET
+    ];
+}
+
 // Fonction pour convertir les coordonnées pixel en coordonnées hexagonales
 function pixelToHex(x, y) {
-    x = (x - WINDOW_WIDTH / 2) / (HEX_RADIUS * 3 / 2);
-    y = (y - (WINDOW_HEIGHT / 2 - VERTICAL_OFFSET)) / (HEX_RADIUS * Math.sqrt(3));
-    const q = x;
-    const r = y - x / 2;
+    // Inverser la translation
+    x -= WINDOW_WIDTH / 2;
+    y -= (WINDOW_HEIGHT / 2 - VERTICAL_OFFSET);
+
+    // Inverser la rotation
+    const angle = -Math.PI / 3 * (clientAssignedIndex + 2);
+    const unrotatedX = x * Math.cos(angle) - y * Math.sin(angle);
+    const unrotatedY = x * Math.sin(angle) + y * Math.cos(angle);
+
+    // Calculer les coordonnées hexagonales
+    const q = (2/3) * unrotatedX / HEX_RADIUS;
+    const r = (-1/3) * unrotatedX / HEX_RADIUS + Math.sqrt(3)/3 * unrotatedY / HEX_RADIUS;
+
     return [Math.round(q), Math.round(r)];
 }
 // Gestion des événements de la souris
@@ -398,7 +421,6 @@ function calculatePossibleMoves(piece) {
             }
         }
     }
-    
     return possibleMoves;
 }
 
@@ -619,11 +641,30 @@ function findAvailableCells() {
     return cellulesDisponibles;
 }
 
+// Fonction pour dessiner une flèche indiquant le tour du joueur
+function drawPlayerTurnArrow() {
+    if (gameState && gameState.current_player_index !== undefined) {
+        const angle = (Math.PI / 3) * (gameState.current_player_index + 3.5 + clientAssignedIndex); // Calculer l'angle en fonction de l'index du joueur
+        const arrowLength = 400; // Longueur de la flèche
+        const arrowLength2 = 450; // Longueur de la flèche
+        const centerX = WINDOW_WIDTH / 2;
+        const centerY = WINDOW_HEIGHT / 2 - VERTICAL_OFFSET;
 
+        // Calculer la position de la pointe de la flèche
+        const arrowX = centerX + arrowLength * Math.cos(angle);
+        const arrowY = centerY + arrowLength * Math.sin(angle);
+        const arrowX2 = centerX + arrowLength2 * Math.cos(angle);
+        const arrowY2 = centerY + arrowLength2 * Math.sin(angle);
 
-
-
-
+        // Dessiner la flèche
+        ctx.strokeStyle = 'white'; // could the color of teh player.
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(arrowX, arrowY);
+        ctx.lineTo(arrowX2, arrowY2);
+        ctx.stroke();
+    }
+}
 
 
 
