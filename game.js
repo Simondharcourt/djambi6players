@@ -193,6 +193,18 @@ function drawPieces() {
     }
 }
 
+function drawPossibleMoves() {
+    if (selectedPiece && possibleMoves.length > 0) {
+        ctx.fillStyle = 'rgba(100, 100, 100, 0.5)';
+        for (const [q, r] of possibleMoves) {
+            const [x, y] = hexToPixel(q, r);
+            ctx.beginPath();
+            ctx.arc(x, y, 10, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+    }
+}
+
 // Fonction pour convertir les coordonnées pixel en coordonnées hexagonales
 function pixelToHex(x, y) {
     x = (x - WINDOW_WIDTH / 2) / (HEX_RADIUS * 3 / 2);
@@ -201,7 +213,6 @@ function pixelToHex(x, y) {
     const r = y - x / 2;
     return [Math.round(q), Math.round(r)];
 }
-
 // Gestion des événements de la souris
 canvas.addEventListener('click', (event) => {
     if (gameState) {
@@ -215,9 +226,14 @@ canvas.addEventListener('click', (event) => {
                 // Si on reclique sur la pièce sélectionnée, on la désélectionne
                 selectedPiece = null;
                 possibleMoves = [];
-            } else {
-                // Sinon, on tente de déplacer la pièce
+            } else if (possibleMoves.some(move => move[0] === q && move[1] === r)) {
+                // Si le mouvement est valide, envoyer le mouvement au serveur
                 sendMove(selectedPiece, q, r);
+                selectedPiece = null;
+                possibleMoves = [];
+            } else {
+                // Si on clique ailleurs, on vérifie si on a cliqué sur une autre pièce
+                selectPiece(q, r);
             }
         } else {
             // Si aucune pièce n'est sélectionnée, on essaie d'en sélectionner une
@@ -233,11 +249,104 @@ function selectPiece(q, r) {
         const piece = gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead);
         if (piece) {
             selectedPiece = piece;
-            // Ici, vous pouvez ajouter une logique pour calculer les mouvements possibles
-            // possibleMoves = calculatePossibleMoves(piece);
+            possibleMoves = calculatePossibleMoves(piece);
+            draw(); // Redessiner le plateau pour afficher les mouvements possibles
         }
     }
 }
+
+function calculatePossibleMoves(piece) {
+    if (piece.is_dead) {
+        return [];
+    }
+
+    const possibleMoves = [];
+    
+    if (piece.piece_class === 'militant') {
+        // Déplacement spécial pour le militant
+        for (const [dq, dr] of ADJACENT_DIRECTIONS) {
+            // Déplacement de 1 ou 2 cases adjacentes
+            for (let step = 1; step <= 2; step++) {
+                const newQ = piece.q + dq * step;
+                const newR = piece.r + dr * step;
+                if (isValidMove(newQ, newR, piece)) {
+                    possibleMoves.push([newQ, newR]);
+                }
+            }
+        }
+        // Déplacement d'une case en diagonale
+        for (const [dq, dr] of DIAG_DIRECTIONS) {
+            const newQ = piece.q + dq;
+            const newR = piece.r + dr;
+            if (isValidMove(newQ, newR, piece)) {
+                possibleMoves.push([newQ, newR]);
+            }
+        }
+    } else {
+        // Déplacement normal pour les autres pièces
+        for (const [dq, dr] of ALL_DIRECTIONS) {
+            let step = 1;
+            while (true) {
+                const newQ = piece.q + dq * step;
+                const newR = piece.r + dr * step;
+                
+                if (!isWithinBoard(newQ, newR)) {
+                    break;
+                }
+
+                const occupyingPiece = getPieceAt(newQ, newR);
+                console.log("Piece occupée :", occupyingPiece);
+                if (occupyingPiece) {
+                    console.log("Piece occupée :", occupyingPiece);
+                    if (piece.piece_class === 'assassin' && occupyingPiece.color === piece.color) {
+                        // L'assassin peut traverser les pièces alliées
+                        step++;
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+
+                if (newQ === 0 && newR === 0 && piece.piece_class !== 'chief') {
+                    // Si la case centrale est occupée par un mort et que la pièce est un nécromobile
+                    const centralPiece = gameState.pieces.find(p => p.q === 0 && p.r === 0);
+                    if (centralPiece) {
+                        if (piece.piece_class === 'necromobile' && centralPiece.is_dead) {
+                            possibleMoves.push([0, 0]);
+                        } else if (piece.piece_class == 'militant' || piece.piece_class == 'necromobile' || piece.piece_class == 'assassin' && !centralPiece.is_dead) {
+                            possibleMoves.push([0, 0]);
+                        }
+                    }
+                    step++; // Continuer sans ajouter la case centrale
+                    continue;
+                }
+                if (!isValidMove(newQ, newR, piece)) {
+                    break;
+                }
+                // Vérifier si la case est centrale et si la pièce n'est pas un chef
+                possibleMoves.push([newQ, newR]);
+                step++;
+            }
+        }
+    }
+    
+    return possibleMoves;
+}
+
+function isValidMove(newQ, newR, piece) {
+    if (!isWithinBoard(newQ, newR) || isOccupied(newQ, newR)) {
+        return false;
+    }
+    if (newQ === 0 && newR === 0 && piece.piece_class !== 'chief') {
+        return false;
+    }
+    return true;
+}
+
+function isOccupied(q, r) {
+    return gameState.pieces.some(piece => piece.q === q && piece.r === r);
+}
+
 
 function drawSelectedPieceHalo() {
     if (selectedPiece) {
@@ -343,6 +452,7 @@ function draw() {
         console.log('Aucune pièce à dessiner');
     }
     drawSelectedPieceHalo(); // Ajouter cette ligne
+    drawPossibleMoves(); // Ajouter cette ligne
     drawPlayerTurn(); // Ajouter cette ligne
 }
 // Fonction pour initialiser un état par défaut
@@ -398,5 +508,16 @@ function initializeDefaultState() {
     draw();
 }
 
+// Fonction auxiliaire pour obtenir une pièce à une position donnée
+function getPieceAt(q, r) {
+    return gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead);
+}
+
 // Appeler draw() immédiatement pour dessiner au moins le plateau
 draw();
+
+
+
+
+
+

@@ -142,7 +142,7 @@ class Piece:
 
     def move(self, new_q, new_r, board):
         # Effectuer le déplacement
-        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+        if (new_q, new_r) not in self.all_possible_moves(board):
             return False # new_q, new_r is not a valid move.
         self.q = new_q
         self.r = new_r
@@ -214,11 +214,10 @@ class MilitantPiece(Piece):
     
     def move(self, new_q, new_r, board, moved_piece_position=None):
         original_q, original_r = self.q, self.r
-        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+        if (new_q, new_r) not in self.all_possible_moves(board):
             return False # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
 
-        # Supprimer l'appel à animate_move ici
         board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
         
         if target_piece and target_piece.color != self.color and not target_piece.is_dead:
@@ -278,7 +277,7 @@ class AssassinPiece(Piece):
     def move(self, new_q, new_r, board):
         """Déplace l'assassin et tue la pièce ennemie si présente."""
         original_q, original_r = self.q, self.r
-        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+        if (new_q, new_r) not in self.all_possible_moves(board):
             return False # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
 
@@ -328,7 +327,7 @@ class ChiefPiece(Piece):
 
     def move(self, new_q, new_r, board, moved_piece_position=None):
         original_q, original_r = self.q, self.r
-        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+        if (new_q, new_r) not in self.all_possible_moves(board):
             return False # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
 
@@ -417,7 +416,7 @@ class DiplomatPiece(Piece):
 
     def move(self, new_q, new_r, board, moved_piece_position=None):
         original_q, original_r = self.q, self.r
-        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+        if (new_q, new_r) not in self.all_possible_moves(board):
             return False # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
         
@@ -474,7 +473,7 @@ class NecromobilePiece(Piece):
 
     def move(self, new_q, new_r, board,  moved_piece_position=None):
         original_q, original_r = self.q, self.r
-        if board.rl and (new_q, new_r) not in self.all_possible_moves(board):
+        if (new_q, new_r) not in self.all_possible_moves(board):
             return False # new_q, new_r is not a valid move.
         
         target_piece = board.get_piece_at(new_q, new_r)
@@ -548,22 +547,26 @@ class Player:
         self.color = color
         self.pieces = pieces
         self.name = NAMES[color]
-        self.score = self.compute_score()
+        self.score = 0
+        self.relative_score = 0
 
-    def compute_score(self):  # get a constant score overall in the game. With board as a parameter ?
+    def compute_score(self, board):  # get a constant score overall in the game. With board as a parameter ?
         """Calcule le score actuel du joueur en fonction des pièces qu'il possède."""
         piece_values = {
-            'militant': 10,
-            'assassin': 10,
-            'chief': 25,
-            'diplomat': 10,
-            'necromobile': 10,
-            'reporter': 5,
+            'militant': 60,
+            'assassin': 120,
+            'chief': 180,
+            'diplomat': 120,
+            'necromobile': 120,
+            'reporter': 120,
         }
         score = sum(piece_values[piece.piece_class] for piece in self.pieces if not piece.is_dead)
         if any(piece.piece_class == 'chief' and not piece.is_dead and piece.on_central_cell for piece in self.pieces):
-            score = score * 2 # * nb players could be better.
-        return score
+            score += (score-180) * (len([player for player in board.players if player.color != self.color])-1)
+        self.score = score
+
+    def compute_relative_score(self, board):
+        self.relative_score = self.score * 600 // sum(player.score for player in list(set(board.players)))
 
     def play_turn(self, board):
         """Joue un tour : déplace une de ses pièces aléatoirement parmi les mouvements possibles."""
@@ -713,6 +716,7 @@ class Board:
             pieces = [create_piece(q, r, COLORS[color], cl, class_svg_paths[cl]) for q, r, c, cl in start_positions if c == color]
             self.players.append(Player(COLORS[color], pieces))
             self.pieces.extend(pieces)
+        self.update_all_scores()
 
     def save_state(self, current_player_index):
         state = {
@@ -727,10 +731,15 @@ class Board:
         self.pieces = [create_piece(q, r, color, piece_class, svg_path) for q, r, color, piece_class, svg_path, is_dead in state['pieces']]
         for piece, (_, _, _, _, _, is_dead) in zip(self.pieces, state['pieces']):
             piece.is_dead = is_dead
+            if piece.q == 0 and piece.r == 0:
+                piece.on_central_cell = True
+            else:
+                piece.on_central_cell = False   
         self.players = []
         for player_data in state['players']:
             player_pieces = [piece for piece in self.pieces if piece.color == player_data['color']]
             self.players.append(Player(player_data['color'], player_pieces))
+        self.update_all_scores()
         return state['current_player_index']
 
     def undo(self):
@@ -866,6 +875,7 @@ class Board:
     def next_player(self):
         """Passe au joueur suivant et effectue les vérifications nécessaires."""
         self.check_surrounded_chiefs()
+        self.update_all_scores()
         self.current_player_index = (self.current_player_index + 1) % len(self.players)
         self.save_state(self.current_player_index)
 
@@ -1012,6 +1022,12 @@ class Board:
         draw_player_turn(screen, self.players, next_player_index)
         pygame.display.flip()
 
+    def update_all_scores(self):
+        for player in self.players:
+            player.compute_score(self)
+        for player in self.players:
+            player.compute_relative_score(self)
+
 def draw_player_turn(screen, players, current_player_index, next_player_index=None, t=None):
     """Affiche l'ordre des joueurs avec des jetons colorés et une flèche animée pour le joueur actuel."""
     jeton_radius = 15
@@ -1030,7 +1046,7 @@ def draw_player_turn(screen, players, current_player_index, next_player_index=No
         pygame.draw.circle(screen, player.color, (x, y), jeton_radius)
 
         # Afficher le score à côté du jeton
-        score_text = font.render(str(player.compute_score()), True, WHITE)
+        score_text = font.render(str(player.relative_score), True, WHITE)
         screen.blit(score_text, (x + jeton_radius + spacing, y - score_text.get_height() // 2))
 
     # Dessiner la flèche animée
@@ -1045,7 +1061,7 @@ def draw_player_turn(screen, players, current_player_index, next_player_index=No
 
 def draw_arrow(screen, x, y, arrow_size, jeton_radius, spacing):
     """Dessine une flèche à la position spécifiée."""
-    offset = 50  # Décalage vers la droite en pixels
+    offset = 60  # Décalage vers la droite en pixels
     arrow_points = [
         (x + jeton_radius + spacing + offset, y),
         (x + jeton_radius + spacing + arrow_size + offset, y - arrow_size // 2),
@@ -1158,8 +1174,7 @@ def main():
                     running = False
                 elif event.key == pygame.K_SPACE and not game_over and not auto_play:
                     board.players[board.current_player_index].play_turn(board)
-                    board.current_player_index = (board.current_player_index + 1) % len(board.players)
-                    board.save_state(board.current_player_index)
+                    board.next_player()
                 elif event.key == pygame.K_RETURN:
                     auto_play = not auto_play  # Basculer l'état de auto_play
                 elif event.key == pygame.K_LEFT:  # Flèche gauche pour annuler

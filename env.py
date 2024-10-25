@@ -8,25 +8,6 @@ from board import Board, BOARD_SIZE, ORDER_PLAYERS
 from gym import spaces
 
 
-def get_legal_actions_mask(self):
-    mask = np.zeros((len(self.board.pieces), BOARD_SIZE * 2 - 1, BOARD_SIZE * 2 - 1, BOARD_SIZE * 2, BOARD_SIZE * 2), dtype=np.int8)
-    for piece_index, piece in enumerate(self.board.pieces):
-        if piece.color == self.current_player.color and not piece.is_dead:
-            legal_moves = piece.all_possible_moves(self.board)
-            for new_q, new_r in legal_moves:
-                mask[piece_index, new_q + BOARD_SIZE - 1, new_r + BOARD_SIZE - 1, :, :] = 1
-                # Si le mouvement implique de tuer une pièce, ajoutez les positions légales pour la pièce tuée
-                target_piece = self.board.get_piece_at(new_q, new_r)
-                if target_piece and target_piece.color != piece.color:
-                    unoccupied_cells = self.board.get_unoccupied_cells()
-                    for killed_q, killed_r in unoccupied_cells:
-                        mask[piece_index, new_q + BOARD_SIZE - 1, new_r + BOARD_SIZE - 1, killed_q + BOARD_SIZE, killed_r + BOARD_SIZE] = 1
-                else:
-                    # Si aucune pièce n'est tuée, permettez seulement l'action "pas de déplacement de pièce tuée"
-                    mask[piece_index, new_q + BOARD_SIZE - 1, new_r + BOARD_SIZE - 1, BOARD_SIZE - 1, BOARD_SIZE - 1] = 1
-    
-    return mask
-
 class DjambiEnv:
     def __init__(self):
         self.current_player_index = 0
@@ -52,11 +33,6 @@ class DjambiEnv:
         return state
 
     def step(self, action):
-        # legal_actions_mask = self.get_legal_actions_mask()
-        # if legal_actions_mask[tuple(action)] == 0:
-        #     # L'action est illégale, appliquez une pénalité et ne changez pas l'état du jeu
-        #     return self.get_state(), -10, False, {"illegal_move": True, "undo": True}
-
         # Sauvegardez l'état actuel avant d'exécuter l'action
         previous_state = self.board.copy()
         previous_player_index = self.current_player_index
@@ -87,13 +63,10 @@ class DjambiEnv:
 
     def decode_action(self, action):
         piece_index, new_q, new_r, killed_piece_q, killed_piece_r = action
-        
         piece = self.board.pieces[piece_index]
         new_position = (new_q, new_r)
         killed_piece_position = (killed_piece_q, killed_piece_r) if killed_piece_q != -1 and killed_piece_r != -1 else None
-        
         return piece, new_position, killed_piece_position
-
 
     def calculate_reward(self):
         # Calculez la récompense basée sur l'état du jeu
@@ -125,7 +98,7 @@ class DQNAgent:
         output = Dense(np.prod(self.action_size))(x)
         output = Reshape(self.action_size)(output)
         masked_output = Multiply()([output, legal_actions_mask])
-        
+
         model = Model(inputs=[state_input, legal_actions_mask], outputs=masked_output)
         model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
         return model

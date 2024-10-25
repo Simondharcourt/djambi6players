@@ -36,9 +36,11 @@ class DjambiServer:
         websockets.broadcast(self.clients, message)
 
     async def handler(self, websocket, path):
+        print(f"Nouvelle connexion établie : {websocket.remote_address}")
         await self.register(websocket)
         try:
             async for message in websocket:
+                print(f"Message reçu : {message}")
                 data = json.loads(message)
                 if data['type'] == 'move':
                     async with self.lock:
@@ -70,6 +72,7 @@ class DjambiServer:
                             error = {'type': 'error', 'message': 'Pièce invalide'}
                             await websocket.send(json.dumps(error))
         finally:
+            print(f"Connexion fermée : {websocket.remote_address}")
             await self.unregister(websocket)
 
 start_server = websockets.serve(DjambiServer().handler, '0.0.0.0', 8765)
