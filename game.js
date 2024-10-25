@@ -43,10 +43,8 @@ pieceClasses.forEach(cl => {
     const img = new Image();
     img.src = `assets/${cl}.svg`;
     img.onload = () => {
-        console.log(`Image ${cl} chargée`);
         imagesLoaded++;
         if (imagesLoaded === pieceClasses.length) {
-            console.log('Toutes les images sont chargées');
             allImagesLoaded = true;
             draw(); // Redessinez une fois que toutes les images sont chargées
         }
@@ -58,7 +56,9 @@ pieceClasses.forEach(cl => {
 // Variables de jeu
 let gameState = null;
 let selectedPiece = null;
+let targetedPiece = null;
 let possibleMoves = [];
+let availableCells = []; // Ajoutez cette variable globale
 
 // Ajouter le WebSocket
 const ws = new WebSocket('ws://localhost:8765');  // Remplacez par l'URL de votre serveur
@@ -195,13 +195,23 @@ function drawPieces() {
 
 function drawPossibleMoves() {
     if (selectedPiece && possibleMoves.length > 0) {
-        ctx.fillStyle = 'rgba(100, 100, 100, 0.5)';
+        ctx.fillStyle = 'rgba(125, 125, 125, 0.9)';
         for (const [q, r] of possibleMoves) {
             const [x, y] = hexToPixel(q, r);
             ctx.beginPath();
             ctx.arc(x, y, 10, 0, 2 * Math.PI);
             ctx.fill();
         }
+    }
+}
+
+function drawAvailableCells() {
+    ctx.fillStyle = 'rgba(125, 125, 125, 0.9)'; // Blanc semi-transparent
+    for (const [q, r] of availableCells) {
+        const [x, y] = hexToPixel(q, r);
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, 2 * Math.PI);
+        ctx.fill();
     }
 }
 
@@ -226,22 +236,44 @@ canvas.addEventListener('click', (event) => {
                 // Si on reclique sur la pièce sélectionnée, on la désélectionne
                 selectedPiece = null;
                 possibleMoves = [];
+                availableCells = []; // Réinitialisez les cellules disponibles
             } else if (possibleMoves.some(move => move[0] === q && move[1] === r)) {
-                // Si le mouvement est valide, envoyer le mouvement au serveur
-                sendMove(selectedPiece, q, r);
+                const targetPiece = getPieceAt(q, r);
+                if (targetPiece && selectedPiece.piece_class !== 'assassin') {
+                    // La case est occupée, on capture la pièce
+                    targetedPiece = getPieceAt(q, r);
+                    availableCells = findAvailableCells();
+                    availableCells.push([selectedPiece.q, selectedPiece.r]);
+                } else {
+                    // La case est libre, on déplace simplement la pièce
+                    console.log(selectedPiece, q, r, null, null);
+                    sendMove(selectedPiece, q, r, null, null);
+                    availableCells = []; // Réinitialisez les cellules disponibles
+                    selectedPiece = null;
+                }
+                possibleMoves = [];
+            } else if (availableCells.some(cell => cell[0] === q && cell[1] === r)) {
+                // Si on clique sur une case disponible après une capture
+                console.log(selectedPiece, targetedPiece.q, targetedPiece.r, q, r);
+                sendMove(selectedPiece, targetedPiece.q, targetedPiece.r, q, r);
                 selectedPiece = null;
                 possibleMoves = [];
+                availableCells = []; // Réinitialisez les cellules disponibles
             } else {
                 // Si on clique ailleurs, on vérifie si on a cliqué sur une autre pièce
                 selectPiece(q, r);
+                availableCells = [];
             }
         } else {
             // Si aucune pièce n'est sélectionnée, on essaie d'en sélectionner une
             selectPiece(q, r);
+            availableCells = [];
         }
         draw(); // Redessiner le plateau après chaque action
     }
 });
+
+
 
 // Fonction pour sélectionner une pièce
 function selectPiece(q, r) {
@@ -412,7 +444,7 @@ function getCurrentPlayerColor() {
 }
 
 // Fonction pour envoyer un mouvement au serveur
-function sendMove(piece, new_q, new_r) {
+function sendMove(piece, new_q, new_r, captured_q, captured_r) {
     const action = {
         'type': 'move',
         'piece': {
@@ -424,17 +456,18 @@ function sendMove(piece, new_q, new_r) {
         'move_to': {
             'q': new_q,
             'r': new_r
+        },
+        'captured_piece_to': {
+            'q': captured_q,
+            'r': captured_r
         }
     };
-
+    console.log(action);
     ws.send(JSON.stringify(action));
 }
 
 // Fonction pour dessiner l'indicateur de tour du joueur
 function drawPlayerTurn() {
-    console.log("Fonction drawPlayerTurn appelée");
-    console.log("État du jeu actuel:", gameState);
-
     if (gameState && gameState.current_player_index !== undefined) {
         let playerColor = "white"; // Couleur par défaut
         let playerText = `Joueur ${gameState.current_player_index + 1}`;
@@ -476,20 +509,14 @@ function drawPlayerTurn() {
 }
 // Fonction principale de dessin
 function draw() {
-    console.log("Fonction draw appelée");
-    console.log("État du jeu complet :", gameState);
-    console.log("Joueurs :", gameState?.players);
-    console.log("Index du joueur actuel :", gameState?.current_player_index);
     drawBoard();
     if (gameState && gameState.pieces) {
-        console.log('Nombre de pièces :', gameState.pieces.length);
         drawPieces();
-    } else {
-        console.log('Aucune pièce à dessiner');
     }
-    drawSelectedPieceHalo(); // Ajouter cette ligne
-    drawPossibleMoves(); // Ajouter cette ligne
-    drawPlayerTurn(); // Ajouter cette ligne
+    drawSelectedPieceHalo();
+    drawPossibleMoves();
+    drawAvailableCells(); // Ajoutez cette ligne
+    drawPlayerTurn();
 }
 // Fonction pour initialiser un état par défaut
 function initializeDefaultState() {
@@ -564,3 +591,24 @@ function areColorsEqual(color1, color2) {
     }
     return false;
 }
+
+// Fonction pour trouver toutes les cellules disponibles sur le plateau
+function findAvailableCells() {
+    const cellulesDisponibles = [];
+    for (let q = -BOARD_SIZE + 1; q < BOARD_SIZE; q++) {
+        for (let r = -BOARD_SIZE + 1; r < BOARD_SIZE; r++) {
+            // Vérifier si la cellule est dans le plateau
+            if (isWithinBoard(q, r)) {
+                // Vérifier si la cellule n'est pas occupée par une pièce
+                if (!getPieceAt(q, r)) {
+                    // Vérifier si ce n'est pas la case centrale (sauf pour le chef)
+                    if (q !== 0 || r !== 0) {
+                        cellulesDisponibles.push([q, r]);
+                    }
+                }
+            }
+        }
+    }
+    return cellulesDisponibles;
+}
+
