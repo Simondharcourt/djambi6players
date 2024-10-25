@@ -256,64 +256,117 @@ function selectPiece(q, r) {
 }
 
 function calculatePossibleMoves(piece) {
-    if (piece.is_dead) return [];
-
+    if (piece.is_dead) {
+        return [];
+    }
     const possibleMoves = [];
-    const directions = piece.piece_class === 'militant' ? [...ADJACENT_DIRECTIONS, ...DIAG_DIRECTIONS] : ALL_DIRECTIONS;
-    const maxSteps = piece.piece_class === 'militant' ? 2 : Infinity;
+    if (piece.piece_class === 'militant') {
+        console.log("Déplacement spécial pour le militant");
+        // Déplacement spécial pour le militant
+        for (const [dq, dr] of ADJACENT_DIRECTIONS) {
+            // Déplacement de 1 ou 2 cases adjacentes
+            for (let step = 1; step <= 2; step++) {
+                const newQ = piece.q + dq * step;
+                const newR = piece.r + dr * step;
+                const occupyingPiece = getPieceAt(newQ, newR);
 
-    for (const [dq, dr] of directions) {
-        for (let step = 1; step <= maxSteps; step++) {
-            const newQ = piece.q + dq * step;
-            const newR = piece.r + dr * step;
-            
-            if (!isWithinBoard(newQ, newR)) break;
-
+                if (isValidMove(newQ, newR, piece)) {
+                    possibleMoves.push([newQ, newR]);
+                }
+                if (occupyingPiece) {
+                    if (!occupyingPiece.is_dead && !areColorsEqual(occupyingPiece.color, piece.color)) {
+                        possibleMoves.push([newQ, newR]);
+                        break;
+                    }
+                }
+            }
+        }
+        // Déplacement d'une case en diagonale
+        for (const [dq, dr] of DIAG_DIRECTIONS) {
+            const newQ = piece.q + dq;
+            const newR = piece.r + dr;
             const occupyingPiece = getPieceAt(newQ, newR);
-            
-            if (canMoveTo(piece, newQ, newR, occupyingPiece)) {
+
+            if (isValidMove(newQ, newR, piece)) {
                 possibleMoves.push([newQ, newR]);
             }
+            if (occupyingPiece) {
+                if (!occupyingPiece.is_dead && !areColorsEqual(occupyingPiece.color, piece.color)) {
+                    possibleMoves.push([newQ, newR]);
+                    break;
+                }
+            }
+        }
+    } else {
+        console.log("Déplacement normal pour les autres pièces");
+        // Déplacement normal pour les autres pièces
+        for (const [dq, dr] of ALL_DIRECTIONS) {
+            let step = 1;
+            while (true) {
+                const newQ = piece.q + dq * step;
+                const newR = piece.r + dr * step;
+                
+                if (!isWithinBoard(newQ, newR)) {
+                    break;
+                }
 
-            if (shouldStopMoving(piece, occupyingPiece)) break;
+                const occupyingPiece = getPieceAt(newQ, newR);
+                if (occupyingPiece) {
+                    if (piece.piece_class === 'assassin') {
+                        if (!occupyingPiece.is_dead && areColorsEqual(occupyingPiece.color, piece.color)) {
+                            // L'assassin peut traverser les pièces alliées
+                            step++;
+                            continue;
+                        } else if (!occupyingPiece.is_dead) {
+                            possibleMoves.push([newQ, newR]);
+                            break;
+                        }
+                    } else if (piece.piece_class == 'necromobile') {
+                        if (occupyingPiece.is_dead) {
+                            possibleMoves.push([newQ, newR]);
+                            break;
+                        } else {
+                            break;
+                        }
+                    } else if (piece.piece_class == 'diplomat') {
+                        if (!occupyingPiece.is_dead) {
+                            possibleMoves.push([newQ, newR]);
+                            break;
+                        } else {
+                            break;
+                        }
+                    } else if (piece.piece_class === 'chief') {
+                        if (!occupyingPiece.is_dead && !areColorsEqual(occupyingPiece.color, piece.color)) {
+                            possibleMoves.push([newQ, newR]);
+                            break;
+                        }
+                    }
+                }
+
+                if (newQ === 0 && newR === 0 && piece.piece_class !== 'chief') {
+                    // Si la case centrale est occupée par un mort et que la pièce est un nécromobile
+                    const centralPiece = gameState.pieces.find(p => p.q === 0 && p.r === 0);
+                    if (centralPiece) {
+                        if (piece.piece_class === 'necromobile' && centralPiece.is_dead) {
+                            possibleMoves.push([0, 0]);
+                        } else if (piece.piece_class == 'militant' || piece.piece_class == 'necromobile' || piece.piece_class == 'assassin' && !centralPiece.is_dead) {
+                            possibleMoves.push([0, 0]);
+                        }
+                    }
+                    step++; // Continuer sans ajouter la case centrale
+                    continue;
+                }
+                if (!isValidMove(newQ, newR, piece)) {
+                    break;
+                }
+                // Vérifier si la case est centrale et si la pièce n'est pas un chef
+                possibleMoves.push([newQ, newR]);
+                step++;
+            }
         }
     }
-
-    return possibleMoves;
-}
-
-function canMoveTo(piece, newQ, newR, occupyingPiece) {
-    if (newQ === 0 && newR === 0) {
-        return piece.piece_class !== 'chief' && 
-               (!occupyingPiece || 
-                (piece.piece_class === 'necromobile' && occupyingPiece.is_dead) ||
-                (['militant', 'necromobile', 'assassin'].includes(piece.piece_class) && !occupyingPiece.is_dead));
-    }
-
-    if (isValidMove(newQ, newR, piece)) return true;
-
-    if (occupyingPiece && !occupyingPiece.is_dead) {
-        if (piece.piece_class === 'diplomat') {
-            return true; // Le diplomate peut s'arrêter sur n'importe quelle pièce
-        }
-        return !areColorsEqual(occupyingPiece.color, piece.color);
-    }
-
-    return false;
-}
-
-function shouldStopMoving(piece, occupyingPiece) {
-    if (!occupyingPiece) return false;
     
-    if (piece.piece_class === 'assassin') {
-        return !occupyingPiece.is_dead && !areColorsEqual(occupyingPiece.color, piece.color);
-    }
-
-    if (piece.piece_class === 'diplomat') {
-        return true; // Le diplomate s'arrête sur toute pièce, alliée ou ennemie
-    }
-
-    return piece.piece_class !== 'militant';
+    return possibleMoves;
 }
 
 function isValidMove(newQ, newR, piece) {
@@ -511,4 +564,3 @@ function areColorsEqual(color1, color2) {
     }
     return false;
 }
-
