@@ -45,47 +45,32 @@ class DjambiServer:
         try:
             async for message in websocket:
                 data = json.loads(message)
-                
                 print(f"Message reçu du client : {data}")
-
-
-
                 if data['type'] == 'move':
                     async with self.lock:
-                        
-                        
-                        
                         piece_data = data['piece']
                         move_to = data['move_to']
-                        piece = self.board.get_piece_at(piece_data['q'], piece_data['r'])
-                        
-                        print("Piece", piece_data['q'], piece_data['r'], "to", move_to['q'], move_to['r'])
-                        
-                        print(self.board.players[self.board.current_player_index].color)
-                        
-                        if piece and piece.color == piece_data['color'] and piece.piece_class == piece_data['piece_class']:
-                            # Vérifier si c'est le tour du joueur
-                            if piece.color == self.board.players[self.board.current_player_index].color:
-                                moved = self.board.move_piece(piece, move_to['q'], move_to['r'])
-                                if moved:
-                                    print("Moved piece", piece_data['q'], piece_data['r'], "to", move_to['q'], move_to['r'])
-                                    self.current_player_index = (self.current_player_index + 1) % len(self.board.players)
-                                    self.board.save_state(self.current_player_index)
-                                    # Envoyer le nouvel état à tous les clients
-                                    state = self.board.to_json()
-                                    state['type'] = 'state'
-                                    await self.broadcast(json.dumps(state))
-                                else:
-                                    # Mouvement invalide
-                                    error = {'type': 'error', 'message': 'Mouvement invalide'}
-                                    await websocket.send(json.dumps(error))
-                            else:
-                                # Pas le tour du joueur
-                                error = {'type': 'error', 'message': 'Ce n\'est pas votre tour'}
-                                await websocket.send(json.dumps(error))
+                        captured_piece_to = data.get('captured_piece_to', None)
+
+                        # Utiliser la fonction handle_client_move pour gérer le mouvement
+                        success = self.board.handle_client_move(
+                            piece_data['color'],
+                            (piece_data['q'], piece_data['r']),
+                            (move_to['q'], move_to['r']),
+                            (captured_piece_to['q'], captured_piece_to['r']) if captured_piece_to else None
+                        )
+
+                        if success:
+                            print("Mouvement réussi")
+                            self.current_player_index = (self.current_player_index + 1) % len(self.board.players)
+                            self.board.save_state(self.current_player_index)
+                            # Envoyer le nouvel état à tous les clients
+                            state = self.board.to_json()
+                            state['type'] = 'state'
+                            await self.broadcast(json.dumps(state))
                         else:
-                            # Pièce non trouvée ou données incorrectes
-                            error = {'type': 'error', 'message': 'Pièce invalide'}
+                            # Mouvement invalide
+                            error = {'type': 'error', 'message': 'Mouvement invalide'}
                             await websocket.send(json.dumps(error))
         finally:
             print(f"Connexion fermée : {websocket.remote_address}")
