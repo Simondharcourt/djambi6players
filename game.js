@@ -65,8 +65,7 @@ const ws = new WebSocket('ws://localhost:8765');  // Remplacez par l'URL de votr
 
 ws.onopen = function() {
     console.log('Connecté au serveur WebSocket');
-    // Demander l'état initial
-    ws.send(JSON.stringify({type: 'get_initial_state'}));
+    // Aucune requête supplémentaire n'est nécessaire ici, le serveur enverra la couleur automatiquement
 };
 
 ws.onerror = function(error) {
@@ -74,10 +73,18 @@ ws.onerror = function(error) {
     initializeDefaultState();
 };
 
+// Variable globale pour stocker la couleur assignée
+let clientAssignedColor = "white"; // Couleur par défaut
+
 ws.onmessage = function(event) {
+    console.log("Message reçu du serveur:", event.data);
     const data = JSON.parse(event.data);
-    console.log("Message reçu du serveur:", data);
-    if (data.type === 'state') {
+    if (data.type === 'color_assignment') {
+        // Assigner la couleur reçue à une variable ou un état
+        clientAssignedColor = data.color; // Stocker la couleur assignée
+        console.log("Couleur assignée:", clientAssignedColor);
+        draw();
+    } else if (data.type === 'state') {
         gameState = data;
         console.log("Nouvel état du jeu:", gameState);
         draw();
@@ -274,15 +281,17 @@ canvas.addEventListener('click', (event) => {
 });
 
 
-
 // Fonction pour sélectionner une pièce
 function selectPiece(q, r) {
     if (gameState) {
         const piece = gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead);
         if (piece) {
-            selectedPiece = piece;
-            possibleMoves = calculatePossibleMoves(piece);
-            draw(); // Redessiner le plateau pour afficher les mouvements possibles
+            const currentPlayerColor = getCurrentPlayerColor();
+            if (areColorsEqual(gameState.current_player_color, COLORS[currentPlayerColor]) && areColorsEqual(piece.color, COLORS[currentPlayerColor])) {
+                selectedPiece = piece;
+                possibleMoves = calculatePossibleMoves(piece);
+                draw();
+            }
         }
     }
 }
@@ -293,10 +302,7 @@ function calculatePossibleMoves(piece) {
     }
     const possibleMoves = [];
     if (piece.piece_class === 'militant') {
-        console.log("Déplacement spécial pour le militant");
-        // Déplacement spécial pour le militant
         for (const [dq, dr] of ADJACENT_DIRECTIONS) {
-            // Déplacement de 1 ou 2 cases adjacentes
             for (let step = 1; step <= 2; step++) {
                 const newQ = piece.q + dq * step;
                 const newR = piece.r + dr * step;
@@ -313,7 +319,6 @@ function calculatePossibleMoves(piece) {
                 }
             }
         }
-        // Déplacement d'une case en diagonale
         for (const [dq, dr] of DIAG_DIRECTIONS) {
             const newQ = piece.q + dq;
             const newR = piece.r + dr;
@@ -330,8 +335,6 @@ function calculatePossibleMoves(piece) {
             }
         }
     } else {
-        console.log("Déplacement normal pour les autres pièces");
-        // Déplacement normal pour les autres pièces
         for (const [dq, dr] of ALL_DIRECTIONS) {
             let step = 1;
             while (true) {
@@ -376,7 +379,6 @@ function calculatePossibleMoves(piece) {
                 }
 
                 if (newQ === 0 && newR === 0 && piece.piece_class !== 'chief') {
-                    // Si la case centrale est occupée par un mort et que la pièce est un nécromobile
                     const centralPiece = gameState.pieces.find(p => p.q === 0 && p.r === 0);
                     if (centralPiece) {
                         if (piece.piece_class === 'necromobile' && centralPiece.is_dead) {
@@ -391,7 +393,6 @@ function calculatePossibleMoves(piece) {
                 if (!isValidMove(newQ, newR, piece)) {
                     break;
                 }
-                // Vérifier si la case est centrale et si la pièce n'est pas un chef
                 possibleMoves.push([newQ, newR]);
                 step++;
             }
@@ -429,24 +430,14 @@ function drawSelectedPieceHalo() {
 
 // Fonction pour obtenir la couleur du joueur actuel
 function getCurrentPlayerColor() {
-    console.log("Fonction getCurrentPlayerColor appelée");
-    console.log("État du jeu:", gameState);
-    if (gameState && gameState.players && gameState.current_player_index !== undefined) {
-        const playerIndex = gameState.current_player_index;
-        const player = gameState.players[playerIndex];
-        if (player && player.color) {
-            console.log("Couleur du joueur actuel:", player.color);
-            return player.color;
-        }
-    }
-    console.log("Aucune couleur de joueur trouvée, utilisation de la couleur par défaut");
-    return "white"; // Couleur par défaut
+    return clientAssignedColor; // Retourner la couleur assignée
 }
 
 // Fonction pour envoyer un mouvement au serveur
 function sendMove(piece, new_q, new_r, captured_q, captured_r) {
     const action = {
         'type': 'move',
+        'fromPlayer': gameState.current_player_index,
         'piece': {
             'q': piece.q,
             'r': piece.r,
@@ -484,24 +475,33 @@ function drawPlayerTurn() {
             }
         }
 
-        // Configurer le texte
-        ctx.font = 'bold 24px Arial';
+        ctx.font = '24px Arial'; // Retirer 'bold' pour un texte normal
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'black';
-        ctx.lineWidth = 3;
-        const text = `Tour du ${playerText}`;
+        ctx.lineWidth = 2;
+        const text = `Tour du joueur:`;
         
-        // Dessiner le texte avec un contour pour une meilleure visibilité
-        ctx.strokeText(text, 20, 30);
         ctx.fillText(text, 20, 30);
 
         // Dessiner un cercle de la couleur du joueur
         ctx.beginPath();
-        ctx.arc(250, 20, 15, 0, 2 * Math.PI);
+        ctx.arc(202, 22, 15, 0, 2 * Math.PI);
         ctx.fillStyle = playerColor;
         ctx.fill();
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Ajouter l'affichage de la couleur du client
+        const clientColor = getCurrentPlayerColor(); // Supposons que cette fonction retourne la couleur du client
+        const clientColorText = `Votre couleur:`;
+        ctx.fillStyle = 'white';
+        ctx.fillText(clientColorText, 20, 60);
+
+        // Dessiner un cercle de la couleur du client
+        ctx.beginPath();
+        ctx.arc(187, 55, 15, 0, 2 * Math.PI);
+        ctx.fillStyle = clientColor;
+        ctx.fill();
+        ctx.lineWidth = 0;
         ctx.stroke();
     } else {
         console.log("Données insuffisantes pour afficher le tour du joueur");
@@ -580,16 +580,23 @@ function getPieceAt(q, r) {
 draw();
 
 function areColorsEqual(color1, color2) {
-    if (Array.isArray(color1) && Array.isArray(color2)) {
-        return color1.every((val, index) => val === color2[index]);
-    } else if (typeof color1 === 'string' && typeof color2 === 'string') {
-        return color1 === color2;
-    } else if (Array.isArray(color1) && typeof color2 === 'string') {
-        return `rgb(${color1.join(',')})` === color2;
-    } else if (typeof color1 === 'string' && Array.isArray(color2)) {
-        return color1 === `rgb(${color2.join(',')})`;
-    }
-    return false;
+    const normalizeColor = (color) => {
+        if (Array.isArray(color)) {
+            return `rgb(${color.join(', ')})`;
+        }
+        if (typeof color === 'string' && color.startsWith('rgb')) {
+            // Extraire les valeurs numériques de la chaîne RGB
+            const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+            if (match) {
+                return `rgb(${match[1]}, ${match[2]}, ${match[3]})`;
+            }
+        }
+        return color;
+    };
+
+    const normalizedColor1 = normalizeColor(color1);
+    const normalizedColor2 = normalizeColor(color2);
+    return normalizedColor1 === normalizedColor2;
 }
 
 // Fonction pour trouver toutes les cellules disponibles sur le plateau
@@ -611,4 +618,13 @@ function findAvailableCells() {
     }
     return cellulesDisponibles;
 }
+
+
+
+
+
+
+
+
+
 

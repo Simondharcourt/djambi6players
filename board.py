@@ -5,6 +5,7 @@ import logging
 import random
 import cairosvg
 from io import BytesIO
+import json
 # Paramètres du jeu
 BOARD_SIZE = 7  # Nombre de cases par ligne/colonne sur le plateau
 HEX_RADIUS = 35  # Rayon des hexagones
@@ -1022,11 +1023,96 @@ class Board:
         draw_player_turn(screen, self.players, next_player_index)
         pygame.display.flip()
 
+
+
+
     def update_all_scores(self):
         for player in self.players:
             player.compute_score(self)
         for player in self.players:
             player.compute_relative_score(self)
+
+    def handle_client_move(self, player_color, selected_pos, destination_pos, captured_piece_pos=None):
+        """
+        Gère le mouvement d'un client.
+        
+        :param player_color: La couleur du joueur qui fait le mouvement
+        :param selected_pos: Tuple (q, r) de la position de la pièce sélectionnée
+        :param destination_pos: Tuple (q, r) de la destination de la pièce
+        :param captured_piece_pos: Tuple (q, r) optionnel pour la position de la pièce capturée
+        :return: Boolean indiquant si le mouvement a été effectué avec succès
+        """
+        # Vérifier si c'est le tour du joueur
+        current_player = self.players[self.current_player_index]
+        if str(current_player.color) != str(player_color):
+            logging.info(f"Ce n'est pas le tour du joueur {player_color}")
+            return False
+
+        # Sélectionner la pièce
+        selected_piece = self.get_piece_at(*selected_pos)
+        if not selected_piece or selected_piece.color != player_color:
+            logging.info(f"Pièce invalide sélectionnée à {selected_pos}")
+            return False
+
+        # Vérifier si le mouvement est valide
+        if destination_pos not in self.get_possible_moves(selected_piece):
+            logging.info(f"Mouvement invalide de {selected_pos} à {destination_pos}")
+            return False
+
+        # Effectuer le mouvement
+        success = self.move_piece(selected_piece, *destination_pos)
+        if not success:
+            logging.info(f"Échec du déplacement de {selected_pos} à {destination_pos}")
+            return False
+
+        # Gérer la pièce capturée si nécessaire
+        if self.piece_to_place and captured_piece_pos:
+            if not self.place_dead_piece(*captured_piece_pos):
+                logging.info(f"Échec du placement de la pièce capturée à {captured_piece_pos}")
+                return False
+
+        # Si tout s'est bien passé, passer au joueur suivant
+        self.next_player()
+        return True
+
+    def send_state(self):
+        """
+        Prépare et renvoie l'état actuel du plateau sous forme de chaîne JSON.
+        """
+        state = {
+            'pieces': [
+                {
+                    'q': piece.q,
+                    'r': piece.r,
+                    'color': piece.color,
+                    'piece_class': piece.piece_class,
+                    'is_dead': piece.is_dead,
+                    'on_central_cell': piece.on_central_cell if isinstance(piece, ChiefPiece) else False
+                } for piece in self.pieces
+            ],
+            'current_player_index': self.current_player_index,
+            'current_player_color': self.players[self.current_player_index].color,
+            'players': [
+                {
+                    'color': player.color,
+                    'name': player.name,
+                    'score': player.score,
+                    'relative_score': player.relative_score
+                } for player in self.players
+            ],
+            'piece_to_place': {
+                'q': self.piece_to_place.q,
+                'r': self.piece_to_place.r,
+                'color': self.piece_to_place.color,
+                'piece_class': self.piece_to_place.piece_class,
+                'is_dead': self.piece_to_place.is_dead
+            } if self.piece_to_place else None,
+            'available_cells': self.available_cells
+        }
+        
+        return json.dumps(state)
+    
+    
 
 def draw_player_turn(screen, players, current_player_index, next_player_index=None, t=None):
     """Affiche l'ordre des joueurs avec des jetons colorés et une flèche animée pour le joueur actuel."""
