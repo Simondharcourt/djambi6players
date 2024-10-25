@@ -259,18 +259,25 @@ function calculatePossibleMoves(piece) {
     if (piece.is_dead) {
         return [];
     }
-
     const possibleMoves = [];
-    
     if (piece.piece_class === 'militant') {
+        console.log("Déplacement spécial pour le militant");
         // Déplacement spécial pour le militant
         for (const [dq, dr] of ADJACENT_DIRECTIONS) {
             // Déplacement de 1 ou 2 cases adjacentes
             for (let step = 1; step <= 2; step++) {
                 const newQ = piece.q + dq * step;
                 const newR = piece.r + dr * step;
+                const occupyingPiece = getPieceAt(newQ, newR);
+
                 if (isValidMove(newQ, newR, piece)) {
                     possibleMoves.push([newQ, newR]);
+                }
+                if (occupyingPiece) {
+                    if (!occupyingPiece.is_dead && !areColorsEqual(occupyingPiece.color, piece.color)) {
+                        possibleMoves.push([newQ, newR]);
+                        break;
+                    }
                 }
             }
         }
@@ -278,11 +285,20 @@ function calculatePossibleMoves(piece) {
         for (const [dq, dr] of DIAG_DIRECTIONS) {
             const newQ = piece.q + dq;
             const newR = piece.r + dr;
+            const occupyingPiece = getPieceAt(newQ, newR);
+
             if (isValidMove(newQ, newR, piece)) {
                 possibleMoves.push([newQ, newR]);
             }
+            if (occupyingPiece) {
+                if (!occupyingPiece.is_dead && !areColorsEqual(occupyingPiece.color, piece.color)) {
+                    possibleMoves.push([newQ, newR]);
+                    break;
+                }
+            }
         }
     } else {
+        console.log("Déplacement normal pour les autres pièces");
         // Déplacement normal pour les autres pièces
         for (const [dq, dr] of ALL_DIRECTIONS) {
             let step = 1;
@@ -295,15 +311,35 @@ function calculatePossibleMoves(piece) {
                 }
 
                 const occupyingPiece = getPieceAt(newQ, newR);
-                console.log("Piece occupée :", occupyingPiece);
                 if (occupyingPiece) {
-                    console.log("Piece occupée :", occupyingPiece);
-                    if (piece.piece_class === 'assassin' && occupyingPiece.color === piece.color) {
-                        // L'assassin peut traverser les pièces alliées
-                        step++;
-                        continue;
-                    } else {
-                        break;
+                    if (piece.piece_class === 'assassin') {
+                        if (!occupyingPiece.is_dead && areColorsEqual(occupyingPiece.color, piece.color)) {
+                            // L'assassin peut traverser les pièces alliées
+                            step++;
+                            continue;
+                        } else if (!occupyingPiece.is_dead) {
+                            possibleMoves.push([newQ, newR]);
+                            break;
+                        }
+                    } else if (piece.piece_class == 'necromobile') {
+                        if (occupyingPiece.is_dead) {
+                            possibleMoves.push([newQ, newR]);
+                            break;
+                        } else {
+                            break;
+                        }
+                    } else if (piece.piece_class == 'diplomat') {
+                        if (!occupyingPiece.is_dead) {
+                            possibleMoves.push([newQ, newR]);
+                            break;
+                        } else {
+                            break;
+                        }
+                    } else if (piece.piece_class === 'chief') {
+                        if (!occupyingPiece.is_dead && !areColorsEqual(occupyingPiece.color, piece.color)) {
+                            possibleMoves.push([newQ, newR]);
+                            break;
+                        }
                     }
                 }
 
@@ -516,8 +552,15 @@ function getPieceAt(q, r) {
 // Appeler draw() immédiatement pour dessiner au moins le plateau
 draw();
 
-
-
-
-
-
+function areColorsEqual(color1, color2) {
+    if (Array.isArray(color1) && Array.isArray(color2)) {
+        return color1.every((val, index) => val === color2[index]);
+    } else if (typeof color1 === 'string' && typeof color2 === 'string') {
+        return color1 === color2;
+    } else if (Array.isArray(color1) && typeof color2 === 'string') {
+        return `rgb(${color1.join(',')})` === color2;
+    } else if (typeof color1 === 'string' && Array.isArray(color2)) {
+        return color1 === `rgb(${color2.join(',')})`;
+    }
+    return false;
+}
