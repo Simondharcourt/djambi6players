@@ -122,6 +122,7 @@ function drawBoard() {
 
     // Dessiner la flèche pour indiquer le tour du joueur
     drawPlayerTurnArrow();
+    drawPlayerTurn()
 }
 
 // Fonction pour dessiner un hexagone
@@ -482,7 +483,8 @@ function sendMove(piece, new_q, new_r, captured_q, captured_r) {
 // Fonction pour dessiner l'indicateur de tour du joueur
 function drawPlayerTurn() {
     if (gameState && gameState.current_player_index !== undefined) {
-        let playerColor = "white"; // Couleur par défaut
+        // Assurez-vous que gameState.current_player_color est correctement mis à jour
+        let playerColor = Object.keys(COLORS)[gameState.current_player_index]; // Utilisez une couleur par défaut si nécessaire
         let playerText = `Joueur ${gameState.current_player_index + 1}`;
 
         if (gameState.players && gameState.players[gameState.current_player_index]) {
@@ -496,24 +498,20 @@ function drawPlayerTurn() {
                 playerText = player.name;
             }
         }
-
-        ctx.font = '24px Arial'; // Retirer 'bold' pour un texte normal
+        ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 2;
         const text = `Tour du joueur:`;
-        
         ctx.fillText(text, 20, 30);
-
         // Dessiner un cercle de la couleur du joueur
         ctx.beginPath();
         ctx.arc(202, 22, 15, 0, 2 * Math.PI);
         ctx.fillStyle = playerColor;
         ctx.fill();
         ctx.stroke();
-
         // Ajouter l'affichage de la couleur du client
-        const clientColor = getCurrentPlayerColor(); // Supposons que cette fonction retourne la couleur du client
+        const clientColor = getCurrentPlayerColor();
         const clientColorText = `Votre couleur:`;
         ctx.fillStyle = 'white';
         ctx.fillText(clientColorText, 20, 60);
@@ -644,7 +642,7 @@ function findAvailableCells() {
 // Fonction pour dessiner une flèche indiquant le tour du joueur
 function drawPlayerTurnArrow() {
     if (gameState && gameState.current_player_index !== undefined) {
-        const angle = (Math.PI / 3) * (gameState.current_player_index + 3.5 + clientAssignedIndex); // Calculer l'angle en fonction de l'index du joueur
+        const angle = (Math.PI / 3) * (gameState.current_player_index + 1.5 - clientAssignedIndex); // Calculer l'angle en fonction de l'index du joueur
         const arrowLength = 400; // Longueur de la flèche
         const arrowLength2 = 450; // Longueur de la flèche
         const centerX = WINDOW_WIDTH / 2;
@@ -665,6 +663,7 @@ function drawPlayerTurnArrow() {
         ctx.stroke();
     }
 }
+
 
 
 

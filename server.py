@@ -6,6 +6,7 @@ from board import Board, COLORS
 class DjambiServer:
     def __init__(self):
         self.board = Board(0)  # Initialiser le plateau de jeu
+        self.board.rl = True
         self.clients = {}  # Dictionnaire pour stocker les clients avec leur couleur
         self.current_player_index = 0
         self.lock = asyncio.Lock()

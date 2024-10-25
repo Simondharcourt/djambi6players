@@ -1044,13 +1044,13 @@ class Board:
         """
         # Vérifier si c'est le tour du joueur
         current_player = self.players[self.current_player_index]
-        if str(current_player.color) != str(player_color):
-            logging.info(f"Ce n'est pas le tour du joueur {player_color}")
+        if tuple(current_player.color) != tuple(player_color):
+            logging.info(f"Ce n'est pas le tour du joueur {tuple(player_color)} mais du joueur {tuple(current_player.color)}")
             return False
 
         # Sélectionner la pièce
         selected_piece = self.get_piece_at(*selected_pos)
-        if not selected_piece or selected_piece.color != player_color:
+        if not selected_piece or tuple(selected_piece.color) != tuple(player_color):
             logging.info(f"Pièce invalide sélectionnée à {selected_pos}")
             return False
 
