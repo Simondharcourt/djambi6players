@@ -226,7 +226,7 @@ function hexToPixel(q, r) {
     const y = HEX_RADIUS * Math.sqrt(3) * (r + q / 2);
 
     // Appliquer la rotation de pi/3
-    const angle = Math.PI / 3 * (clientAssignedIndex+2);
+    const angle = -Math.PI / 3 * (clientAssignedIndex+2);
     const rotatedX = x * Math.cos(angle) - y * Math.sin(angle);
     const rotatedY = x * Math.sin(angle) + y * Math.cos(angle);
 
@@ -243,7 +243,7 @@ function pixelToHex(x, y) {
     y -= (WINDOW_HEIGHT / 2 - VERTICAL_OFFSET);
 
     // Inverser la rotation
-    const angle = -Math.PI / 3 * (clientAssignedIndex + 2);
+    const angle = Math.PI / 3 * (clientAssignedIndex + 2);
     const unrotatedX = x * Math.cos(angle) - y * Math.sin(angle);
     const unrotatedY = x * Math.sin(angle) + y * Math.cos(angle);
 
