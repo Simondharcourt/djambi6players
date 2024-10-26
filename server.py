@@ -28,6 +28,12 @@ class DjambiServer:
         if websocket in self.clients:
             color = self.clients.pop(websocket)
             self.available_colors.append(color)
+            if len(self.available_colors) == 6:
+                self.board = Board(0)  # Réinitialiser le plateau de jeu
+                self.board.rl = True
+                self.current_player_index = 0
+                self.available_colors = list(COLORS.keys())
+                await self.broadcast(json.dumps({"type": "game_reset", "message": "Le jeu a été réinitialisé"}))
 
     async def send_board_state(self, websocket):
         state_json = self.board.send_state()
