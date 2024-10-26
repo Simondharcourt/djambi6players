@@ -619,6 +619,7 @@ function findAvailableCells() {
 function drawPlayerTurnArrow() {
     if (gameState && gameState.current_player_index !== undefined) {
         const angle = (Math.PI / 3) * (gameState.current_player_index + 1.5 - clientAssignedIndex);
+        const arrowLength = 400; // Longueur de la flèche
         const arrowLength2 = 450;
         const centerX = WINDOW_WIDTH / 2;
         const centerY = WINDOW_HEIGHT / 2 - VERTICAL_OFFSET;
