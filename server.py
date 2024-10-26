@@ -74,9 +74,11 @@ class DjambiServer:
             print(f"Connexion fermée : {websocket.remote_address}")
             await self.unregister(websocket)
 
-start_server = websockets.serve(DjambiServer().handler, '0.0.0.0', int(os.environ.get('PORT', 8765)))
+async def main():
+    port = int(os.environ.get('PORT', 8765))
+    async with websockets.serve(DjambiServer().handler, '0.0.0.0', port):
+        print(f"Serveur lancé sur le port {port}")
+        await asyncio.Future()  # Run forever
 
-print("Serveur lancé sur le port 8765")
-
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+if __name__ == "__main__":
+    asyncio.run(main())
