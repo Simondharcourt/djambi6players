@@ -45,11 +45,8 @@ DIAG_DIRECTIONS = [
     (2, -1), (1, -2), (-1, -1), (-2, 1), (-1, 2), (1, 1)  # Nouvelles directions diagonales
 ]
 ALL_DIRECTIONS = ADJACENT_DIRECTIONS + DIAG_DIRECTIONS
-
 HIGHLIGHT_WIDTH = 3  # Épaisseur du cercle de surbrillance
-
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
 
 class Piece:
     necromobile_image = None
@@ -74,16 +71,10 @@ class Piece:
     @staticmethod
     def load_svg_as_surface(svg_path, target_size=(SIZE_IMAGE, SIZE_IMAGE)):
         """Charge le fichier SVG et le convertit directement à la taille désirée."""
-        # Lire le fichier SVG et convertir en PNG avec CairoSVG à la taille souhaitée
         with open(svg_path, 'rb') as f:
             svg_data = f.read()
-
-        # Convertir le SVG en PNG avec la taille exacte demandée
         png_data = cairosvg.svg2png(bytestring=svg_data, output_width=target_size[0], output_height=target_size[1])
-
-        # Charger les données PNG dans Pygame directement sans redimensionner
         image = pygame.image.load(BytesIO(png_data))
-
         return image  # Retourner directement l'image sans redimensionnement
 
     def load_image(self):
@@ -111,11 +102,7 @@ class Piece:
                 pygame.draw.circle(screen, GREY, (x, y), PIECE_RADIUS + 2, HIGHLIGHT_WIDTH)
         else:
             pygame.draw.circle(screen, GREY, (x, y), PIECE_RADIUS)
-            
-            if Piece.necromobile_image is None:
-                Piece.load_necromobile_image()
-            necromobile_rect = Piece.necromobile_image.get_rect(center=(x, y))
-            screen.blit(Piece.necromobile_image, necromobile_rect)
+
 
     def all_possible_moves(self, board):
         """Retourne une liste de toutes les cases possibles où la pièce peut aller."""
@@ -129,12 +116,8 @@ class Piece:
             while True:
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
-
-                # Si le mouvement est en dehors du plateau ou bloque par une autre pièce, arrêter
                 if not is_within_board(new_q, new_r) or board.is_occupied(new_q, new_r):
                     break
-
-                # Ajouter les coordonnées du mouvement possible
                 if not (new_q == 0 and new_r == 0 and not isinstance(self, ChiefPiece)):
                     possible_moves.append((new_q, new_r))
                 step += 1  # Continuer dans la même direction
@@ -142,7 +125,6 @@ class Piece:
         return possible_moves
 
     def move(self, new_q, new_r, board):
-        # Effectuer le déplacement
         if (new_q, new_r) not in self.all_possible_moves(board):
             return False # new_q, new_r is not a valid move.
         self.q = new_q
@@ -152,7 +134,6 @@ class Piece:
     def is_surrounded(self, board, visited=None):
         if visited is None:
             visited = set()
-
         if (self.q, self.r) in visited:
             return True
         visited.add((self.q, self.r))
@@ -164,21 +145,14 @@ class Piece:
             if not is_within_board(new_q, new_r):
                 continue  # Case hors du plateau, considérée comme non-encerclement
             piece_at_position = board.get_piece_at(new_q, new_r)
-
             if piece_at_position is None:
                 return False  # Il y a une case vide, donc pas encerclé
-
             if piece_at_position.is_dead:
                 continue  # Continue d'examiner les autres directions
-
-            # Pour une pièce alliée, vérifie si elle est encerclée
             if piece_at_position.color == self.color:
                 if not piece_at_position.is_surrounded(board, visited):
                     return False  # Trouvé une pièce alliée qui n'est pas encerclée
-
         return True  # Toutes les directions sont bloquées ou conduisent à des pièces mortes/alliées encerclées
-
-        
 
 class MilitantPiece(Piece):
     def __init__(self, q, r, color, piece_class, svg_path):
@@ -218,11 +192,8 @@ class MilitantPiece(Piece):
         if (new_q, new_r) not in self.all_possible_moves(board):
             return False # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
-
         board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
-        
         if target_piece and target_piece.color != self.color and not target_piece.is_dead:
-            # Tuer la pièce ennemie
             if isinstance(target_piece, ChiefPiece):
                 board.chief_killed(target_piece, board.get_chief_of_color(self.color))
             target_piece.die()
@@ -233,13 +204,9 @@ class MilitantPiece(Piece):
                 new_position = moved_piece_position
             else:
                 return False # moved_piece_position is not a valid position.
-            # Déplacer la pièce rencontrée vers la nouvelle position
             target_piece.q, target_piece.r = new_position
-            # Déplacer la pièce tuée à la position d'origine de l'assassin
             logging.info(f"Le militant a tué la pièce en {new_q}, {new_r} et l'a déplacée en {target_piece.q,}, {target_piece.r}")
 
-
-        # Déplacer le militant
         self.q, self.r = new_q, new_r
         logging.info(f"Le militant s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
         return True
@@ -783,13 +750,6 @@ class Board:
                         unoccupied_cells.append((q, r))
         return unoccupied_cells
 
-    def chief_on_central_cell(self):
-        for player in self.players:
-            for piece in player.pieces:
-                if isinstance(piece, ChiefPiece) and piece.q == 0 and piece.r == 0 and piece.on_central_cell:
-                    return player
-        return None
-
     def get_chief_of_color(self, color):
         for piece in self.pieces:
             if isinstance(piece, ChiefPiece) and piece.color == color:
@@ -838,13 +798,11 @@ class Board:
             q, r = hex_coord
             pygame.draw.polygon(screen, WHITE, self.hex_corners(x, y), 1)
 
-            # Si la case est la case centrale, la dessiner en blanc
             if q == 0 and r == 0:
                 pygame.draw.polygon(screen, CENTRAL_WHITE, self.hex_corners(x, y), 0)  # Remplissage complet
             else:
                 pygame.draw.polygon(screen, WHITE, self.hex_corners(x, y), 1)  # Seulement le contour
 
-        # Dessiner les pièces
         current_player_color = self.players[self.current_player_index].color
         for piece in self.pieces:
             is_current_player = (piece.color == current_player_color and selected_piece is None and piece_to_place is None)
@@ -1023,9 +981,6 @@ class Board:
         draw_player_turn(screen, self.players, next_player_index)
         pygame.display.flip()
 
-
-
-
     def update_all_scores(self):
         for player in self.players:
             player.compute_score(self)
@@ -1072,7 +1027,7 @@ class Board:
                 return False
 
         # Si tout s'est bien passé, passer au joueur suivant
-        self.next_player()
+        # self.next_player() // there is probably another next player somewhere else, idk where
         return True
 
     def send_state(self):
@@ -1090,7 +1045,7 @@ class Board:
                     'on_central_cell': piece.on_central_cell if isinstance(piece, ChiefPiece) else False
                 } for piece in self.pieces
             ],
-            'current_player_index': self.current_player_index,
+            'current_player_index': self.current_player_index, # not adapted to chief in the center
             'current_player_color': self.players[self.current_player_index].color,
             'players': [
                 {

@@ -18,13 +18,12 @@ const COLORS = {
     'green': 'rgb(0, 255, 0)',
 };
 const NAMES = {
-    'rgb(128, 0, 128)': 'Violet',
-    'rgb(0, 0, 255)': 'Bleu',
-    'rgb(255, 0, 0)': 'Rouge',
-    'rgb(255, 105, 180)': 'Rose',
-    'rgb(255, 255, 0)': 'Jaune',
-    'rgb(0, 255, 0)': 'Vert',
-    'rgb(100, 100, 100)': 'Mort',
+    'rgb(128, 0, 128)': 'purple',
+    'rgb(0, 0, 255)': 'blue',
+    'rgb(255, 0, 0)': 'red',
+    'rgb(255, 105, 180)': 'pink',
+    'rgb(255, 255, 0)': 'yellow',
+    'rgb(0, 255, 0)': 'green',
 };
 const ADJACENT_DIRECTIONS = [
     [1, 0], [-1, 0], [0, 1], [0, -1], [1, -1], [-1, 1],
@@ -100,9 +99,7 @@ ws.onclose = function() {
     console.log('Déconnecté du serveur WebSocket');
 };
 
-// Fonction pour dessiner le plateau
 function drawBoard() {
-    // Remplir tout le canvas en noir
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -119,8 +116,6 @@ function drawBoard() {
             }
         }
     }
-
-    // Dessiner la flèche pour indiquer le tour du joueur
     drawPlayerTurnArrow();
     drawPlayerTurn()
 }
@@ -175,13 +170,14 @@ function drawPieces() {
         gameState.pieces.forEach(piece => {
             const [x, y] = hexToPixel(piece.q, piece.r);
             // Déterminer la couleur à utiliser
-            let pieceColor;
+            let pieceColor = `rgb(${piece.color[0]}, ${piece.color[1]}, ${piece.color[2]})`;
+            let pieceName = NAMES[pieceColor];
             if (piece.is_dead) {
                 pieceColor = 'rgb(100, 100, 100)'; // Gris pour les pièces mortes
-            } else if (Array.isArray(piece.color)) {
-                pieceColor = `rgb(${piece.color[0]}, ${piece.color[1]}, ${piece.color[2]})`;
+            } else if (Array.isArray(piece.color) && !gameState.available_colors.includes(pieceName)) {
+                console.log(piece.color);
             } else {
-                pieceColor = COLORS[piece.color] || piece.color;
+                pieceColor = 'rgb(255, 255, 255)';
             }
             // Dessiner le cercle de la pièce
             ctx.fillStyle = pieceColor;
@@ -189,9 +185,14 @@ function drawPieces() {
             ctx.arc(x, y, PIECE_RADIUS, 0, 2 * Math.PI);
             ctx.fill();
             // Dessiner l'image de la pièce
-            const img = pieceImages[piece.piece_class];
             if (allImagesLoaded) {
-                ctx.drawImage(img, x - SIZE_IMAGE / 2, y - SIZE_IMAGE / 2, SIZE_IMAGE, SIZE_IMAGE);
+                if (!piece.is_dead) {
+                    const img = pieceImages[piece.piece_class];
+                    ctx.drawImage(img, x - SIZE_IMAGE / 2, y - SIZE_IMAGE / 2, SIZE_IMAGE, SIZE_IMAGE);
+                } else {
+                    const img = pieceImages['necromobile'];
+                    // ctx.drawImage(img, x - SIZE_IMAGE / 4, y - SIZE_IMAGE / 4, SIZE_IMAGE/2, SIZE_IMAGE/2); // a bit scary ..
+                }
             }
         });
     }
@@ -239,16 +240,11 @@ function hexToPixel(q, r) {
 
 // Fonction pour convertir les coordonnées pixel en coordonnées hexagonales
 function pixelToHex(x, y) {
-    // Inverser la translation
     x -= WINDOW_WIDTH / 2;
     y -= (WINDOW_HEIGHT / 2 - VERTICAL_OFFSET);
-
-    // Inverser la rotation
     const angle = Math.PI / 3 * (clientAssignedIndex + 2);
     const unrotatedX = x * Math.cos(angle) - y * Math.sin(angle);
     const unrotatedY = x * Math.sin(angle) + y * Math.cos(angle);
-
-    // Calculer les coordonnées hexagonales
     const q = (2/3) * unrotatedX / HEX_RADIUS;
     const r = (-1/3) * unrotatedX / HEX_RADIUS + Math.sqrt(3)/3 * unrotatedY / HEX_RADIUS;
 
@@ -263,55 +259,47 @@ canvas.addEventListener('click', (event) => {
         const [q, r] = pixelToHex(x, y);
 
         if (selectedPiece) {
-            if (selectedPiece.q === q && selectedPiece.r === r) {
-                // Si on reclique sur la pièce sélectionnée, on la désélectionne
+            if ((selectedPiece.q === q && selectedPiece.r === r) && !targetedPiece) {
                 selectedPiece = null;
                 possibleMoves = [];
-                availableCells = []; // Réinitialisez les cellules disponibles
+                availableCells = [];
             } else if (possibleMoves.some(move => move[0] === q && move[1] === r)) {
                 const targetPiece = getPieceAt(q, r);
                 if (targetPiece && selectedPiece.piece_class !== 'assassin') {
-                    // La case est occupée, on capture la pièce
                     targetedPiece = getPieceAt(q, r);
                     availableCells = findAvailableCells();
                     availableCells.push([selectedPiece.q, selectedPiece.r]);
                 } else {
-                    // La case est libre, on déplace simplement la pièce
                     console.log(selectedPiece, q, r, null, null);
                     sendMove(selectedPiece, q, r, null, null);
-                    availableCells = []; // Réinitialisez les cellules disponibles
+                    availableCells = [];
                     selectedPiece = null;
                 }
                 possibleMoves = [];
             } else if (availableCells.some(cell => cell[0] === q && cell[1] === r)) {
-                // Si on clique sur une case disponible après une capture
                 console.log(selectedPiece, targetedPiece.q, targetedPiece.r, q, r);
                 sendMove(selectedPiece, targetedPiece.q, targetedPiece.r, q, r);
                 selectedPiece = null;
                 possibleMoves = [];
-                availableCells = []; // Réinitialisez les cellules disponibles
+                availableCells = [];
             } else {
-                // Si on clique ailleurs, on vérifie si on a cliqué sur une autre pièce
                 selectPiece(q, r);
                 availableCells = [];
             }
         } else {
-            // Si aucune pièce n'est sélectionnée, on essaie d'en sélectionner une
             selectPiece(q, r);
             availableCells = [];
         }
-        draw(); // Redessiner le plateau après chaque action
+        draw();
     }
 });
 
-
-// Fonction pour sélectionner une pièce
 function selectPiece(q, r) {
     if (gameState) {
         const piece = gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead);
         if (piece) {
             const currentPlayerColor = getCurrentPlayerColor();
-            if (areColorsEqual(gameState.current_player_color, COLORS[currentPlayerColor]) && areColorsEqual(piece.color, COLORS[currentPlayerColor])) {
+            if (areColorsEqual(Object.keys(COLORS)[gameState.current_player_index], currentPlayerColor) && areColorsEqual(piece.color, COLORS[currentPlayerColor])) {
                 selectedPiece = piece;
                 possibleMoves = calculatePossibleMoves(piece);
                 draw();
@@ -331,7 +319,6 @@ function calculatePossibleMoves(piece) {
                 const newQ = piece.q + dq * step;
                 const newR = piece.r + dr * step;
                 const occupyingPiece = getPieceAt(newQ, newR);
-
                 if (isValidMove(newQ, newR, piece)) {
                     possibleMoves.push([newQ, newR]);
                 }
@@ -368,7 +355,6 @@ function calculatePossibleMoves(piece) {
                 if (!isWithinBoard(newQ, newR)) {
                     break;
                 }
-
                 const occupyingPiece = getPieceAt(newQ, newR);
                 if (occupyingPiece) {
                     if (piece.piece_class === 'assassin') {
@@ -401,7 +387,6 @@ function calculatePossibleMoves(piece) {
                         }
                     }
                 }
-
                 if (newQ === 0 && newR === 0 && piece.piece_class !== 'chief') {
                     const centralPiece = gameState.pieces.find(p => p.q === 0 && p.r === 0);
                     if (centralPiece) {
@@ -438,7 +423,6 @@ function isValidMove(newQ, newR, piece) {
 function isOccupied(q, r) {
     return gameState.pieces.some(piece => piece.q === q && piece.r === r);
 }
-
 
 function drawSelectedPieceHalo() {
     if (selectedPiece) {
@@ -480,11 +464,9 @@ function sendMove(piece, new_q, new_r, captured_q, captured_r) {
     ws.send(JSON.stringify(action));
 }
 
-// Fonction pour dessiner l'indicateur de tour du joueur
 function drawPlayerTurn() {
     if (gameState && gameState.current_player_index !== undefined) {
-        // Assurez-vous que gameState.current_player_color est correctement mis à jour
-        let playerColor = Object.keys(COLORS)[gameState.current_player_index]; // Utilisez une couleur par défaut si nécessaire
+        let playerColor = Object.keys(COLORS)[gameState.current_player_index];
         let playerText = `Joueur ${gameState.current_player_index + 1}`;
 
         if (gameState.players && gameState.players[gameState.current_player_index]) {
@@ -571,7 +553,6 @@ function initializeDefaultState() {
         [-6, 5, 'green', 'reporter'], [-6, 4, 'green', 'militant'], [-5, 5, 'green', 'diplomat'],
         [-4, 5, 'green', 'militant'], [-5, 4, 'green', 'militant'], [-4, 4, 'green', 'necromobile'],
     ];
-
     gameState = {
         pieces: startPositions.map(([q, r, color, piece_class]) => ({
             q, r, color: COLORS[color], piece_class, is_dead: false
@@ -586,17 +567,13 @@ function initializeDefaultState() {
         ],
         current_player_index: 0
     };
-
     console.log('État initial du jeu créé avec', gameState.pieces.length, 'pièces');
     draw();
 }
 
-// Fonction auxiliaire pour obtenir une pièce à une position donnée
 function getPieceAt(q, r) {
-    return gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead);
+    return gameState.pieces.find(p => p.q === q && p.r === r);
 }
-
-// Appeler draw() immédiatement pour dessiner au moins le plateau
 draw();
 
 function areColorsEqual(color1, color2) {
@@ -613,7 +590,6 @@ function areColorsEqual(color1, color2) {
         }
         return color;
     };
-
     const normalizedColor1 = normalizeColor(color1);
     const normalizedColor2 = normalizeColor(color2);
     return normalizedColor1 === normalizedColor2;
@@ -642,20 +618,17 @@ function findAvailableCells() {
 // Fonction pour dessiner une flèche indiquant le tour du joueur
 function drawPlayerTurnArrow() {
     if (gameState && gameState.current_player_index !== undefined) {
-        const angle = (Math.PI / 3) * (gameState.current_player_index + 1.5 - clientAssignedIndex); // Calculer l'angle en fonction de l'index du joueur
-        const arrowLength = 400; // Longueur de la flèche
-        const arrowLength2 = 450; // Longueur de la flèche
+        const angle = (Math.PI / 3) * (gameState.current_player_index + 1.5 - clientAssignedIndex);
+        const arrowLength2 = 450;
         const centerX = WINDOW_WIDTH / 2;
         const centerY = WINDOW_HEIGHT / 2 - VERTICAL_OFFSET;
 
-        // Calculer la position de la pointe de la flèche
         const arrowX = centerX + arrowLength * Math.cos(angle);
         const arrowY = centerY + arrowLength * Math.sin(angle);
         const arrowX2 = centerX + arrowLength2 * Math.cos(angle);
         const arrowY2 = centerY + arrowLength2 * Math.sin(angle);
 
-        // Dessiner la flèche
-        ctx.strokeStyle = 'white'; // could the color of teh player.
+        ctx.strokeStyle = 'white';
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(arrowX, arrowY);

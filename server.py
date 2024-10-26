@@ -18,7 +18,6 @@ class DjambiServer:
             self.clients[websocket] = color
             index_color = list(COLORS.keys()).index(color)
             await self.send_board_state(websocket)
-            # Envoyer la couleur assignée au client
             await websocket.send(json.dumps({"type": "color_assignment", "color": color, "index": index_color}))
         else:
             await websocket.send(json.dumps({"type": "error", "message": "La partie est pleine"}))
@@ -33,6 +32,7 @@ class DjambiServer:
         state_json = self.board.send_state()
         state = json.loads(state_json)  # Convertir la chaîne JSON en dictionnaire
         state['type'] = 'state'
+        state['available_colors'] = self.available_colors
         state_json = json.dumps(state)  # Reconvertir le dictionnaire en chaîne JSON
         print("Sending state:", state_json)  # Ajoutez cette ligne pour le débogage
         await websocket.send(state_json)  # Envoyer l'état au client
@@ -52,7 +52,6 @@ class DjambiServer:
                         piece_data = data['piece']
                         move_to = data['move_to']
                         captured_piece_to = data.get('captured_piece_to', None)
-
                         # Utiliser la fonction handle_client_move pour gérer le mouvement
                         success = self.board.handle_client_move(
                             piece_data['color'],
@@ -60,14 +59,11 @@ class DjambiServer:
                             (move_to['q'], move_to['r']),
                             (captured_piece_to['q'], captured_piece_to['r']) if captured_piece_to else None
                         )
-
                         if success:
                             print("Mouvement réussi")
-                            self.current_player_index = (self.current_player_index + 1) % len(self.board.players)
-                            self.board.save_state(self.current_player_index)
-                            # Envoyer le nouvel état à tous les clients
                             state = self.board.to_json()
                             state['type'] = 'state'
+                            state['available_colors'] = self.available_colors
                             await self.broadcast(json.dumps(state))
                         else:
                             # Mouvement invalide
