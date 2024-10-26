@@ -1,6 +1,7 @@
 import asyncio
 import json
 import websockets
+import os
 from board import Board, COLORS
 
 class DjambiServer:
@@ -73,7 +74,7 @@ class DjambiServer:
             print(f"Connexion fermée : {websocket.remote_address}")
             await self.unregister(websocket)
 
-start_server = websockets.serve(DjambiServer().handler, '0.0.0.0', 8765)
+start_server = websockets.serve(DjambiServer().handler, '0.0.0.0', int(os.environ.get('PORT', 8765)))
 
 print("Serveur lancé sur le port 8765")
 
