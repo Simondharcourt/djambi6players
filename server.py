@@ -27,7 +27,7 @@ class DjambiServer:
     async def unregister(self, websocket):
         if websocket in self.clients:
             color = self.clients.pop(websocket)
-            self.available_colors.append(color)
+            self.available_colors = [color] + self.available_colors
             if len(self.available_colors) == 6:
                 self.board = Board(0)  # Réinitialiser le plateau de jeu
                 self.board.rl = True
