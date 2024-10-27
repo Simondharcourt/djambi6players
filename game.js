@@ -341,6 +341,7 @@ function calculatePossibleMoves(piece) {
                         possibleMoves.push([newQ, newR]);
                         break;
                     }
+                    break;
                 }
             }
         }
