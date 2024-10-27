@@ -72,27 +72,12 @@ class DjambiServer:
                         )
                         if success:
                             print("Mouvement réussi")
-                            piece = self.board.get_piece(piece_data['q'], piece_data['r'])
-                            state = self.board.send_state(piece)
+                            state = self.board.to_json()
                             state['type'] = 'state'
                             state['available_colors'] = self.available_colors
                             await self.broadcast(json.dumps(state))
-                            
-                            move_info = {
-                                'type': 'move',
-                                'from_q': piece_data['q'],
-                                'from_r': piece_data['r'],
-                                'to_q': move_to['q'],
-                                'to_r': move_to['r'],
-                            }
-                            await self.broadcast(json.dumps(move_info))
-                            
-                            state = self.board.send_state(piece_data)
-                            state['type'] = 'state'
-                            state['available_colors'] = self.available_colors
-                            await self.broadcast(json.dumps(state))
-                            
                         else:
+                            # Mouvement invalide
                             error = {'type': 'error', 'message': 'Mouvement invalide'}
                             await websocket.send(json.dumps(error))
         finally:

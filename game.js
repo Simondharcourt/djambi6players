@@ -76,13 +76,8 @@ ws.onerror = function(error) {
 let clientAssignedColor = "white"; // Couleur par défaut
 let clientAssignedIndex = 0;
 
-let animationInProgress = false;
-let animationPiece = null;
-let startPos = null;
-let endPos = null;
-let animationProgress = 0;
-
 ws.onmessage = function(event) {
+    console.log("Message reçu du serveur:", event.data);
     const data = JSON.parse(event.data);
     if (data.type === 'color_assignment') {
         // Assigner la couleur reçue à une variable ou un état
@@ -92,15 +87,9 @@ ws.onmessage = function(event) {
         console.log("Index assigné:", clientAssignedIndex);
         draw();
     } else if (data.type === 'state') {
-        // Ne pas mettre à jour l'état pendant une animation
-        if (!animationInProgress) {
-            gameState = data;
-            draw();
-        }
-    } else if (data.type === 'move') {
-        // Démarrer l'animation
-        console.log("Animation de mouvement:", data);
-        startAnimation(data.from_q, data.from_r, data.to_q, data.to_r);
+        gameState = data;
+        console.log("Nouvel état du jeu:", gameState);
+        draw();
     } else if (data.type === 'error') {
         alert(data.message);
     }
@@ -185,7 +174,9 @@ function drawPieces() {
             let pieceName = NAMES[pieceColor];
             if (piece.is_dead) {
                 pieceColor = 'rgb(100, 100, 100)'; // Gris pour les pièces mortes
-            } else if (Array.isArray(piece.color) && gameState.available_colors.includes(pieceName)) {
+            } else if (Array.isArray(piece.color) && !gameState.available_colors.includes(pieceName)) {
+                console.log(piece.color);
+            } else {
                 pieceColor = 'rgb(255, 255, 255)';
             }
             // Dessiner le cercle de la pièce
@@ -647,54 +638,9 @@ function drawPlayerTurnArrow() {
     }
 }
 
-function startAnimation(fromQ, fromR, toQ, toR) {
-    animationInProgress = true;
-    animationProgress = 0;
-    startPos = hexToPixel(fromQ, fromR);
-    endPos = hexToPixel(toQ, toR);
-    
-    // Trouver la pièce à animer
-    animationPiece = gameState.pieces.find(p => p.q === fromQ && p.r === fromR);
-    
-    // Démarrer la boucle d'animation
-    requestAnimationFrame(animate);
-}
 
-function animate(timestamp) {
-    if (!animationInProgress) return;
 
-    // Incrémenter la progression (ajuster la vitesse en modifiant le 0.05)
-    animationProgress += 0.05;
 
-    // Dessiner le frame actuel
-    draw();
-    
-    // Calculer la position actuelle
-    const currentX = startPos[0] + (endPos[0] - startPos[0]) * animationProgress;
-    const currentY = startPos[1] + (endPos[1] - startPos[1]) * animationProgress;
-    
-    // Dessiner la pièce en mouvement
-    if (animationPiece) {
-        // Dessiner le cercle de la pièce
-        ctx.fillStyle = `rgb(${animationPiece.color[0]}, ${animationPiece.color[1]}, ${animationPiece.color[2]})`;
-        ctx.beginPath();
-        ctx.arc(currentX, currentY, PIECE_RADIUS, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        // Dessiner l'image de la pièce
-        if (allImagesLoaded) {
-            const img = pieceImages[animationPiece.piece_class];
-            ctx.drawImage(img, currentX - SIZE_IMAGE/2, currentY - SIZE_IMAGE/2, SIZE_IMAGE, SIZE_IMAGE);
-        }
-    }
 
-    // Continuer l'animation si pas terminée
-    if (animationProgress < 1) {
-        requestAnimationFrame(animate);
-    } else {
-        // Terminer l'animation
-        animationInProgress = false;
-        animationPiece = null;
-        draw();
-    }
-}
+
+
