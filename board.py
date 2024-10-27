@@ -1030,7 +1030,7 @@ class Board:
         # self.next_player() // there is probably another next player somewhere else, idk where
         return True
 
-    def send_state(self):
+    def send_state(self, piece_to_withdrawn=None):
         """
         Prépare et renvoie l'état actuel du plateau sous forme de chaîne JSON.
         """
@@ -1043,7 +1043,7 @@ class Board:
                     'piece_class': piece.piece_class,
                     'is_dead': piece.is_dead,
                     'on_central_cell': piece.on_central_cell if isinstance(piece, ChiefPiece) else False
-                } for piece in self.pieces
+                } for piece in self.pieces if piece != piece_to_withdrawn
             ],
             'current_player_index': self.current_player_index, # not adapted to chief in the center
             'current_player_color': self.players[self.current_player_index].color,
