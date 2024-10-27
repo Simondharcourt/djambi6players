@@ -191,7 +191,9 @@ function drawPieces() {
             let pieceName = NAMES[pieceColor];
             if (piece.is_dead) {
                 pieceColor = 'rgb(100, 100, 100)'; // Gris pour les pièces mortes
-            } else if (Array.isArray(piece.color) && gameState.available_colors.includes(pieceName)) {
+            } else if (Array.isArray(piece.color) && !gameState.available_colors.includes(pieceName)) {
+                console.log("pieceName", pieceName)
+            } else {
                 pieceColor = 'rgb(255, 255, 255)';
             }
             // Dessiner le cercle de la pièce
