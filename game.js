@@ -59,8 +59,15 @@ let targetedPiece = null;
 let possibleMoves = [];
 let availableCells = []; // Ajoutez cette variable globale
 
+let animationInProgress = false;
+let animationPiece = null;
+let startPos = null;
+let endPos = null;
+let animationProgress = 0;
+
 // Ajouter le WebSocket
 const ws = new WebSocket('wss://djambi6players-105ba3b611ff.herokuapp.com');  // Remplacez par l'URL de votre serveur
+// const ws = new WebSocket('ws://localhost:8765'); // to test on local
 
 ws.onopen = function() {
     console.log('Connecté au serveur WebSocket');
@@ -87,8 +94,13 @@ ws.onmessage = function(event) {
         console.log("Index assigné:", clientAssignedIndex);
         draw();
     } else if (data.type === 'state') {
+        if (data.last_move) {
+            startAnimation(data.last_move.piece.q, data.last_move.piece.r, data.last_move.move_to.q, data.last_move.move_to.r);
+        }
+        console.log("last move", data.last_move)
         gameState = data;
         console.log("Nouvel état du jeu:", gameState);
+
         draw();
     } else if (data.type === 'error') {
         alert(data.message);
@@ -168,15 +180,18 @@ function isWithinBoard(q, r) {
 function drawPieces() {
     if (gameState && gameState.pieces) {
         gameState.pieces.forEach(piece => {
+            if (animationInProgress && animationPiece && 
+                animationPiece.q === piece.q && 
+                animationPiece.r === piece.r) {
+                return;
+            }
             const [x, y] = hexToPixel(piece.q, piece.r);
             // Déterminer la couleur à utiliser
             let pieceColor = `rgb(${piece.color[0]}, ${piece.color[1]}, ${piece.color[2]})`;
             let pieceName = NAMES[pieceColor];
             if (piece.is_dead) {
                 pieceColor = 'rgb(100, 100, 100)'; // Gris pour les pièces mortes
-            } else if (Array.isArray(piece.color) && !gameState.available_colors.includes(pieceName)) {
-                console.log(piece.color);
-            } else {
+            } else if (Array.isArray(piece.color) && gameState.available_colors.includes(pieceName)) {
                 pieceColor = 'rgb(255, 255, 255)';
             }
             // Dessiner le cercle de la pièce
@@ -191,7 +206,6 @@ function drawPieces() {
                     ctx.drawImage(img, x - SIZE_IMAGE / 2, y - SIZE_IMAGE / 2, SIZE_IMAGE, SIZE_IMAGE);
                 } else {
                     const img = pieceImages['necromobile'];
-                    // ctx.drawImage(img, x - SIZE_IMAGE / 4, y - SIZE_IMAGE / 4, SIZE_IMAGE/2, SIZE_IMAGE/2); // a bit scary ..
                 }
             }
         });
@@ -640,7 +654,58 @@ function drawPlayerTurnArrow() {
 
 
 
+function startAnimation(fromQ, fromR, toQ, toR) {
+    animationInProgress = true;
+    animationProgress = 0;
+    startPos = hexToPixel(fromQ, fromR);
+    endPos = hexToPixel(toQ, toR);
+    
+    // Trouver la pièce à animer
+    animationPiece = gameState.pieces.find(p => p.q === fromQ && p.r === fromR);
+    animationPiece.q = toQ;
+    animationPiece.r = toR; 
+    console.log("animationPiece", animationPiece);
+    // Démarrer la boucle d'animation
+    requestAnimationFrame(animate);
+}
 
+function animate(timestamp) {
+    if (!animationInProgress) return;
 
+    // Incrémenter la progression (ajuster la vitesse en modifiant le 0.05)
+    animationProgress += 0.05;
+
+    // Dessiner le frame actuel
+    draw();
+    
+    // Calculer la position actuelle
+    const currentX = startPos[0] + (endPos[0] - startPos[0]) * animationProgress;
+    const currentY = startPos[1] + (endPos[1] - startPos[1]) * animationProgress;
+    
+    // Dessiner la pièce en mouvement
+    if (animationPiece) {
+        // Dessiner le cercle de la pièce
+        ctx.fillStyle = `rgb(${animationPiece.color[0]}, ${animationPiece.color[1]}, ${animationPiece.color[2]})`;
+        ctx.beginPath();
+        ctx.arc(currentX, currentY, PIECE_RADIUS, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Dessiner l'image de la pièce
+        if (allImagesLoaded) {
+            const img = pieceImages[animationPiece.piece_class];
+            ctx.drawImage(img, currentX - SIZE_IMAGE/2, currentY - SIZE_IMAGE/2, SIZE_IMAGE, SIZE_IMAGE);
+        }
+    }
+
+    // Continuer l'animation si pas terminée
+    if (animationProgress < 1) {
+        requestAnimationFrame(animate);
+    } else {
+        // Terminer l'animation
+        animationInProgress = false;
+        animationPiece = null;
+        draw();
+    }
+}
 
 

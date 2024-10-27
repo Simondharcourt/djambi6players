@@ -75,6 +75,7 @@ class DjambiServer:
                             state = self.board.to_json()
                             state['type'] = 'state'
                             state['available_colors'] = self.available_colors
+                            state['last_move'] = data
                             await self.broadcast(json.dumps(state))
                         else:
                             # Mouvement invalide
