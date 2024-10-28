@@ -6,6 +6,7 @@ import random
 import cairosvg
 from io import BytesIO
 import json
+import os
 # Paramètres du jeu
 BOARD_SIZE = 7  # Nombre de cases par ligne/colonne sur le plateau
 HEX_RADIUS = 35  # Rayon des hexagones
@@ -21,6 +22,8 @@ GREY = (128, 128, 128)
 DARKER_GREY = (100, 100, 100)
 FONT_SIZE = 36
 ASSET_PATH = '../assets/'
+IS_PRODUCTION = os.environ.get('ENVIRONMENT') == 'production'
+
 COLORS = {
     'purple': (128, 0, 128),
     'blue': (0, 0, 255),
@@ -72,6 +75,8 @@ class Piece:
     @staticmethod
     def load_svg_as_surface(svg_path, target_size=(SIZE_IMAGE, SIZE_IMAGE)):
         """Charge le fichier SVG et le convertit directement à la taille désirée."""
+        if IS_PRODUCTION:
+            return None
         with open(svg_path, 'rb') as f:
             svg_data = f.read()
         png_data = cairosvg.svg2png(bytestring=svg_data, output_width=target_size[0], output_height=target_size[1])
@@ -507,7 +512,8 @@ def create_piece(q, r, color, piece_class, svg_path):
     
     piece_class_constructor = class_mapping.get(piece_class, Piece)
     piece = piece_class_constructor(q, r, color, piece_class, svg_path)
-    piece.load_image()  # Charger l'image immédiatement après la création
+    if not IS_PRODUCTION:  # Only load image if not in production
+        piece.load_image()  # Charger l'image immédiatement après la création
     return piece
 
 

@@ -66,8 +66,8 @@ let endPos = null;
 let animationProgress = 0;
 
 // Ajouter le WebSocket
-const ws = new WebSocket('wss://djambi6players-105ba3b611ff.herokuapp.com');  // Remplacez par l'URL de votre serveur
-// const ws = new WebSocket('ws://localhost:8765'); // to test on local
+// const ws = new WebSocket('wss://djambi6players-105ba3b611ff.herokuapp.com');  // Remplacez par l'URL de votre serveur
+const ws = new WebSocket('ws://localhost:8765'); // to test on local
 
 ws.onopen = function() {
     console.log('Connecté au serveur WebSocket');
