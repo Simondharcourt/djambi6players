@@ -35,6 +35,16 @@ const DIAG_DIRECTIONS = [
 ];
 const ALL_DIRECTIONS = ADJACENT_DIRECTIONS.concat(DIAG_DIRECTIONS);
 
+// Ajouter ces constantes pour les descriptions des pièces
+const PIECE_DESCRIPTIONS = {
+    'assassin': "L'Assassin peut traverser les pièces alliées et capturer une pièce ennemie. Sa victime sera placée là où se troauvait l'assassin.",
+    'chief': "Le Chef est la pièce maîtresse. Si elle est capturée, vous perdez la partie. Si elle arrive au centre, vous prenez le pouvoir et rejouez après chacun de vos adversaires.",
+    'diplomat': "Le Diplomate peut déplacer des pièces vivantes sans les tuer.",
+    'militant': "Le Militant peut se déplacer de 2 cases dans les directions adjacentes et 1 case dans les directions diagonales. Il peut placer ses victimes où bon lui semble.",
+    'necromobile': "Le Nécromobile peut déplacer les pièces mortes. Vous pouvez ainsi vous protéger ou gêner un adversaire.",
+    'reporter': "Le Reporter élimine toutes les pièces ennemies autour de lui après s'être déplacé."
+};
+
 // Chargement des images des pièces
 const pieceImages = {};
 const pieceClasses = ['assassin', 'chief', 'diplomat', 'militant', 'necromobile', 'reporter'];
@@ -543,7 +553,7 @@ function drawPlayerTurn() {
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 2;
         const text = `Tour du joueur:`;
-        ctx.fillText(text, 20, 30);
+        ctx.fillText(text, 180, 30);
         // Dessiner un cercle de la couleur du joueur
         ctx.beginPath();
         ctx.arc(202, 22, 15, 0, 2 * Math.PI);
@@ -554,7 +564,7 @@ function drawPlayerTurn() {
         const clientColor = getClientPlayerColor();
         const clientColorText = `Votre couleur:`;
         ctx.fillStyle = 'white';
-        ctx.fillText(clientColorText, 20, 60);
+        ctx.fillText(clientColorText, 165, 60);
 
         // Dessiner un cercle de la couleur du client
         ctx.beginPath();
@@ -577,6 +587,8 @@ function draw() {
     drawPossibleMoves();
     drawAvailableCells(); // Ajoutez cette ligne
     drawPlayerTurn();
+    drawPlayerScores();
+
 }
 // Fonction pour initialiser un état par défaut
 function initializeDefaultState() {
@@ -724,7 +736,7 @@ function animate(timestamp) {
     // Dessiner la pièce en mouvement
     if (animationPiece) {
         // Dessiner le cercle de la pièce
-        ctx.fillStyle = COLORS;
+        ctx.fillStyle = COLORS[animationPiece.color];
         ctx.beginPath();
         ctx.arc(currentX, currentY, PIECE_RADIUS, 0, 2 * Math.PI);
         ctx.fill();
@@ -747,16 +759,6 @@ function animate(timestamp) {
     }
 }
 
-// Ajouter ces constantes pour les descriptions des pièces
-const PIECE_DESCRIPTIONS = {
-    'assassin': "L'Assassin peut traverser les pièces alliées et capturer une pièce ennemie. Sa victime sera placée là où se troauvait l'assassin.",
-    'chief': "Le Chef est la pièce maîtresse. Si elle est capturée, vous perdez la partie. Si elle arrive au centre, vous prenez le pouvoir et rejouez après chacun de vos adversaires.",
-    'diplomat': "Le Diplomate peut déplacer des pièces vivantes sans les tuer.",
-    'militant': "Le Militant peut se déplacer de 2 cases dans les directions adjacentes et 1 case dans les directions diagonales. Il peut placer ses victimes où bon lui semble.",
-    'necromobile': "Le Nécromobile peut déplacer les pièces mortes. Vous pouvez ainsi vous protéger ou gêner un adversaire.",
-    'reporter': "Le Reporter élimine toutes les pièces ennemies autour de lui après s'être déplacé."
-};
-
 // Ajouter ces nouvelles fonctions
 function updatePieceInfo(piece) {
     const pieceInfo = document.getElementById('pieceInfo');
@@ -775,4 +777,40 @@ function updatePieceInfo(piece) {
 function hidePieceInfo() {
     const pieceInfo = document.getElementById('pieceInfo');
     pieceInfo.style.display = 'none';
+}
+
+function drawPlayerScores() {
+    if (!gameState || !gameState.players) return;
+
+    const startX = 20;
+    const startY = 300;
+    const jetonRadius = 15;
+    const spacing = 10;
+    const scoreSpacing = 10;
+
+    ctx.font = '20px Arial';
+    
+    gameState.players.forEach((player, index) => {
+        // Position du jeton
+        console.log("player", player)
+        const y = startY + index * (jetonRadius * 2 + spacing);
+        
+        // Dessiner le jeton
+        ctx.beginPath();
+        ctx.arc(startX, y, jetonRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = COLORS[player.color]; // Utiliser le mapping des couleurs
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Afficher le score absolu
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'left';
+        ctx.fillText(player.score.toString(), startX + jetonRadius + scoreSpacing, y + jetonRadius/2);
+
+        // Afficher le score relatif
+        ctx.textAlign = 'right';
+        ctx.fillText(player.relative_score.toString(), startX - jetonRadius - scoreSpacing, y + jetonRadius/2);
+    });
 }
