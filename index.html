@@ -2,15 +2,10 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Djambi</title>
     <style>
-        canvas {
-            background-color: #000;
-            display: block;
-            margin: 0 auto;
-            position:fixed;
-            top:30px;
-        }
+        /* Styles de base */
         body {
             background-color: black;
             margin: 0;
@@ -21,18 +16,71 @@
             height: 100vh;
         }
 
+        canvas {
+            background-color: #000;
+            display: block;
+            margin: 0 auto;
+            position: fixed;
+            top: 30px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Styles du menu principal */
+        #mainMenu {
+            text-align: center;
+            color: white;
+        }
+
+        #mainMenu h1 {
+            font-size: 48px;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 50px;
+            width: 90%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .menu-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 250px;
+            transition: background-color 0.3s;
+        }
+
+        .menu-button:hover {
+            background-color: #555;
+        }
+
+        /* Styles du conteneur de jeu */
         .game-container {
             position: relative;
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: flex-start;
             gap: 20px;
             margin-top: 200px;
         }
+
+        /* Styles des informations des pièces */
         #pieceInfo {
             position: absolute;
             right: -620px;
-            top: calc(50% - 100px);  /* Modifié pour remonter de 100px */
+            top: calc(50% - 100px);
             transform: translateY(-50%);
             width: 200px;
             background-color: #333;
@@ -58,59 +106,107 @@
             margin: 5px 0;
         }
 
-        .menu-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            margin-top: 50px;
-        }
-
-        .menu-button {
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 250px;
-            transition: background-color 0.3s;
-        }
-
-        .menu-button:hover {
-            background-color: #555;
-        }
-
-        .game-container {
-            display: none;  /* Cache le jeu par défaut */
-        }
-
-        #mainMenu {
-            text-align: center;
-            color: white;
-        }
-
-        #mainMenu h1 {
-            font-size: 48px;
-            margin-bottom: 40px;
-            color: #fff;
-        }
-
+        /* Bouton retour */
         #backToMenu {
             position: fixed;
-            top: 50px;
-            left: auto;
-            right: 350px;
+            top: 20px;
+            right: 20px;
             width: auto;
             padding: 10px 20px;
             font-size: 16px;
             z-index: 1000;
         }
 
-        #backToMenu:hover {
-            background-color: #555;
+        /* Media Queries */
+        @media screen and (max-width: 1200px) {
+            #pieceInfo {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                top: auto;
+                transform: none;
+            }
         }
+
+        @media screen and (max-width: 768px) {
+            .menu-button {
+                width: 90%;
+                font-size: 24px;
+                padding: 20px 30px;
+            }
+
+            #mainMenu h1 {
+                font-size: 48px;
+                margin-bottom: 40px;
+                color: #fff;
+            }
+
+            .menu-container {
+                gap: 30px;
+            }
+
+            #backToMenu {
+                padding: 15px 25px;
+                font-size: 18px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .menu-button {
+                font-size: 15px;
+                padding: 10px 20px;
+            }
+
+            #mainMenu h1 {
+                font-size: 42px;
+            }
+
+            #backToMenu {
+                padding: 15px 25px;
+                font-size: 18px;
+            }
+
+
+
+            .menu-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                margin-top: 50px;
+                width: 90%;
+                max-width: 500px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .menu-button {
+                background-color: #333;
+                color: white;
+                border: none;
+                padding: 15px 30px;
+                font-size: 18px;
+                border-radius: 5px;
+                cursor: pointer;
+                width: 250px;
+                transition: background-color 0.3s;
+            }
+
+            .menu-button:hover {
+                background-color: #555;
+            }
+
+            /* Styles du conteneur de jeu */
+            .game-container {
+                position: relative;
+                display: none;
+                justify-content: center;
+                align-items: flex-start;
+                gap: 20px;
+                margin-top: 200px;
+            }
+        }
+
     </style>
 </head>
 <body>
