@@ -272,50 +272,94 @@ function pixelToHex(x, y) {
 
     return [Math.round(q), Math.round(r)];
 }
-// Gestion des événements de la souris
-canvas.addEventListener('click', (event) => {
-    hidePieceInfo(); // Ajouter cette ligne
-    if (gameState) {
-        const rect = canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        const [q, r] = pixelToHex(x, y);
 
-        if (selectedPiece) {
-            if ((selectedPiece.q === q && selectedPiece.r === r)) {
-                selectedPiece = null;
-                possibleMoves = [];
-                availableCells = [];
-            } else if (possibleMoves.some(move => move[0] === q && move[1] === r)) {
-                const targetPiece = getPieceAt(q, r);
-                if (targetPiece && selectedPiece.piece_class !== 'assassin') {
-                    targetedPiece = getPieceAt(q, r);
-                    availableCells = findAvailableCells();
-                    availableCells.push([selectedPiece.q, selectedPiece.r]);
-                } else {
-                    console.log(selectedPiece, q, r, null, null);
-                    sendMove(selectedPiece, q, r, null, null);
-                    availableCells = [];
-                    selectedPiece = null;
-                }
-                possibleMoves = [];
-            } else if (availableCells.some(cell => cell[0] === q && cell[1] === r)) {
-                console.log(selectedPiece, targetedPiece.q, targetedPiece.r, q, r);
-                sendMove(selectedPiece, targetedPiece.q, targetedPiece.r, q, r);
-                selectedPiece = null;
-                possibleMoves = [];
-                availableCells = [];
-            } else {
-                selectPiece(q, r);
-                availableCells = [];
-            }
-        } else {
-            selectPiece(q, r);
-            availableCells = [];
-        }
-        draw();
+
+
+canvas.addEventListener('click', handleCanvasClick);
+
+
+function handleCanvasClick(event) {
+    hidePieceInfo();
+    if (!gameState) return;
+
+    const [q, r] = getClickedHexCoordinates(event);
+
+    if (selectedPiece) {
+        handleSelectedPieceClick(q, r);
+    } else {
+        selectPiece(q, r);
+        availableCells = [];
     }
-});
+    
+    draw();
+}
+
+function getClickedHexCoordinates(event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    return pixelToHex(x, y);
+}
+
+function handleSelectedPieceClick(q, r) {
+    console.log("targetedPiece", targetedPiece)
+
+    if (targetedPiece && isAvailableCell(q, r)) {
+        handleCapturedPiecePlacement(q, r);
+        resetSelection();
+        return;
+    } else if (!targetedPiece && isClickOnSelectedPiece(q, r)) {
+        resetSelection();
+        return;
+    } else if (!targetedPiece && isPossibleMove(q, r)) {
+        handleMoveAttempt(q, r);
+        return;
+    }
+    selectPiece(q, r);
+    availableCells = [];
+}
+
+function isClickOnSelectedPiece(q, r) {
+    return selectedPiece.q === q && 
+           selectedPiece.r === r && 
+           !targetedPiece;
+}
+
+function isPossibleMove(q, r) {
+    return possibleMoves.some(move => move[0] === q && move[1] === r);
+}
+
+function isAvailableCell(q, r) {
+    return availableCells.some(cell => cell[0] === q && cell[1] === r);
+}
+
+function resetSelection() {
+    selectedPiece = null;
+    targetedPiece = null;
+    possibleMoves = [];
+    availableCells = [];
+}
+
+function handleMoveAttempt(q, r) {
+    const targetPiece = getPieceAt(q, r);
+
+    if (targetPiece && selectedPiece.piece_class !== 'assassin') {
+        // Cas spécial: capture d'une pièce (sauf pour l'assassin)
+        targetedPiece = targetPiece;
+        availableCells = findAvailableCells();
+        availableCells.push([selectedPiece.q, selectedPiece.r]);
+    } else {
+        // Déplacement normal
+        sendMove(selectedPiece, q, r, null, null);
+        resetSelection();
+    }
+    possibleMoves = [];
+}
+
+function handleCapturedPiecePlacement(q, r) {
+    sendMove(selectedPiece, targetedPiece.q, targetedPiece.r, q, r);
+    resetSelection();
+}
 
 function selectPiece(q, r) {
     if (gameState) {
@@ -493,9 +537,6 @@ function sendMove(piece, new_q, new_r, captured_q, captured_r) {
 function drawPlayerTurn() {
     if (gameState && gameState.current_player_index !== undefined) {
         let playerColor = Object.keys(COLORS)[gameState.current_player_index];
-        console.log("playerColor", playerColor);
-        console.log("players_colors_order", gameState.players_colors_order);
-        console.log("current_player_color", gameState.current_player_color);
 
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
@@ -656,7 +697,6 @@ function drawPlayerTurnArrow() {
 }
 
 
-
 function startAnimation(fromQ, fromR, toQ, toR) {
     animationInProgress = true;
     animationProgress = 0;
@@ -674,11 +714,7 @@ function startAnimation(fromQ, fromR, toQ, toR) {
 
 function animate(timestamp) {
     if (!animationInProgress) return;
-
-    // Incrémenter la progression (ajuster la vitesse en modifiant le 0.05)
     animationProgress += 0.05;
-
-    // Dessiner le frame actuel
     draw();
     
     // Calculer la position actuelle

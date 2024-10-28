@@ -792,14 +792,15 @@ class Board:
         # Supprimer toutes les occurrences du joueur tué
         while killed_player in self.players:
             killed_player_index = self.players.index(killed_player)
-            animate_player_elimination(pygame.display.get_surface(), self.players, killed_player_index, self)
+            if not self.rl:
+                animate_player_elimination(pygame.display.get_surface(), self.players, killed_player_index, self)
             self.players.pop(killed_player_index)
 
         logging.info(f"Le chef {killed_chief.name} a été tué{'.' if not killer_chief else f' par le chef {killer_chief.name}.'} Toutes ses pièces sont maintenant {'mortes' if not killer_chief else f'contrôlées par {killer_chief.name}'}.")
 
         # Mettre à jour l'index du joueur courant si nécessaire
         if self.current_player_index >= len(self.players):
-            self.current_player_index = 0
+            self.current_player_index = -1
 
 
     def draw(self, screen, selected_piece=None, piece_to_place=None):
