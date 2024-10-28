@@ -24,6 +24,7 @@ FONT_SIZE = 36
 ASSET_PATH = '../assets/'
 IS_PRODUCTION = os.environ.get('ENVIRONMENT') == 'production'
 
+ORDER_PLAYERS = ['purple', 'blue', 'red', 'pink', 'yellow', 'green']
 COLORS = {
     'purple': (128, 0, 128),
     'blue': (0, 0, 255),
@@ -41,10 +42,8 @@ NAMES = {
     (255, 105, 180): 'Rose',
     (255, 255, 0): 'Jaune',
     (0, 255, 0): 'Vert',
-    (100, 100, 100): 'Gris',
-    DARKER_GREY: 'Mort',
+    (100, 100, 100): 'Mort',
 }
-ORDER_PLAYERS = list(COLORS)
 ADJACENT_DIRECTIONS = [
     (1, 0), (-1, 0), (0, 1), (0, -1), (1, -1), (-1, 1),  # Directions existantes
 ]
@@ -690,7 +689,7 @@ class Board:
             'reporter': ASSET_PATH + 'reporter.svg'
         }
         self.players = []
-        for color in COLORS.keys():
+        for color in ORDER_PLAYERS:
             pieces = [create_piece(q, r, COLORS[color], cl, class_svg_paths[cl]) for q, r, c, cl in start_positions if c == color]
             self.players.append(Player(COLORS[color], pieces))
             self.pieces.extend(pieces)
