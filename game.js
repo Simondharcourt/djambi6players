@@ -190,9 +190,10 @@ function drawPieces() {
             const [x, y] = hexToPixel(piece.q, piece.r);
             // Déterminer la couleur à utiliser
             let pieceColor = COLORS[piece.color];
+            console.log("piececolor", pieceColor)
             if (piece.is_dead) {
                 pieceColor = 'rgb(100, 100, 100)'; // Gris pour les pièces mortes
-            } else if (!gameState.available_colors.includes(piece.color)) {
+            } else if (!gameState.available_colors.includes(NAMES[piece.color])) {
                 console.log("piececolor", piece.color)
             } else {
                 pieceColor = 'rgb(255, 255, 255)';
