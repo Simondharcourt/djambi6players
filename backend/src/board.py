@@ -32,6 +32,7 @@ COLORS = {
     'yellow': (255, 255, 0),
     'green': (0, 255, 0),
 }
+COLORS_REVERSE = {v: k for k, v in COLORS.items()}
 NAMES = {
     (128, 0, 128): 'Violet',
     (0, 0, 255): 'Bleu',
@@ -697,7 +698,8 @@ class Board:
         state = {
             'pieces': [(p.q, p.r, p.color, p.piece_class, p.svg_path, p.is_dead) for p in self.pieces],
             'players': [{'color': p.color, 'pieces': [piece.piece_class for piece in p.pieces]} for p in self.players if p is not None],
-            'current_player_index': current_player_index
+            'current_player_index': current_player_index,
+            'players_colors_order': [p.color for p in self.players] # probably something to do with this.
         }
         self.history.append(state)
         self.future.clear()
@@ -810,9 +812,9 @@ class Board:
             else:
                 pygame.draw.polygon(screen, WHITE, self.hex_corners(x, y), 1)  # Seulement le contour
 
-        current_player_color = self.players[self.current_player_index].color
+        self.current_player_color = self.players[self.current_player_index].color
         for piece in self.pieces:
-            is_current_player = (piece.color == current_player_color and selected_piece is None and piece_to_place is None)
+            is_current_player = (piece.color == self.current_player_color and selected_piece is None and piece_to_place is None)
             piece.draw(screen, is_current_player)
 
 
@@ -930,20 +932,6 @@ class Board:
                 return player
         return None  # Retourne None si aucun joueur ne correspond à la couleur
 
-    def to_json(self):
-        return {
-            'pieces': [
-                {
-                    'q': piece.q,
-                    'r': piece.r,
-                    'color': piece.color,
-                    'piece_class': piece.piece_class,
-                    'is_dead': piece.is_dead
-                } for piece in self.pieces
-            ],
-            'current_player_index': self.current_player_index
-        }
-
     def animate_move(self, screen, piece, start_q, start_r, end_q, end_r):
         if self.rl:
             return
@@ -1006,13 +994,13 @@ class Board:
         """
         # Vérifier si c'est le tour du joueur
         current_player = self.players[self.current_player_index]
-        if tuple(current_player.color) != tuple(player_color):
-            logging.info(f"Ce n'est pas le tour du joueur {tuple(player_color)} mais du joueur {tuple(current_player.color)}")
+        if tuple(current_player.color) != tuple(COLORS[player_color]):
+            logging.info(f"Ce n'est pas le tour du joueur {tuple(COLORS[player_color])} mais du joueur {tuple(current_player.color)}")
             return False
 
         # Sélectionner la pièce
         selected_piece = self.get_piece_at(*selected_pos)
-        if not selected_piece or tuple(selected_piece.color) != tuple(player_color):
+        if not selected_piece or tuple(selected_piece.color) != tuple(COLORS[player_color]):
             logging.info(f"Pièce invalide sélectionnée à {selected_pos}")
             return False
 
@@ -1041,22 +1029,21 @@ class Board:
         """
         Prépare et renvoie l'état actuel du plateau sous forme de chaîne JSON.
         """
-        state = {
+        return {
             'pieces': [
                 {
                     'q': piece.q,
                     'r': piece.r,
-                    'color': piece.color,
+                    'color': COLORS_REVERSE[piece.color],
                     'piece_class': piece.piece_class,
                     'is_dead': piece.is_dead,
-                    'on_central_cell': piece.on_central_cell if isinstance(piece, ChiefPiece) else False
                 } for piece in self.pieces
             ],
             'current_player_index': self.current_player_index, # not adapted to chief in the center
-            'current_player_color': self.players[self.current_player_index].color,
+            'current_player_color': COLORS_REVERSE[self.players[self.current_player_index].color],
             'players': [
                 {
-                    'color': player.color,
+                    'color': COLORS_REVERSE[player.color],
                     'name': player.name,
                     'score': player.score,
                     'relative_score': player.relative_score
@@ -1065,15 +1052,26 @@ class Board:
             'piece_to_place': {
                 'q': self.piece_to_place.q,
                 'r': self.piece_to_place.r,
-                'color': self.piece_to_place.color,
+                'color': COLORS_REVERSE[self.piece_to_place.color],
                 'piece_class': self.piece_to_place.piece_class,
                 'is_dead': self.piece_to_place.is_dead
             } if self.piece_to_place else None,
             'available_cells': self.available_cells
         }
         
-        return json.dumps(state)
-    
+    def to_json(self):
+        return {
+            'pieces': [
+                {
+                    'q': piece.q,
+                    'r': piece.r,
+                    'color': COLORS_REVERSE[piece.color],
+                    'piece_class': piece.piece_class,
+                    'is_dead': piece.is_dead
+                } for piece in self.pieces
+            ],
+            'current_player_index': self.current_player_index
+        }
     
 
 def draw_player_turn(screen, players, current_player_index, next_player_index=None, t=None):

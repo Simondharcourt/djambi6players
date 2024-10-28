@@ -14,11 +14,17 @@ You need to install pango and cairo ('brew install cairo pango' on macos/apt-get
 Just with https://simondharcourt.github.io/djambi6players/.
 To test locally, with python server.py and click on the html file.
 
+## Code structure
+- backend: python backend hosted on heroku
+- frontend: frontend hosted on github pages
+- local: to run the board locally
+- rules: a latex doc with the rules
+
 ## Todo:
 Plenty of things to do. On 3 parts: online part, ia part and game part.
 
 - online:
-Fix few things, as the order when the chief goes in the middle. Maybe add some moving animation.
+Fix few things, as the order when the chief goes in the middle.
 And add rules for each piece on the side.
 Maybe later, add possibility to host several games, add an account and elo ranking.
 

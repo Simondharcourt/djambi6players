@@ -67,8 +67,8 @@ let animationProgress = 0;
 
 // Ajouter le WebSocket
 // const ws = new WebSocket('wss://djambi6players-105ba3b611ff.herokuapp.com');  // Remplacez par l'URL de votre serveur
-// const ws = new WebSocket('ws://localhost:8765'); // to test on local
-const ws = new WebSocket('wss://desolate-gorge-87361-ab45c9693901.herokuapp.com');  // Remplacez par l'URL de votre serveur
+const ws = new WebSocket('ws://localhost:8765'); // to test on local
+// const ws = new WebSocket('wss://desolate-gorge-87361-ab45c9693901.herokuapp.com');  // Remplacez par l'URL de votre serveur
 
 
 ws.onopen = function() {
@@ -189,12 +189,11 @@ function drawPieces() {
             }
             const [x, y] = hexToPixel(piece.q, piece.r);
             // Déterminer la couleur à utiliser
-            let pieceColor = `rgb(${piece.color[0]}, ${piece.color[1]}, ${piece.color[2]})`;
-            let pieceName = NAMES[pieceColor];
+            let pieceColor = COLORS[piece.color];
             if (piece.is_dead) {
                 pieceColor = 'rgb(100, 100, 100)'; // Gris pour les pièces mortes
-            } else if (Array.isArray(piece.color) && !gameState.available_colors.includes(pieceName)) {
-                console.log("pieceName", pieceName)
+            } else if (!gameState.available_colors.includes(piece.color)) {
+                console.log("piececolor", piece.color)
             } else {
                 pieceColor = 'rgb(255, 255, 255)';
             }
@@ -237,7 +236,6 @@ function drawAvailableCells() {
         ctx.fill();
     }
 }
-
 
 
 // Fonction pour convertir les coordonnées hexagonales en pixels
@@ -316,8 +314,11 @@ function selectPiece(q, r) {
     if (gameState) {
         const piece = gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead);
         if (piece) {
-            const currentPlayerColor = getCurrentPlayerColor();
-            if (areColorsEqual(Object.keys(COLORS)[gameState.current_player_index], currentPlayerColor) && areColorsEqual(piece.color, COLORS[currentPlayerColor])) {
+            const clientPlayerColor = getClientPlayerColor();
+            console.log("gameState.current_player_color", gameState.current_player_color);
+            console.log("clientPlayerColor", clientPlayerColor);
+            console.log("piece.color", piece.color);
+            if (areColorsEqual(gameState.current_player_color, clientPlayerColor) && areColorsEqual(piece.color, clientPlayerColor)) {
                 selectedPiece = piece;
                 possibleMoves = calculatePossibleMoves(piece);
                 draw();
@@ -455,7 +456,7 @@ function drawSelectedPieceHalo() {
 }
 
 // Fonction pour obtenir la couleur du joueur actuel
-function getCurrentPlayerColor() {
+function getClientPlayerColor() {
     return clientAssignedColor; // Retourner la couleur assignée
 }
 
@@ -486,19 +487,10 @@ function sendMove(piece, new_q, new_r, captured_q, captured_r) {
 function drawPlayerTurn() {
     if (gameState && gameState.current_player_index !== undefined) {
         let playerColor = Object.keys(COLORS)[gameState.current_player_index];
-        let playerText = `Joueur ${gameState.current_player_index + 1}`;
+        console.log("playerColor", playerColor);
+        console.log("players_colors_order", gameState.players_colors_order);
+        console.log("current_player_color", gameState.current_player_color);
 
-        if (gameState.players && gameState.players[gameState.current_player_index]) {
-            const player = gameState.players[gameState.current_player_index];
-            if (player.color) {
-                playerColor = Array.isArray(player.color) 
-                    ? `rgb(${player.color[0]}, ${player.color[1]}, ${player.color[2]})`
-                    : player.color;
-            }
-            if (player.name) {
-                playerText = player.name;
-            }
-        }
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'black';
@@ -508,11 +500,11 @@ function drawPlayerTurn() {
         // Dessiner un cercle de la couleur du joueur
         ctx.beginPath();
         ctx.arc(202, 22, 15, 0, 2 * Math.PI);
-        ctx.fillStyle = playerColor;
+        ctx.fillStyle = gameState.current_player_color;
         ctx.fill();
         ctx.stroke();
         // Ajouter l'affichage de la couleur du client
-        const clientColor = getCurrentPlayerColor();
+        const clientColor = getClientPlayerColor();
         const clientColorText = `Votre couleur:`;
         ctx.fillStyle = 'white';
         ctx.fillText(clientColorText, 20, 60);
@@ -690,7 +682,7 @@ function animate(timestamp) {
     // Dessiner la pièce en mouvement
     if (animationPiece) {
         // Dessiner le cercle de la pièce
-        ctx.fillStyle = `rgb(${animationPiece.color[0]}, ${animationPiece.color[1]}, ${animationPiece.color[2]})`;
+        ctx.fillStyle = COLORS;
         ctx.beginPath();
         ctx.arc(currentX, currentY, PIECE_RADIUS, 0, 2 * Math.PI);
         ctx.fill();

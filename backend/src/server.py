@@ -20,7 +20,7 @@ class DjambiServer:
             index_color = list(COLORS.keys()).index(color)
             await self.send_board_state(websocket)
             await websocket.send(json.dumps({"type": "color_assignment", "color": color, "index": index_color}))
-            state = self.board.to_json()
+            state = self.board.send_state()
             state['type'] = 'state'
             state['available_colors'] = self.available_colors
             await self.broadcast(json.dumps(state))
@@ -32,7 +32,7 @@ class DjambiServer:
         if websocket in self.clients:
             color = self.clients.pop(websocket)
             self.available_colors = [color] + self.available_colors
-            state = self.board.to_json()
+            state = self.board.send_state()
             state['type'] = 'state'
             state['available_colors'] = self.available_colors
             await self.broadcast(json.dumps(state))
@@ -44,8 +44,7 @@ class DjambiServer:
                 await self.broadcast(json.dumps({"type": "game_reset", "message": "Le jeu a été réinitialisé"}))
 
     async def send_board_state(self, websocket):
-        state_json = self.board.send_state()
-        state = json.loads(state_json)  # Convertir la chaîne JSON en dictionnaire
+        state = self.board.send_state()
         state['type'] = 'state'
         state['available_colors'] = self.available_colors
         state_json = json.dumps(state)  # Reconvertir le dictionnaire en chaîne JSON
@@ -77,7 +76,7 @@ class DjambiServer:
                         )
                         if success:
                             print("Mouvement réussi")
-                            state = self.board.to_json()
+                            state = self.board.send_state()
                             state['type'] = 'state'
                             state['available_colors'] = self.available_colors
                             state['last_move'] = data
@@ -91,7 +90,7 @@ class DjambiServer:
                     async with self.lock:
                         success = self.board.undo()
                         print(f"Undo effectué : {success}")
-                        state = self.board.to_json()
+                        state = self.board.send_state()
                         state['type'] = 'state'
                         state['available_colors'] = self.available_colors
                         await self.broadcast(json.dumps(state))
@@ -101,7 +100,7 @@ class DjambiServer:
                     async with self.lock:
                         success = self.board.redo()
                         print(f"Redo effectué : {success}")
-                        state = self.board.to_json()
+                        state = self.board.send_state()
                         state['type'] = 'state'
                         state['available_colors'] = self.available_colors
                         await self.broadcast(json.dumps(state))
