@@ -16,6 +16,8 @@ const COLORS = {
     'pink': 'rgb(255, 105, 180)',
     'yellow': 'rgb(255, 255, 0)',
     'green': 'rgb(0, 255, 0)',
+    'grey': 'rgb(100, 100, 100)',
+    'white': 'rgb(255, 255, 255)',
 };
 const NAMES = {
     'rgb(128, 0, 128)': 'purple',
@@ -67,8 +69,8 @@ let animationProgress = 0;
 
 // Ajouter le WebSocket
 // const ws = new WebSocket('wss://djambi6players-105ba3b611ff.herokuapp.com');  // Remplacez par l'URL de votre serveur
-// const ws = new WebSocket('ws://localhost:8765'); // to test on local
-const ws = new WebSocket('wss://desolate-gorge-87361-ab45c9693901.herokuapp.com');  // Remplacez par l'URL de votre serveur
+const ws = new WebSocket('ws://localhost:8765'); // to test on local
+// const ws = new WebSocket('wss://desolate-gorge-87361-ab45c9693901.herokuapp.com');  // Remplacez par l'URL de votre serveur
 
 
 ws.onopen = function() {
@@ -189,17 +191,16 @@ function drawPieces() {
             }
             const [x, y] = hexToPixel(piece.q, piece.r);
             // Déterminer la couleur à utiliser
-            let pieceColor = COLORS[piece.color];
-            console.log("piececolor", pieceColor)
+            let pieceColor = piece.color;
             if (piece.is_dead) {
-                pieceColor = 'rgb(100, 100, 100)'; // Gris pour les pièces mortes
-            } else if (!gameState.available_colors.includes(NAMES[piece.color])) {
-                console.log("piececolor", piece.color)
+                pieceColor = 'grey'; // Gris pour les pièces mortes
+            } else if (!gameState.available_colors.includes(piece.color)) {
+                pieceColor = piece.color;
             } else {
-                pieceColor = 'rgb(255, 255, 255)';
+                pieceColor = 'white';
             }
             // Dessiner le cercle de la pièce
-            ctx.fillStyle = pieceColor;
+            ctx.fillStyle = COLORS[pieceColor];
             ctx.beginPath();
             ctx.arc(x, y, PIECE_RADIUS, 0, 2 * Math.PI);
             ctx.fill();
@@ -277,7 +278,7 @@ canvas.addEventListener('click', (event) => {
         const [q, r] = pixelToHex(x, y);
 
         if (selectedPiece) {
-            if ((selectedPiece.q === q && selectedPiece.r === r) && !targetedPiece) {
+            if ((selectedPiece.q === q && selectedPiece.r === r)) {
                 selectedPiece = null;
                 possibleMoves = [];
                 availableCells = [];

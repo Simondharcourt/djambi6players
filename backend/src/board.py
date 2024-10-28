@@ -21,10 +21,12 @@ BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 DARKER_GREY = (100, 100, 100)
 FONT_SIZE = 36
-ASSET_PATH = '../assets/'
+# Obtenir le chemin absolu du répertoire contenant board.py
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Remonter d'un niveau et accéder au dossier assets
+ASSET_PATH = os.path.join(os.path.dirname(CURRENT_DIR), 'assets/')
 IS_PRODUCTION = os.environ.get('ENVIRONMENT') == 'production'
 
-ORDER_PLAYERS = ['purple', 'blue', 'red', 'pink', 'yellow', 'green']
 COLORS = {
     'purple': (128, 0, 128),
     'blue': (0, 0, 255),
@@ -32,9 +34,9 @@ COLORS = {
     'pink': (255, 105, 180),
     'yellow': (255, 255, 0),
     'green': (0, 255, 0),
-    'grey': (100, 100, 100),
 }
-COLORS_REVERSE = {v: k for k, v in COLORS.items()}
+ALL_COLORS = {**COLORS, 'white': (255, 255, 255), 'grey': (100, 100, 100)}
+COLORS_REVERSE = {v: k for k, v in ALL_COLORS.items()}
 NAMES = {
     (128, 0, 128): 'Violet',
     (0, 0, 255): 'Bleu',
@@ -689,7 +691,7 @@ class Board:
             'reporter': ASSET_PATH + 'reporter.svg'
         }
         self.players = []
-        for color in ORDER_PLAYERS:
+        for color in COLORS.keys():
             pieces = [create_piece(q, r, COLORS[color], cl, class_svg_paths[cl]) for q, r, c, cl in start_positions if c == color]
             self.players.append(Player(COLORS[color], pieces))
             self.pieces.extend(pieces)
