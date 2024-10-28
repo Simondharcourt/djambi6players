@@ -96,6 +96,21 @@
             margin-bottom: 40px;
             color: #fff;
         }
+
+        #backToMenu {
+            position: fixed;
+            top: 50px;
+            left: auto;
+            right: 350px;
+            width: auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        #backToMenu:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
@@ -118,6 +133,7 @@
             <p id="pieceColor"></p>
             <div id="pieceDescription"></div>
         </div>
+        <button id="backToMenu" class="menu-button">Retour au menu</button>
     </div>
 
     <script src="game.js"></script>

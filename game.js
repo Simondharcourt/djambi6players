@@ -15,8 +15,14 @@ function showRules() {
     alert('Page des règles à venir');
 }
 
+function backToMenu() {
+    document.getElementById('mainMenu').style.display = 'block';
+    document.querySelector('.game-container').style.display = 'none';
+}
 
-
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('backToMenu').addEventListener('click', backToMenu);
+});
 
 // Variables du jeu
 const canvas = document.getElementById('gameCanvas');
@@ -88,6 +94,7 @@ pieceClasses.forEach(cl => {
 let gameState = null;
 let selectedPiece = null;
 let targetedPiece = null;
+let informationBox = null;
 let possibleMoves = [];
 let availableCells = []; // Ajoutez cette variable globale
 
@@ -309,7 +316,6 @@ canvas.addEventListener('click', handleCanvasClick);
 
 
 function handleCanvasClick(event) {
-    hidePieceInfo();
     if (!gameState) return;
 
     const [q, r] = getClickedHexCoordinates(event);
@@ -403,6 +409,8 @@ function selectPiece(q, r) {
                 possibleMoves = calculatePossibleMoves(piece);
                 draw();
             }
+        } else {
+            hidePieceInfo();
         }
     }
 }
@@ -781,12 +789,18 @@ function animate(timestamp) {
 
 // Ajouter ces nouvelles fonctions
 function updatePieceInfo(piece) {
+    console.log("piece", piece)
+    console.log("informationBox", informationBox)
+    if (informationBox === piece) {
+        hidePieceInfo();
+        return;
+    }
     const pieceInfo = document.getElementById('pieceInfo');
     const pieceImage = document.getElementById('pieceImage');
     const pieceClass = document.getElementById('pieceClass');
     const pieceColor = document.getElementById('pieceColor');
     const pieceDescription = document.getElementById('pieceDescription');
-
+    informationBox = piece;
     pieceInfo.style.display = 'block';
     pieceImage.src = `assets/${piece.piece_class}.svg`;
     pieceClass.textContent = `Type: ${piece.piece_class}`;
@@ -797,6 +811,7 @@ function updatePieceInfo(piece) {
 function hidePieceInfo() {
     const pieceInfo = document.getElementById('pieceInfo');
     pieceInfo.style.display = 'none';
+    informationBox = null;
 }
 
 function drawPlayerScores() {
