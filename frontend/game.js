@@ -67,8 +67,8 @@ let animationProgress = 0;
 
 // Ajouter le WebSocket
 // const ws = new WebSocket('wss://djambi6players-105ba3b611ff.herokuapp.com');  // Remplacez par l'URL de votre serveur
-// const ws = new WebSocket('ws://localhost:8765'); // to test on local
-const ws = new WebSocket('wss://desolate-gorge-87361-ab45c9693901.herokuapp.com');  // Remplacez par l'URL de votre serveur
+const ws = new WebSocket('ws://localhost:8765'); // to test on local
+// const ws = new WebSocket('wss://desolate-gorge-87361-ab45c9693901.herokuapp.com');  // Remplacez par l'URL de votre serveur
 
 
 ws.onopen = function() {
@@ -268,6 +268,7 @@ function pixelToHex(x, y) {
 }
 // Gestion des événements de la souris
 canvas.addEventListener('click', (event) => {
+    hidePieceInfo(); // Ajouter cette ligne
     if (gameState) {
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
@@ -315,10 +316,9 @@ function selectPiece(q, r) {
         const piece = gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead);
         if (piece) {
             const clientPlayerColor = getClientPlayerColor();
-            console.log("gameState.current_player_color", gameState.current_player_color);
-            console.log("clientPlayerColor", clientPlayerColor);
-            console.log("piece.color", piece.color);
-            if (areColorsEqual(gameState.current_player_color, clientPlayerColor) && areColorsEqual(piece.color, clientPlayerColor)) {
+            updatePieceInfo(piece); // Ajouter cette ligne
+            if (areColorsEqual(gameState.current_player_color, clientPlayerColor) && 
+                areColorsEqual(piece.color, clientPlayerColor)) {
                 selectedPiece = piece;
                 possibleMoves = calculatePossibleMoves(piece);
                 draw();
@@ -705,5 +705,32 @@ function animate(timestamp) {
     }
 }
 
+// Ajouter ces constantes pour les descriptions des pièces
+const PIECE_DESCRIPTIONS = {
+    'assassin': "L'Assassin peut traverser les pièces alliées et capturer une pièce ennemie. Sa victime sera placée là où se troauvait l'assassin.",
+    'chief': "Le Chef est la pièce maîtresse. Si elle est capturée, vous perdez la partie. Si elle arrive au centre, vous prenez le pouvoir et rejouez après chacun de vos adversaires.",
+    'diplomat': "Le Diplomate peut déplacer des pièces vivantes sans les tuer.",
+    'militant': "Le Militant peut se déplacer de 2 cases dans les directions adjacentes et 1 case dans les directions diagonales. Il peut placer ses victimes où bon lui semble.",
+    'necromobile': "Le Nécromobile peut déplacer les pièces mortes. Vous pouvez ainsi vous protéger ou gêner un adversaire.",
+    'reporter': "Le Reporter élimine toutes les pièces ennemies autour de lui après s'être déplacé."
+};
 
+// Ajouter ces nouvelles fonctions
+function updatePieceInfo(piece) {
+    const pieceInfo = document.getElementById('pieceInfo');
+    const pieceImage = document.getElementById('pieceImage');
+    const pieceClass = document.getElementById('pieceClass');
+    const pieceColor = document.getElementById('pieceColor');
+    const pieceDescription = document.getElementById('pieceDescription');
 
+    pieceInfo.style.display = 'block';
+    pieceImage.src = `public/assets/${piece.piece_class}.svg`;
+    pieceClass.textContent = `Type: ${piece.piece_class}`;
+    pieceColor.textContent = `Couleur: ${piece.color}`;
+    pieceDescription.textContent = PIECE_DESCRIPTIONS[piece.piece_class];
+}
+
+function hidePieceInfo() {
+    const pieceInfo = document.getElementById('pieceInfo');
+    pieceInfo.style.display = 'none';
+}

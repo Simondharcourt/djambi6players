@@ -31,6 +31,7 @@ COLORS = {
     'pink': (255, 105, 180),
     'yellow': (255, 255, 0),
     'green': (0, 255, 0),
+    'grey': (100, 100, 100),
 }
 COLORS_REVERSE = {v: k for k, v in COLORS.items()}
 NAMES = {
@@ -40,6 +41,7 @@ NAMES = {
     (255, 105, 180): 'Rose',
     (255, 255, 0): 'Jaune',
     (0, 255, 0): 'Vert',
+    (100, 100, 100): 'Gris',
     DARKER_GREY: 'Mort',
 }
 ORDER_PLAYERS = list(COLORS)
