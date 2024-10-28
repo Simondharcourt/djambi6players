@@ -57,9 +57,58 @@
         #pieceInfo p {
             margin: 5px 0;
         }
+
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .menu-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 250px;
+            transition: background-color 0.3s;
+        }
+
+        .menu-button:hover {
+            background-color: #555;
+        }
+
+        .game-container {
+            display: none;  /* Cache le jeu par défaut */
+        }
+
+        #mainMenu {
+            text-align: center;
+            color: white;
+        }
+
+        #mainMenu h1 {
+            font-size: 48px;
+            margin-bottom: 40px;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
+    <div id="mainMenu">
+        <h1>Djambi</h1>
+        <div class="menu-container">
+            <button class="menu-button" onclick="startGame(2)">Partie 2 joueurs</button>
+            <button class="menu-button" onclick="startGame(6)">Partie 6 joueurs</button>
+            <button class="menu-button" onclick="showSettings()">Paramètres</button>
+            <button class="menu-button" onclick="showRules()">Règles du jeu</button>
+        </div>
+    </div>
+
     <div class="game-container">
         <canvas id="gameCanvas" width="1000" height="1000"></canvas>
         <div id="pieceInfo">
@@ -70,6 +119,7 @@
             <div id="pieceDescription"></div>
         </div>
     </div>
+
     <script src="game.js"></script>
 </body>
 </html>

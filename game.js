@@ -1,3 +1,23 @@
+
+function startGame(playerCount) {
+    document.getElementById('mainMenu').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'flex';
+    // Initialiser le jeu avec le nombre de joueurs spécifié
+}
+
+function showSettings() {
+    // Implémenter l'affichage des paramètres
+    alert('Page des paramètres à venir');
+}
+
+function showRules() {
+    // Implémenter l'affichage des règles
+    alert('Page des règles à venir');
+}
+
+
+
+
 // Variables du jeu
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
