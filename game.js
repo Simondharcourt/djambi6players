@@ -67,11 +67,15 @@ let startPos = null;
 let endPos = null;
 let animationProgress = 0;
 
-// Ajouter le WebSocket
-// const ws = new WebSocket('wss://djambi6players-105ba3b611ff.herokuapp.com');  // Remplacez par l'URL de votre serveur
-const ws = new WebSocket('ws://localhost:8765'); // to test on local
-// const ws = new WebSocket('wss://desolate-gorge-87361-ab45c9693901.herokuapp.com');  // Remplacez par l'URL de votre serveur
+// Déterminer l'URL du WebSocket en fonction de l'environnement
+let wsUrl;
+if (window.location.hostname.includes('github.io')) {
+    wsUrl = 'wss://desolate-gorge-87361-ab45c9693901.herokuapp.com';
+} else {
+    wsUrl = 'ws://localhost:8765';
+}
 
+const ws = new WebSocket(wsUrl);
 
 ws.onopen = function() {
     console.log('Connecté au serveur WebSocket');
