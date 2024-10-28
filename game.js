@@ -40,7 +40,7 @@ let imagesLoaded = 0;
 let allImagesLoaded = false;
 pieceClasses.forEach(cl => {
     const img = new Image();
-    img.src = `public/assets/${cl}.svg`;
+    img.src = `assets/${cl}.svg`;
     img.onload = () => {
         imagesLoaded++;
         if (imagesLoaded === pieceClasses.length) {
@@ -724,7 +724,7 @@ function updatePieceInfo(piece) {
     const pieceDescription = document.getElementById('pieceDescription');
 
     pieceInfo.style.display = 'block';
-    pieceImage.src = `public/assets/${piece.piece_class}.svg`;
+    pieceImage.src = `assets/${piece.piece_class}.svg`;
     pieceClass.textContent = `Type: ${piece.piece_class}`;
     pieceColor.textContent = `Couleur: ${piece.color}`;
     pieceDescription.textContent = PIECE_DESCRIPTIONS[piece.piece_class];
