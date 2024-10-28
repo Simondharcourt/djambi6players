@@ -112,7 +112,8 @@ class DjambiServer:
 
 async def main():
     port = int(os.environ.get('PORT', 8765))
-    async with websockets.serve(DjambiServer().handler, '0.0.0.0', port):
+    server = DjambiServer()
+    async with websockets.serve(server.handler, '0.0.0.0', port):
         print(f"Serveur lancé sur le port {port}")
         await asyncio.Future()  # Run forever
 
