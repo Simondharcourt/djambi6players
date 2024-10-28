@@ -20,6 +20,7 @@ BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 DARKER_GREY = (100, 100, 100)
 FONT_SIZE = 36
+ASSET_PATH = '../assets/'
 COLORS = {
     'purple': (128, 0, 128),
     'blue': (0, 0, 255),
@@ -85,7 +86,7 @@ class Piece:
     def load_necromobile_image(cls):
         if cls.necromobile_image is None:
             cls.necromobile_image = pygame.transform.scale(
-                cls.load_svg_as_surface('assets/necromobile.svg'),
+                cls.load_svg_as_surface(ASSET_PATH + 'necromobile.svg'),
                 (SIZE_IMAGE // 2, SIZE_IMAGE // 2)
             )
 
@@ -672,12 +673,12 @@ class Board:
         ]
         
         class_svg_paths = {
-            'assassin': 'assets/assassin.svg',
-            'chief': 'assets/chief.svg',
-            'diplomat': 'assets/diplomat.svg',
-            'militant': 'assets/militant.svg',
-            'necromobile': 'assets/necromobile.svg',
-            'reporter': 'assets/reporter.svg'
+            'assassin': ASSET_PATH + 'assassin.svg',
+            'chief': ASSET_PATH + 'chief.svg',
+            'diplomat': ASSET_PATH + 'diplomat.svg',
+            'militant': ASSET_PATH + 'militant.svg',
+            'necromobile': ASSET_PATH + 'necromobile.svg',
+            'reporter': ASSET_PATH + 'reporter.svg'
         }
         self.players = []
         for color in COLORS.keys():

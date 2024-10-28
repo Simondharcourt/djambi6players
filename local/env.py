@@ -4,7 +4,7 @@ from collections import deque
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input, Reshape, Multiply
 from tensorflow.keras.optimizers import Adam
-from board import Board, BOARD_SIZE, ORDER_PLAYERS
+from backend.src.board import Board, BOARD_SIZE, ORDER_PLAYERS
 from gym import spaces
 
 

@@ -62,6 +62,7 @@ class DjambiServer:
             async for message in websocket:
                 data = json.loads(message)
                 print(f"Message reçu du client : {data}")
+                
                 if data['type'] == 'move':
                     async with self.lock:
                         piece_data = data['piece']
@@ -85,6 +86,26 @@ class DjambiServer:
                             # Mouvement invalide
                             error = {'type': 'error', 'message': 'Mouvement invalide'}
                             await websocket.send(json.dumps(error))
+                elif data['type'] == 'undo':
+                    print("Commande undo reçue")
+                    async with self.lock:
+                        success = self.board.undo()
+                        print(f"Undo effectué : {success}")
+                        state = self.board.to_json()
+                        state['type'] = 'state'
+                        state['available_colors'] = self.available_colors
+                        await self.broadcast(json.dumps(state))
+                        print("Nouvel état envoyé après undo")
+                elif data['type'] == 'redo':
+                    print("Commande redo reçue")
+                    async with self.lock:
+                        success = self.board.redo()
+                        print(f"Redo effectué : {success}")
+                        state = self.board.to_json()
+                        state['type'] = 'state'
+                        state['available_colors'] = self.available_colors
+                        await self.broadcast(json.dumps(state))
+                        print("Nouvel état envoyé après redo")
         finally:
             print(f"Connexion fermée : {websocket.remote_address}")
             await self.unregister(websocket)

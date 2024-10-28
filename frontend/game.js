@@ -40,7 +40,7 @@ let imagesLoaded = 0;
 let allImagesLoaded = false;
 pieceClasses.forEach(cl => {
     const img = new Image();
-    img.src = `assets/${cl}.svg`;
+    img.src = `public/assets/${cl}.svg`;
     img.onload = () => {
         imagesLoaded++;
         if (imagesLoaded === pieceClasses.length) {
@@ -710,5 +710,6 @@ function animate(timestamp) {
         draw();
     }
 }
+
 
 
