@@ -1,4 +1,3 @@
-
 function startGame(playerCount) {
     document.getElementById('mainMenu').style.display = 'none';
     document.querySelector('.game-container').style.display = 'flex';
@@ -11,8 +10,7 @@ function showSettings() {
 }
 
 function showRules() {
-    // Implémenter l'affichage des règles
-    alert('Page des règles à venir');
+    window.open('rules/Djambi_rules.pdf', '_blank');
 }
 
 function backToMenu() {
@@ -581,7 +579,7 @@ function drawPlayerTurn() {
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 2;
         const text = `Tour du joueur:`;
-        ctx.fillText(text, 180, 30);
+        ctx.fillText(text, 20, 30);
         // Dessiner un cercle de la couleur du joueur
         ctx.beginPath();
         ctx.arc(202, 22, 15, 0, 2 * Math.PI);
@@ -592,7 +590,7 @@ function drawPlayerTurn() {
         const clientColor = getClientPlayerColor();
         const clientColorText = `Votre couleur:`;
         ctx.fillStyle = 'white';
-        ctx.fillText(clientColorText, 165, 60);
+        ctx.fillText(clientColorText, 20, 60);
 
         // Dessiner un cercle de la couleur du client
         ctx.beginPath();
@@ -839,13 +837,8 @@ function drawPlayerScores() {
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Afficher le score absolu
         ctx.fillStyle = 'white';
         ctx.textAlign = 'left';
-        ctx.fillText(player.score.toString(), startX + jetonRadius + scoreSpacing, y + jetonRadius/2);
-
-        // Afficher le score relatif
-        ctx.textAlign = 'right';
-        ctx.fillText(player.relative_score.toString(), startX - jetonRadius - scoreSpacing, y + jetonRadius/2);
+        ctx.fillText(player.relative_score.toString(), startX + jetonRadius + scoreSpacing, y + jetonRadius/2);
     });
 }
