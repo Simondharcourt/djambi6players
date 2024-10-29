@@ -24,15 +24,12 @@ To test locally, with python server.py and click on the html file.
 Plenty of things to do. On 3 parts: online part, ia part and game part.
 
 - online:
-Fix few things, as the order when the chief goes in the middle.
-And add rules for each piece on the side.
+Add undo/redo buttons.
 Maybe later, add possibility to host several games, add an account and elo ranking.
 
 - ai part.
 train the model on a platform. Get inspired by trainings on chess.
+On the side, add a minmax algorithm to still be able to play alone (to suggest one players game online)
 
 - game part.
-small stuff: kill a chief by surronding, end game if a chief is sourrounded in the middle.
 get zombies by going acceding in the middle.
-improve playability
-fix some bugs.
