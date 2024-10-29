@@ -30,7 +30,7 @@ class Player:
         for piece in self.pieces:
             moves = piece.all_possible_moves(board)
             if moves:
-                all_moves.append((piece, moves))
+                all_moves.extend([(piece, move, board.get_piece_at(move[0], move[1]) is not None) for move in moves])
         return all_moves
 
     def play_turn(self, board):

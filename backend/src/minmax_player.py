@@ -4,7 +4,7 @@ import logging
 from player import Player
 
 class MinMaxPlayer(Player):
-    def __init__(self, color, pieces, depth=1):
+    def __init__(self, color, pieces, depth=4):
         super().__init__(color, pieces)
         self.depth = depth
 
@@ -24,10 +24,12 @@ class MinMaxPlayer(Player):
         if not valid_moves:
             return self.evaluate_board(board), None
 
+        # Trier les mouvements pour prioriser les kills
+        valid_moves.sort(key=lambda x: x[2], reverse=True)
+
         max_eval = float('-inf')
         best_move = None
-        for piece, moves in valid_moves:
-            for move in moves:
+        for piece, move, is_a_kill in valid_moves:
                 new_board = self.copy_board_state(board)
                 new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
                 new_piece.move(move[0], move[1], new_board)

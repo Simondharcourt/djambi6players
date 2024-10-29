@@ -924,6 +924,14 @@ class Board:
         for player in self.players:
             player.compute_relative_score(self)
 
+    # def update_all_scores(self):
+    #     """Met à jour les scores absolus et relatifs de tous les joueurs en un seul passage."""
+    #     scores = [player.compute_score(self) for player in self.players]
+    #     max_score = max(scores) if scores else 0
+    #     for player, score in zip(self.players, scores):
+    #         player.score = score
+    #         player.relative_score = score - max_score
+
     def handle_client_move(self, player_color, selected_pos, destination_pos, captured_piece_pos=None):
         """
         Gère le mouvement d'un client.
