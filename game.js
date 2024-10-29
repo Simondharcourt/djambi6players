@@ -149,6 +149,9 @@ function handleVisibilityChange() {
             // Si la connexion est toujours active, demander simplement l'état
             requestGameState();
         }
+    } else {
+        // Si la page n'est pas visible, fermer la connexion WebSocket
+        ws.close();
     }
 }
 
