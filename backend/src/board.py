@@ -1062,20 +1062,6 @@ class Board:
             } if self.piece_to_place else None,
             'available_cells': self.available_cells
         }
-        
-    def to_json(self):
-        return {
-            'pieces': [
-                {
-                    'q': piece.q,
-                    'r': piece.r,
-                    'color': COLORS_REVERSE[piece.color],
-                    'piece_class': piece.piece_class,
-                    'is_dead': piece.is_dead
-                } for piece in self.pieces
-            ],
-            'current_player_index': self.current_player_index
-        }
     
 
 def draw_player_turn(screen, players, current_player_index, next_player_index=None, t=None):

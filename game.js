@@ -1,26 +1,3 @@
-function startGame(playerCount) {
-    document.getElementById('mainMenu').style.display = 'none';
-    document.querySelector('.game-container').style.display = 'flex';
-    // Initialiser le jeu avec le nombre de joueurs spécifié
-}
-
-function showSettings() {
-    // Implémenter l'affichage des paramètres
-    alert('Page des paramètres à venir');
-}
-
-function showRules() {
-    window.open('rules/Djambi_rules.pdf', '_blank');
-}
-
-function backToMenu() {
-    document.getElementById('mainMenu').style.display = 'block';
-    document.querySelector('.game-container').style.display = 'none';
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('backToMenu').addEventListener('click', backToMenu);
-});
 
 // Variables du jeu
 const canvas = document.getElementById('gameCanvas');
@@ -112,48 +89,44 @@ if (window.location.hostname.includes('github.io')) {
 
 const ws = new WebSocket(wsUrl);
 
+
+
+function startGame(playerCount) {
+    document.getElementById('mainMenu').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'flex';
+    
+    // Envoyer un message au serveur pour rejoindre la partie
+    ws.send(JSON.stringify({
+        type: 'start_game', nb_players: playerCount
+    }));
+}
+
+function showSettings() {
+    // Implémenter l'affichage des paramètres
+    alert('Page des paramètres à venir');
+}
+
+function showRules() {
+    window.open('rules/Djambi_rules.pdf', '_blank');
+}
+
+function backToMenu() {
+    document.getElementById('mainMenu').style.display = 'block';
+    document.querySelector('.game-container').style.display = 'none';
+    ws.send(JSON.stringify({
+        type: 'quit_game'
+    }));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('backToMenu').addEventListener('click', backToMenu);
+});
+
+
+
 ws.onopen = function() {
     console.log('Connecté au serveur WebSocket');
-    // Demander l'état du jeu dès la connexion
-    // requestGameState();
 };
-
-// // Ajouter cette nouvelle fonction
-// function requestGameState() {
-//     ws.send(JSON.stringify({
-//         'type': 'request_state'
-//     }));
-// }
-
-// // Modifier la gestion de la visibilité de la page
-// document.addEventListener('visibilitychange', handleVisibilityChange);
-// document.addEventListener('resume', handleVisibilityChange);
-// document.addEventListener('pause', handleVisibilityChange);
-// window.addEventListener('focus', handleVisibilityChange);
-// window.addEventListener('blur', handleVisibilityChange);
-
-// function handleVisibilityChange() {
-//     if (document.visibilityState === 'visible' || document.hasFocus()) {
-//         // Si la connexion WebSocket est fermée, la réinitialiser
-//         if (ws.readyState === WebSocket.CLOSED) {
-//             // Recréer la connexion WebSocket
-//             ws = new WebSocket(wsUrl);
-//             ws.onopen = function() {
-//                 console.log('Reconnecté au serveur WebSocket');
-//                 requestGameState();
-//             };
-//             ws.onmessage = onMessage; // Référence à la fonction de gestion des messages
-//             ws.onerror = onError;     // Référence à la fonction de gestion des erreurs
-//             ws.onclose = onClose;     // Référence à la fonction de gestion de la fermeture
-//         } else {
-//             // Si la connexion est toujours active, demander simplement l'état
-//             requestGameState();
-//         }
-//     } else {
-//         // Si la page n'est pas visible, fermer la connexion WebSocket
-//         ws.close();
-//     }
-// }
 
 ws.onerror = function(error) {
     console.error('Erreur WebSocket:', error);
@@ -163,15 +136,28 @@ ws.onerror = function(error) {
 // Variable globale pour stocker la couleur assignée
 let clientAssignedColor = "white"; // Couleur par défaut
 let clientAssignedIndex = 0;
+let clientAssignedColors = ["white"]; // Couleur par défaut
+
 
 ws.onmessage = function(event) {
-    console.log("Message reçu du serveur:", event.data);
     const data = JSON.parse(event.data);
     if (data.type === 'color_assignment') {
-        // Assigner la couleur reçue à une variable ou un état
-        clientAssignedColor = data.color; // Stocker la couleur assignée
-        clientAssignedIndex = data.index;
-        console.log("Couleur assignée:", clientAssignedColor);
+        console.log("data", data)
+        if (data.nb_players === 6) {
+            clientAssignedColors = [data.color]
+            clientAssignedColor = data.color; // Stocker la couleur assignée
+            clientAssignedIndex = data.index;
+            console.log("clientAssignedColors", clientAssignedColors)
+            clientAssignedIndices = [data.index]
+        } else if (data.nb_players === 2) {
+            console.log("data", data)
+            console.log("colors", data.colors)
+            clientAssignedIndices = [data.indices]
+            clientAssignedColors = data.colors; // Stocker la couleur assignée
+            clientAssignedIndex = data.indices[1];
+            
+        }
+        console.log("Couleur assignée:", clientAssignedColors);
         console.log("Index assigné:", clientAssignedIndex);
         draw();
     } else if (data.type === 'state') {
@@ -179,9 +165,9 @@ ws.onmessage = function(event) {
             startAnimation(data.last_move.piece.q, data.last_move.piece.r, data.last_move.move_to.q, data.last_move.move_to.r);
         }
         console.log("last move", data.last_move)
+        console.log("current_player_color", data.current_player_color)
         gameState = data;
         console.log("Nouvel état du jeu:", gameState);
-
         draw();
     } else if (data.type === 'error') {
         alert(data.message);
@@ -416,7 +402,7 @@ function handleMoveAttempt(q, r) {
     const targetPiece = getPieceAt(q, r);
 
     if (targetPiece && selectedPiece.piece_class !== 'assassin') {
-        // Cas sp��cial: capture d'une pièce (sauf pour l'assassin)
+        // Cas spcial: capture d'une pièce (sauf pour l'assassin)
         targetedPiece = targetPiece;
         availableCells = findAvailableCells();
         availableCells.push([selectedPiece.q, selectedPiece.r]);
@@ -437,10 +423,12 @@ function selectPiece(q, r) {
     if (gameState) {
         const piece = gameState.pieces.find(p => p.q === q && p.r === r && !p.is_dead);
         if (piece) {
-            const clientPlayerColor = getClientPlayerColor();
             updatePieceInfo(piece); // Ajouter cette ligne
-            if (areColorsEqual(gameState.current_player_color, clientPlayerColor) && 
-                areColorsEqual(piece.color, clientPlayerColor)) {
+            console.log("gameState.current_player_color", gameState.current_player_color)
+            console.log("piece.color", piece.color)
+            console.log("clientAssignedColors", clientAssignedColors)
+            if (areColorsEqual(gameState.current_player_color, piece.color) && 
+                clientAssignedColors.includes(piece.color)) {
                 selectedPiece = piece;
                 possibleMoves = calculatePossibleMoves(piece);
                 draw();
@@ -579,10 +567,6 @@ function drawSelectedPieceHalo() {
     }
 }
 
-// Fonction pour obtenir la couleur du joueur actuel
-function getClientPlayerColor() {
-    return clientAssignedColor; // Retourner la couleur assignée
-}
 
 // Fonction pour envoyer un mouvement au serveur
 function sendMove(piece, new_q, new_r, captured_q, captured_r) {
@@ -610,7 +594,6 @@ function sendMove(piece, new_q, new_r, captured_q, captured_r) {
 
 function drawPlayerTurn() {
     if (gameState && gameState.current_player_index !== undefined) {
-        let playerColor = Object.keys(COLORS)[gameState.current_player_index];
 
         ctx.font = '24px Arial';
         ctx.fillStyle = 'white';
@@ -625,18 +608,19 @@ function drawPlayerTurn() {
         ctx.fill();
         ctx.stroke();
         // Ajouter l'affichage de la couleur du client
-        const clientColor = getClientPlayerColor();
         const clientColorText = `Votre couleur:`;
         ctx.fillStyle = 'white';
         ctx.fillText(clientColorText, 20, 60);
 
         // Dessiner un cercle de la couleur du client
-        ctx.beginPath();
-        ctx.arc(187, 55, 15, 0, 2 * Math.PI);
-        ctx.fillStyle = clientColor;
-        ctx.fill();
-        ctx.lineWidth = 0;
-        ctx.stroke();
+        clientAssignedColors.forEach((color, index) => {
+            ctx.beginPath();
+            ctx.arc(187 + index * 40, 55, 15, 0, 2 * Math.PI);
+            ctx.fillStyle = COLORS[color];
+            ctx.fill();
+            ctx.lineWidth = 0;
+            ctx.stroke();
+        });
     } else {
         console.log("Données insuffisantes pour afficher le tour du joueur");
     }
@@ -863,7 +847,6 @@ function drawPlayerScores() {
     
     gameState.players.forEach((player, index) => {
         // Position du jeton
-        console.log("player", player)
         const y = startY + index * (jetonRadius * 2 + spacing);
         
         // Dessiner le jeton
