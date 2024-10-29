@@ -40,8 +40,7 @@ class Player:
         if not all_moves:
             return
         
-        piece, moves = random.choice(all_moves)
-        move = random.choice(moves)
+        piece, move, _ = random.choice(all_moves)
         piece.move(move[0], move[1], board)
 
     def change_color(self, new_color):
