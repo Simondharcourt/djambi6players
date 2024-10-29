@@ -9,53 +9,40 @@ class MinMaxPlayer(Player):
         self.depth = depth
 
     def play_turn(self, board):
-        """Joue un tour en utilisant l'algorithme MinMax pour choisir le meilleur mouvement."""
-        best_move = self.minmax(board, self.depth, True)[1]
+        """Joue un tour en utilisant l'algorithme MinMax avec élagage alpha-beta."""
+        best_move = self.alpha_beta(board, self.depth, float('-inf'), float('inf'))[1]
         if best_move:
             piece, move = best_move
             piece.move(move[0], move[1], board)
-            logging.info(f"MinMax a joué : {piece.piece_class} de ({piece.q}, {piece.r}) à {move}")
+            logging.info(f"MinMax a joué : {piece.piece_class} de ({piece.q}, {piece.r}) à {move}, eval: {self.evaluate_board(board)}")
 
-    def minmax(self, board, depth, maximizing_player):
+    def alpha_beta(self, board, depth, alpha, beta):
         if depth == 0:
             return self.evaluate_board(board), None
 
         valid_moves = self.get_all_valid_moves(board)
-
         if not valid_moves:
             return self.evaluate_board(board), None
 
-        if maximizing_player:
-            max_eval = float('-inf')
-            best_move = None
-            for piece, moves in valid_moves:
-                for move in moves:
-                    new_board = self.copy_board_state(board)
-                    new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
-                    new_piece.move(move[0], move[1], new_board)
-                    new_board.next_player()
-                    next_player = new_board.players[new_board.current_player_index]
-                    eval = next_player.minmax(new_board, depth - 1, False)[0]
-                    print(f"eval: {eval}, max_eval: {max_eval}")
-                    if eval > max_eval:
-                        max_eval = eval
-                        best_move = (piece, move)
-            return max_eval, best_move
-        else:
-            min_eval = float('inf')
-            best_move = None
-            for piece, moves in valid_moves:
-                for move in moves:
-                    new_board = self.copy_board_state(board)
-                    new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
-                    new_piece.move(move[0], move[1], new_board)
-                    new_board.next_player()
-                    next_player = new_board.players[new_board.current_player_index]
-                    eval = next_player.minmax(new_board, depth - 1, False)[0]
-                    if eval < min_eval:
-                        min_eval = eval
-                        best_move = (piece, move)
-            return min_eval, best_move
+        max_eval = float('-inf')
+        best_move = None
+        for piece, moves in valid_moves:
+            for move in moves:
+                new_board = self.copy_board_state(board)
+                new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
+                new_piece.move(move[0], move[1], new_board)
+                new_board.next_player()
+                next_player = new_board.players[new_board.current_player_index]
+                eval = next_player.alpha_beta(new_board, depth - 1, alpha, beta)[0]
+                if eval > max_eval:
+                    max_eval = eval
+                    best_move = (piece, move)
+                    print(f"max_eval: {max_eval}, best_move: {best_move}")
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break  # Élagage beta
+        return max_eval, best_move
+
 
     def evaluate_board(self, board):
         """Évalue le plateau en fonction de la différence de score relatif."""
