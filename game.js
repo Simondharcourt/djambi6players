@@ -171,6 +171,14 @@ ws.onmessage = function(event) {
         draw();
     } else if (data.type === 'error') {
         alert(data.message);
+    } else if (data.type === 'auth_response') {
+        if (data.success) {
+            alert(data.message);
+            // Mettre à jour l'interface si nécessaire
+            updateUIAfterAuth(data.username);
+        } else {
+            alert(data.message);
+        }
     }
 };
 
@@ -833,7 +841,6 @@ function hidePieceInfo() {
     pieceInfo.style.display = 'none';
     informationBox = null;
 }
-
 function drawPlayerScores() {
     if (!gameState || !gameState.players) return;
 
@@ -842,6 +849,7 @@ function drawPlayerScores() {
     const jetonRadius = 15;
     const spacing = 10;
     const scoreSpacing = 10;
+    const nameSpacing = 60; // Espacement pour le nom
 
     ctx.font = '20px Arial';
     
@@ -852,16 +860,88 @@ function drawPlayerScores() {
         // Dessiner le jeton
         ctx.beginPath();
         ctx.arc(startX, y, jetonRadius, 0, 2 * Math.PI);
-        ctx.fillStyle = COLORS[player.color]; // Utiliser le mapping des couleurs
+        ctx.fillStyle = COLORS[player.color];
         ctx.fill();
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 1;
         ctx.stroke();
 
+        // Dessiner le score
         ctx.fillStyle = 'white';
         ctx.textAlign = 'left';
         ctx.fillText(player.relative_score.toString(), startX + jetonRadius + scoreSpacing, y + jetonRadius/2);
+
+        // Dessiner le nom du joueur
+        const playerName = (player.name || "").slice(0, 3);
+        ctx.fillText(playerName, startX + jetonRadius + nameSpacing, y + jetonRadius/2);
     });
+}
+
+function createAccount() {
+    const username = prompt('Entrez votre nom d\'utilisateur :');
+    if (!username) return;
+
+    const password = prompt('Entrez votre mot de passe :');
+    
+    if (!username || !password) {
+        alert('Le nom d\'utilisateur et le mot de passe sont requis');
+        return;
+    }
+
+    // Envoyer les informations au serveur
+    ws.send(JSON.stringify({
+        type: 'create_account',
+        username: username,
+        password: password
+    }));
+}
+
+function login() {
+    const username = prompt('Entrez votre nom d\'utilisateur :');
+    if (!username) return;
+
+    const password = prompt('Entrez votre mot de passe :');
+    
+    if (!username || !password) {
+        alert('Le nom d\'utilisateur et le mot de passe sont requis');
+        return;
+    }
+
+    // Envoyer les informations au serveur
+    ws.send(JSON.stringify({
+        type: 'login',
+        username: username,
+        password: password
+    }));
+}
+
+function updateUIAfterAuth(username) {
+    // Mettre à jour l'interface pour montrer que l'utilisateur est connecté
+    const loginButton = document.querySelector('button[onclick="login()"]');
+    if (!loginButton) return;
+    const createAccountButton = document.querySelector('button[onclick="createAccount()"]');
+    
+    if (loginButton && createAccountButton) {
+        loginButton.style.display = 'none';
+        createAccountButton.style.display = 'none';
+        
+        // Ajouter un bouton de déconnexion
+        const menuContainer = document.querySelector('.menu-container');
+        const logoutButton = document.createElement('button');
+        logoutButton.className = 'menu-button';
+        logoutButton.textContent = `Déconnexion (${username})`;
+        logoutButton.onclick = logout;
+        menuContainer.appendChild(logoutButton);
+    }
+}
+
+function logout() {
+    ws.send(JSON.stringify({
+        type: 'logout'
+    }));
+    
+    // Réinitialiser l'interface
+    location.reload();
 }
 
 

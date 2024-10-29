@@ -253,6 +253,38 @@
 
         }
 
+        /* Styles pour les formulaires d'authentification */
+        .auth-form {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: left;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .auth-form button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .auth-form button:hover {
+            background-color: #666;
+        }
+
     </style>
 </head>
 <body>
@@ -263,6 +295,9 @@
             <button class="menu-button" onclick="startGame(6)">Partie 6 joueurs</button>
             <button class="menu-button" onclick="showSettings()">Paramètres</button>
             <button class="menu-button" onclick="showRules()">Règles du jeu</button>
+            <button class="menu-button" onclick="createAccount()">Créer un compte</button>
+            <button class="menu-button" onclick="login()">Se connecter</button>
+
         </div>
     </div>
 

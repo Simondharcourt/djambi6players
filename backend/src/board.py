@@ -1048,7 +1048,7 @@ class Board:
             'players': [
                 {
                     'color': COLORS_REVERSE[player.color],
-                    'name': player.name,
+                    'name': ' ',
                     'score': player.score,
                     'relative_score': player.relative_score
                 } for player in self.players
