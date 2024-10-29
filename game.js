@@ -115,45 +115,45 @@ const ws = new WebSocket(wsUrl);
 ws.onopen = function() {
     console.log('Connecté au serveur WebSocket');
     // Demander l'état du jeu dès la connexion
-    requestGameState();
+    // requestGameState();
 };
 
-// Ajouter cette nouvelle fonction
-function requestGameState() {
-    ws.send(JSON.stringify({
-        'type': 'request_state'
-    }));
-}
+// // Ajouter cette nouvelle fonction
+// function requestGameState() {
+//     ws.send(JSON.stringify({
+//         'type': 'request_state'
+//     }));
+// }
 
-// Modifier la gestion de la visibilité de la page
-document.addEventListener('visibilitychange', handleVisibilityChange);
-document.addEventListener('resume', handleVisibilityChange);
-document.addEventListener('pause', handleVisibilityChange);
-window.addEventListener('focus', handleVisibilityChange);
-window.addEventListener('blur', handleVisibilityChange);
+// // Modifier la gestion de la visibilité de la page
+// document.addEventListener('visibilitychange', handleVisibilityChange);
+// document.addEventListener('resume', handleVisibilityChange);
+// document.addEventListener('pause', handleVisibilityChange);
+// window.addEventListener('focus', handleVisibilityChange);
+// window.addEventListener('blur', handleVisibilityChange);
 
-function handleVisibilityChange() {
-    if (document.visibilityState === 'visible' || document.hasFocus()) {
-        // Si la connexion WebSocket est fermée, la réinitialiser
-        if (ws.readyState === WebSocket.CLOSED) {
-            // Recréer la connexion WebSocket
-            ws = new WebSocket(wsUrl);
-            ws.onopen = function() {
-                console.log('Reconnecté au serveur WebSocket');
-                requestGameState();
-            };
-            ws.onmessage = onMessage; // Référence à la fonction de gestion des messages
-            ws.onerror = onError;     // Référence à la fonction de gestion des erreurs
-            ws.onclose = onClose;     // Référence à la fonction de gestion de la fermeture
-        } else {
-            // Si la connexion est toujours active, demander simplement l'état
-            requestGameState();
-        }
-    } else {
-        // Si la page n'est pas visible, fermer la connexion WebSocket
-        ws.close();
-    }
-}
+// function handleVisibilityChange() {
+//     if (document.visibilityState === 'visible' || document.hasFocus()) {
+//         // Si la connexion WebSocket est fermée, la réinitialiser
+//         if (ws.readyState === WebSocket.CLOSED) {
+//             // Recréer la connexion WebSocket
+//             ws = new WebSocket(wsUrl);
+//             ws.onopen = function() {
+//                 console.log('Reconnecté au serveur WebSocket');
+//                 requestGameState();
+//             };
+//             ws.onmessage = onMessage; // Référence à la fonction de gestion des messages
+//             ws.onerror = onError;     // Référence à la fonction de gestion des erreurs
+//             ws.onclose = onClose;     // Référence à la fonction de gestion de la fermeture
+//         } else {
+//             // Si la connexion est toujours active, demander simplement l'état
+//             requestGameState();
+//         }
+//     } else {
+//         // Si la page n'est pas visible, fermer la connexion WebSocket
+//         ws.close();
+//     }
+// }
 
 ws.onerror = function(error) {
     console.error('Erreur WebSocket:', error);
