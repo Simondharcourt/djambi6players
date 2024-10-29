@@ -61,8 +61,9 @@ class DjambiServer:
             async for message in websocket:
                 data = json.loads(message)
                 print(f"Message reçu du client : {data}")
-                
-                if data['type'] == 'move':
+                if data['type'] == 'request_state':
+                    await self.send_board_state(websocket)
+                elif data['type'] == 'move':
                     async with self.lock:
                         piece_data = data['piece']
                         move_to = data['move_to']

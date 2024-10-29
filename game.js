@@ -114,8 +114,38 @@ const ws = new WebSocket(wsUrl);
 
 ws.onopen = function() {
     console.log('Connecté au serveur WebSocket');
-    // Aucune requête supplémentaire n'est nécessaire ici, le serveur enverra la couleur automatiquement
+    // Demander l'état du jeu dès la connexion
+    requestGameState();
 };
+
+// Ajouter cette nouvelle fonction
+function requestGameState() {
+    ws.send(JSON.stringify({
+        'type': 'request_state'
+    }));
+}
+
+// Modifier la gestion de la visibilité de la page
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') {
+        // Si la connexion WebSocket est fermée, la réinitialiser
+        if (ws.readyState === WebSocket.CLOSED) {
+            // Recréer la connexion WebSocket
+            ws = new WebSocket(wsUrl);
+            ws.onopen = function() {
+                console.log('Reconnecté au serveur WebSocket');
+                requestGameState();
+            };
+            ws.onmessage = onMessage; // Référence à la fonction de gestion des messages
+            ws.onerror = onError;     // Référence à la fonction de gestion des erreurs
+            ws.onclose = onClose;     // Référence à la fonction de gestion de la fermeture
+        } else {
+            // Si la connexion est toujours active, demander simplement l'état
+            requestGameState();
+        }
+    }
+});
+
 
 ws.onerror = function(error) {
     console.error('Erreur WebSocket:', error);
@@ -842,3 +872,5 @@ function drawPlayerScores() {
         ctx.fillText(player.relative_score.toString(), startX + jetonRadius + scoreSpacing, y + jetonRadius/2);
     });
 }
+
+
