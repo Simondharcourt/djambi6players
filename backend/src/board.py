@@ -5,8 +5,9 @@ import logging
 import random
 import cairosvg
 from io import BytesIO
-import json
 import os
+from minmax_player import MinMaxPlayer
+from player import Player
 # Paramètres du jeu
 BOARD_SIZE = 7  # Nombre de cases par ligne/colonne sur le plateau
 HEX_RADIUS = 35  # Rayon des hexagones
@@ -59,7 +60,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 class Piece:
     necromobile_image = None
 
-    def __init__(self, q, r, color, piece_class, svg_path):
+    def __init__(self, q, r, color, piece_class, svg_path=None):
         self.q = q  # Coordonnée hexagonale q
         self.r = r  # Coordonnée hexagonale r
         self.color = color  # Couleur de la pièce
@@ -521,69 +522,6 @@ def create_piece(q, r, color, piece_class, svg_path):
     return piece
 
 
-class Player:
-    def __init__(self, color, pieces):
-        self.color = color
-        self.pieces = pieces
-        self.name = NAMES[color]
-        self.score = 0
-        self.relative_score = 0
-
-    def compute_score(self, board):  # get a constant score overall in the game. With board as a parameter ?
-        """Calcule le score actuel du joueur en fonction des pièces qu'il possède."""
-        piece_values = {
-            'militant': 60,
-            'assassin': 120,
-            'chief': 180,
-            'diplomat': 120,
-            'necromobile': 120,
-            'reporter': 120,
-        }
-        score = sum(piece_values[piece.piece_class] for piece in self.pieces if not piece.is_dead)
-        if any(piece.piece_class == 'chief' and not piece.is_dead and piece.on_central_cell for piece in self.pieces):
-            score += (score-180) * (len([player for player in board.players if player.color != self.color])-1)
-        self.score = score
-
-    def compute_relative_score(self, board):
-        self.relative_score = self.score * 600 // sum(player.score for player in list(set(board.players)))
-
-    def play_turn(self, board):
-        """Joue un tour : déplace une de ses pièces aléatoirement parmi les mouvements possibles."""
-        all_moves = []
-
-        # Récupérer tous les mouvements possibles pour toutes les pièces du joueur
-        for piece in self.pieces:
-            moves = piece.all_possible_moves(board)
-            if moves:
-                # Associer chaque mouvement possible avec la pièce correspondante
-                all_moves.append((piece, moves))
-
-        # Si aucun mouvement n'est possible, passer le tour
-        if not all_moves:
-            logging.debug(f"Joueur {self.name}: aucun mouvement possible, tour passé.")
-            return
-
-        # Choisir une pièce et un mouvement aléatoire
-        piece, moves = random.choice(all_moves)  # Choisir une pièce avec des mouvements possibles
-        move = random.choice(moves)  # Choisir un mouvement aléatoire pour cette pièce
-
-        # Appliquer le mouvement à la pièce
-        new_q, new_r = move
-        logging.debug(f"Joueur {self.name} déplace la pièce de {piece.q},{piece.r} vers {new_q},{new_r}")
-        piece.move(new_q, new_r, board)
-        
-    def change_color(self, new_color):
-        self.color = new_color
-        for piece in self.pieces:
-            piece.color = new_color
-
-    def remove_piece(self, piece):
-        self.pieces.remove(piece)
-
-    def add_piece(self, piece):
-        self.pieces.append(piece)
-        piece.color = self.color
-
 
 def is_within_board(q, r):
     """Vérifie si les coordonnées q, r sont dans les limites du plateau."""
@@ -604,7 +542,7 @@ def hex_to_pixel(q, r):
     return pixel_coords
 
 class Board:
-    def __init__(self, current_player_index):
+    def __init__(self, current_player_index=0):
         self.hexagons = []
         self.pieces = []
         self.current_player_index = current_player_index
@@ -693,7 +631,7 @@ class Board:
         self.players = []
         for color in COLORS.keys():
             pieces = [create_piece(q, r, COLORS[color], cl, class_svg_paths[cl]) for q, r, c, cl in start_positions if c == color]
-            self.players.append(Player(COLORS[color], pieces))
+            self.players.append(MinMaxPlayer(COLORS[color], pieces))
             self.pieces.extend(pieces)
         self.update_all_scores()
 
@@ -718,7 +656,7 @@ class Board:
         self.players = []
         for player_data in state['players']:
             player_pieces = [piece for piece in self.pieces if piece.color == player_data['color']]
-            self.players.append(Player(player_data['color'], player_pieces))
+            self.players.append(MinMaxPlayer(player_data['color'], player_pieces))
         self.update_all_scores()
         return state['current_player_index']
 
