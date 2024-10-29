@@ -126,8 +126,14 @@ function requestGameState() {
 }
 
 // Modifier la gestion de la visibilité de la page
-document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'visible') {
+document.addEventListener('visibilitychange', handleVisibilityChange);
+document.addEventListener('resume', handleVisibilityChange);
+document.addEventListener('pause', handleVisibilityChange);
+window.addEventListener('focus', handleVisibilityChange);
+window.addEventListener('blur', handleVisibilityChange);
+
+function handleVisibilityChange() {
+    if (document.visibilityState === 'visible' || document.hasFocus()) {
         // Si la connexion WebSocket est fermée, la réinitialiser
         if (ws.readyState === WebSocket.CLOSED) {
             // Recréer la connexion WebSocket
@@ -144,8 +150,7 @@ document.addEventListener('visibilitychange', function() {
             requestGameState();
         }
     }
-});
-
+}
 
 ws.onerror = function(error) {
     console.error('Erreur WebSocket:', error);
@@ -408,7 +413,7 @@ function handleMoveAttempt(q, r) {
     const targetPiece = getPieceAt(q, r);
 
     if (targetPiece && selectedPiece.piece_class !== 'assassin') {
-        // Cas spécial: capture d'une pièce (sauf pour l'assassin)
+        // Cas sp��cial: capture d'une pièce (sauf pour l'assassin)
         targetedPiece = targetPiece;
         availableCells = findAvailableCells();
         availableCells.push([selectedPiece.q, selectedPiece.r]);
