@@ -89,15 +89,24 @@ if (window.location.hostname.includes('github.io')) {
 
 const ws = new WebSocket(wsUrl);
 
+// Ajouter une variable globale pour suivre l'état de connexion
+let isLoggedIn = false;
+let currentUsername = null;
 
-
+// Modifier la fonction startGame
 function startGame(playerCount) {
+    if (!isLoggedIn) {
+        alert('Vous devez être connecté pour jouer. Veuillez vous connecter ou créer un compte.');
+        return;
+    }
+
     document.getElementById('mainMenu').style.display = 'none';
     document.querySelector('.game-container').style.display = 'flex';
     
-    // Envoyer un message au serveur pour rejoindre la partie
     ws.send(JSON.stringify({
-        type: 'start_game', nb_players: playerCount
+        type: 'start_game',
+        nb_players: playerCount,
+        username: currentUsername
     }));
 }
 
@@ -194,10 +203,13 @@ ws.onmessage = function(event) {
         alert(data.message);
     } else if (data.type === 'auth_response') {
         if (data.success) {
+            isLoggedIn = true;
+            currentUsername = data.username;
             alert(data.message);
-            // Mettre à jour l'interface si nécessaire
             updateUIAfterAuth(data.username);
         } else {
+            isLoggedIn = false;
+            currentUsername = null;
             alert(data.message);
         }
     }
@@ -937,16 +949,22 @@ function login() {
 }
 
 function updateUIAfterAuth(username) {
-    // Mettre à jour l'interface pour montrer que l'utilisateur est connecté
+    isLoggedIn = true;
+    currentUsername = username;
+    
+    // Cacher le bouton Compte
+    const accountButton = document.getElementById('accountButton');
+    if (accountButton) {
+        accountButton.style.display = 'none';
+    }
+    
     const loginButton = document.querySelector('button[onclick="login()"]');
-    if (!loginButton) return;
     const createAccountButton = document.querySelector('button[onclick="createAccount()"]');
     
     if (loginButton && createAccountButton) {
         loginButton.style.display = 'none';
         createAccountButton.style.display = 'none';
         
-        // Ajouter un bouton de déconnexion
         const menuContainer = document.querySelector('.menu-container');
         const logoutButton = document.createElement('button');
         logoutButton.className = 'menu-button';
@@ -957,11 +975,13 @@ function updateUIAfterAuth(username) {
 }
 
 function logout() {
+    isLoggedIn = false;
+    currentUsername = null;
+    
     ws.send(JSON.stringify({
         type: 'logout'
     }));
     
-    // Réinitialiser l'interface
     location.reload();
 }
 
