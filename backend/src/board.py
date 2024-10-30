@@ -542,10 +542,11 @@ def hex_to_pixel(q, r):
     return pixel_coords
 
 class Board:
-    def __init__(self, current_player_index=0):
+    def __init__(self, current_player_index=0, one_player_mode=False):
         self.hexagons = []
         self.pieces = []
         self.current_player_index = current_player_index
+        self.one_player_mode = one_player_mode
         logging.info("Initialisation du plateau")
         
         # Initialisation des hexagones du plateau
