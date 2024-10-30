@@ -1,18 +1,20 @@
 
 
 
-Djambi game with personal rules at 6 players, to develop a reinforcement learing strategy.
+Djambi game with personal rules at 6 players, to develop a reinforcement learing strategy. You can play it online.
 
-For now, it plays randomly.
+See here: https://fr.wikipedia.org/wiki/Djambi the original game.
+
+You can find my adapted rules are in the repository.
 
 
 ## How to use locally:
-Runs on python3.10.13 with a single script board.py.
+Runs on python3.10.13 with backend/src/main.py
 You need to install pango and cairo ('brew install cairo pango' on macos/apt-get install 'cairo pango')
 
 ## How to play it online with your friends:
 Just with https://simondharcourt.github.io/djambi6players/.
-To test locally, with python server.py and click on the html file.
+To test locally, with python backend/src/server.py and click on the html file.
 
 ## Code structure
 - backend: python backend hosted on heroku
@@ -23,13 +25,15 @@ To test locally, with python server.py and click on the html file.
 ## Todo:
 Plenty of things to do. On 3 parts: online part, ia part and game part.
 
-- online:
+#### - online:
 Add undo/redo buttons.
-Maybe later, add possibility to host several games, add an account and elo ranking.
+Add an elo ?
+Maybe later, add possibility to host several games.
 
-- ai part.
-train the model on a platform. Get inspired by trainings on chess.
-On the side, add a minmax algorithm to still be able to play alone (to suggest one players game online)
+#### - ai part.
+2 parts: minimax and rl.
+-- minimax part: it is actually a maxn algorithm, not a minmax, as it is a 6 players game. There is a lot of challenges about it, on complexity, as the depth should be at least to be pertinent. A pre-sort of the action should be made to filter all possible moves. 
+-- rl part: train the model on a platform. Get inspired by trainings on chess. Many possibilities to define the state space and the action space.
 
-- game part.
-get zombies by going acceding in the middle.
+#### - game part.
+the player should get all zombies by going acceding in the middle. Easy but not prioritary.
