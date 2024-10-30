@@ -23,88 +23,95 @@ class DjambiServer:
         await websocket.send(json.dumps({"type": "waiting", "message": "En attente de démarrage de partie"}))
 
     async def start_game(self, websocket, nb_players):
-        if websocket in self.waiting_clients:
-            if nb_players == 2 and len(self.available_colors) >= 3:
-                player_colors = [self.available_colors.pop(0) for _ in range(3)]
-                self.clients[websocket] = player_colors
-                color_indices = [list(COLORS.keys()).index(color) for color in player_colors]
-                await self.send_board_state(websocket)
-                print("player_colors", player_colors)
-                await websocket.send(json.dumps({
-                    "type": "color_assignment",
-                    "colors": player_colors,
-                    "indices": color_indices,
-                    "index": color_indices[1],
-                    "nb_players": 2,
-                }))
-                state = self.board.send_state()
-                state['type'] = 'state'
-                state['available_colors'] = self.available_colors
-                for player in state['players']:
-                    if player['color'] in self.authenticated_users:
-                        player['name'] = self.authenticated_users[player['color']]
-        
-                await self.broadcast(json.dumps(state))
+        if websocket not in self.waiting_clients:
+            return
             
-            elif nb_players == 6 and self.available_colors:
-                self.waiting_clients.remove(websocket)
-                color = self.available_colors.pop(0)
-                self.clients[websocket] = [color]
-                index_color = list(COLORS.keys()).index(color)
-                await self.send_board_state(websocket)
-                await websocket.send(json.dumps({
-                    "type": "color_assignment",
-                    "color": color,
-                    "index": index_color,
-                    "colors": [color],
-                    "indices": [index_color],
-                    "nb_players": 6
-                }))
-                state = self.board.send_state()
-                state['type'] = 'state'
-                state['available_colors'] = self.available_colors
-                for player in state['players']:
-                    if player['color'] in self.authenticated_users:
-                        player['name'] = self.authenticated_users[player['color']]
+        if (nb_players == 2 and len(self.available_colors) < 3) or \
+           (nb_players == 6 and not self.available_colors):
+            await websocket.send(json.dumps({
+                "type": "error", 
+                "message": "La partie est pleine"
+            }))
+            return
+
+        # Préparer les couleurs et indices
+        if nb_players == 2:
+            colors = [self.available_colors.pop(0) for _ in range(3)]
+            player_index = 1  # Pour le joueur 2
+        else:  # nb_players == 6
+            self.waiting_clients.remove(websocket)
+            colors = [self.available_colors.pop(0)]
+            player_index = list(COLORS.keys()).index(colors[0])
+
+        # Enregistrer le client
+        self.clients[websocket] = colors
         
-                        
-                await self.broadcast(json.dumps(state))
-                
-            else:
-                await websocket.send(json.dumps({"type": "error", "message": "La partie est pleine"}))
+        # Préparer la réponse pour le client
+        color_indices = [list(COLORS.keys()).index(color) for color in colors]
+        
+        # Envoyer l'état initial
+        await self.send_board_state(websocket)
+        
+        # Envoyer l'attribution des couleurs
+        await websocket.send(json.dumps({
+            "type": "color_assignment",
+            "colors": colors,
+            "indices": color_indices,
+            "index": player_index,
+            "nb_players": nb_players,
+            **({"color": colors[0]} if nb_players == 6 else {})
+        }))
+        
+        # Mettre à jour l'état pour tous les clients
+        await self._prepare_and_send_state()
 
     async def unregister(self, websocket):
         if websocket in self.clients:
             colors = self.clients.pop(websocket)
             self.available_colors = colors + self.available_colors
-            state = self.board.send_state()
-            state['type'] = 'state'
-            state['available_colors'] = self.available_colors
-            await self.broadcast(json.dumps(state))
+            
+            await self._prepare_and_send_state()
+            
             if len(self.available_colors) == 6:
-                self.board = Board(0)  # Réinitialiser le plateau de jeu
-                self.board.rl = True
-                self.current_player_index = 0
-                self.available_colors = list(COLORS.keys())
-                for player in state['players']:
-                    if player['color'] in self.authenticated_users:
-                        player['name'] = self.authenticated_users[player['color']]
-        
-                await self.broadcast(json.dumps({"type": "game_reset", "message": "Le jeu a été réinitialisé"}))
+                self._reset_game()
+                await self.broadcast(json.dumps({
+                    "type": "game_reset",
+                    "message": "Le jeu a été réinitialisé"
+                }))
 
-    async def send_board_state(self, websocket):
-        print(f"Sending state to specific client: {websocket.remote_address}")
+    async def _prepare_and_send_state(self, include_last_move=None, specific_client=None):
+        """Méthode utilitaire pour préparer et envoyer l'état du jeu"""
         state = self.board.send_state()
         state['type'] = 'state'
         state['available_colors'] = self.available_colors
         
-        for player in state['players']:
-            print(player)
-            if player['color'] in self.authenticated_users:
-                player['name'] = self.authenticated_users[player['color']]
+        if include_last_move:
+            state['last_move'] = include_last_move
+            
+        for websocket in self.clients:
+            for color in self.clients[websocket]:
+                for player in state['players']:
+                    if player['color'] == color:
+                        player['name'] = self.authenticated_users[websocket]
+                        print("added this name for this color:", player['name'], player['color'])
 
-        state_json = json.dumps(state)
-        await websocket.send(state_json)
+        
+        # Envoyer soit à un client spécifique, soit à tous
+        if specific_client:
+            await specific_client.send(json.dumps(state))
+        else:
+            await self.broadcast(json.dumps(state))
+
+    def _reset_game(self):
+        """Réinitialise l'état du jeu"""
+        self.board = Board(0)
+        self.board.rl = True
+        self.current_player_index = 0
+        self.available_colors = list(COLORS.keys())
+
+    async def send_board_state(self, websocket):
+        print(f"Sending state to specific client: {websocket.remote_address}")
+        await self._prepare_and_send_state(specific_client=websocket)
 
     async def broadcast(self, message):
         print(f"Broadcasting message: {message[:100]}...")
@@ -185,56 +192,28 @@ class DjambiServer:
                         piece_data = data['piece']
                         move_to = data['move_to']
                         captured_piece_to = data.get('captured_piece_to', None)
-                        # Utiliser la fonction handle_client_move pour gérer le mouvement
+                        
                         success = self.board.handle_client_move(
                             piece_data['color'],
                             (piece_data['q'], piece_data['r']),
                             (move_to['q'], move_to['r']),
                             (captured_piece_to['q'], captured_piece_to['r']) if captured_piece_to else None
                         )
+                        
                         if success:
                             print("Mouvement réussi")
-                            state = self.board.send_state()
-                            state['type'] = 'state'
-                            state['available_colors'] = self.available_colors
-                            state['last_move'] = data
-                            for player in state['players']:
-                                if player['color'] in self.authenticated_users:
-                                    player['name'] = self.authenticated_users[player['color']]
-                                
-                            await self.broadcast(json.dumps(state))
+                            await self._prepare_and_send_state(data)
                         else:
-                            # Mouvement invalide
-                            error = {'type': 'error', 'message': 'Mouvement invalide'}
-                            await websocket.send(json.dumps(error))
-                elif data['type'] == 'undo':
-                    print("Commande undo reçue")
+                            await websocket.send(json.dumps({
+                                'type': 'error',
+                                'message': 'Mouvement invalide'
+                            }))
+                elif data['type'] in ['undo', 'redo']:
+                    print(f"Commande {data['type']} reçue")
                     async with self.lock:
-                        success = self.board.undo()
-                        print(f"Undo effectué : {success}")
-                        state = self.board.send_state()
-                        state['type'] = 'state'
-                        state['available_colors'] = self.available_colors
-                        for player in state['players']:
-                            if player['color'] in self.authenticated_users:
-                                player['name'] = self.authenticated_users[player['color']]
-                        
-                        await self.broadcast(json.dumps(state))
-                        print("Nouvel état envoyé après undo")
-                elif data['type'] == 'redo':
-                    print("Commande redo reçue")
-                    async with self.lock:
-                        success = self.board.redo()
-                        print(f"Redo effectué : {success}")
-                        state = self.board.send_state()
-                        state['type'] = 'state'
-                        state['available_colors'] = self.available_colors
-                        await self.broadcast(json.dumps(state))
-                        for player in state['players']:
-                            if player['color'] in self.authenticated_users:
-                                player['name'] = self.authenticated_users[player['color']]
-                        
-                        print("Nouvel état envoyé après redo")
+                        success = self.board.undo() if data['type'] == 'undo' else self.board.redo()
+                        print(f"{data['type']} effectué : {success}")
+                        await self._prepare_and_send_state()
         finally:
             print(f"Connexion fermée : {websocket.remote_address}")
             if websocket in self.authenticated_users:
@@ -243,28 +222,23 @@ class DjambiServer:
 
     async def quit_game(self, websocket):
         print(f"Client {websocket.remote_address} quitte la partie")
+        
+        # Gérer les couleurs du joueur qui quitte
         colors = self.clients.pop(websocket)
         self.waiting_clients.append(websocket)
         self.available_colors = colors + self.available_colors
-        state = self.board.send_state()
-        state['type'] = 'state'
-        state['available_colors'] = self.available_colors
-        for player in state['players']:
-            if player['color'] in self.authenticated_users:
-                player['name'] = self.authenticated_users[player['color']]
-        await self.broadcast(json.dumps(state))
+        
+        # Envoyer l'état mis à jour
+        await self._prepare_and_send_state()
+        
+        # Réinitialiser le jeu si tous les joueurs sont partis
         if len(self.available_colors) == 6:
-            self.board = Board(0)  # Réinitialiser le plateau de jeu
-            self.board.rl = True
-            self.current_player_index = 0
-            self.available_colors = list(COLORS.keys())
-            for player in state['players']:
-                if player['color'] in self.authenticated_users:
-                    player['name'] = self.authenticated_users[player['color']]
+            self._reset_game()
+            await self.broadcast(json.dumps({
+                "type": "game_reset", 
+                "message": "Le jeu a été réinitialisé"
+            }))
 
-            await self.broadcast(json.dumps({"type": "game_reset", "message": "Le jeu a été réinitialisé"}))
-
-    # Mettre à jour les statistiques à la fin d'une partie
     async def update_game_stats(self, winner_websocket):
         if winner_websocket in self.authenticated_users:
             username = self.authenticated_users[winner_websocket]
