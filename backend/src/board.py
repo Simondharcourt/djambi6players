@@ -102,7 +102,7 @@ class Board:
         self.players = []
         for color in COLORS.keys():
             pieces = [create_piece(q, r, COLORS[color], cl, class_svg_paths[cl]) for q, r, c, cl in start_positions if c == color]
-            self.players.append(Player(COLORS[color], pieces))
+            self.players.append(MinMaxPlayer(COLORS[color], pieces))
             self.pieces.extend(pieces)
         self.update_all_scores()
 

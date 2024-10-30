@@ -25,17 +25,33 @@ class MinMaxPlayer(Player):
             return self.evaluate_board(board), None
 
         # Trier les mouvements pour prioriser les kills
-        valid_moves.sort(key=lambda x: x[2], reverse=True)
+        #valid_moves.sort(key=lambda x: x[2], reverse=True)  # first sort
 
         max_eval = float('-inf')
-        best_move = None
-        for piece, move, is_a_kill in valid_moves:
+        best_moves = []
+        for piece, move in valid_moves:
                 new_board = self.copy_board_state(board)
                 new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
                 new_piece.move(move[0], move[1], new_board)
                 new_board.next_player()
                 next_player = new_board.players[new_board.current_player_index]
-                eval = next_player.alpha_beta(new_board, depth - 1, alpha, beta)[0]
+                eval = next_player.evaluate_board(new_board)
+                if eval > max_eval:
+                    max_eval = eval
+                    best_moves += [(piece, move)]
+
+
+        # best_moves.sort(key=lambda x: x[1][2], reverse=True) # second sort
+
+        max_eval = float('-inf')
+        best_move = None
+        for piece, move in best_moves:
+                new_board = self.copy_board_state(board)
+                new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
+                new_piece.move(move[0], move[1], new_board)
+                new_board.next_player()
+                next_player = new_board.players[new_board.current_player_index]
+                eval = next_player.alpha_beta(new_board, depth - 1, alpha, beta)[0] # third sort
                 if eval > max_eval:
                     max_eval = eval
                     best_move = (piece, move)

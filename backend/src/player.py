@@ -30,7 +30,7 @@ class Player:
         for piece in self.pieces:
             moves = piece.all_possible_moves(board)
             if moves:
-                all_moves.extend([(piece, move, board.get_piece_at(move[0], move[1]) is not None) for move in moves])
+                all_moves.extend([(piece, move) for move in moves])
         return all_moves
 
     def play_turn(self, board):
@@ -40,7 +40,7 @@ class Player:
         if not all_moves:
             return
         
-        piece, move, _ = random.choice(all_moves)
+        piece, move = random.choice(all_moves)
         piece.move(move[0], move[1], board)
 
     def change_color(self, new_color):
