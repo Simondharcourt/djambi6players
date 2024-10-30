@@ -1010,6 +1010,9 @@ function updateUIAfterAuth(username) {
         logoutButton.onclick = logout;
         menuContainer.appendChild(logoutButton);
     }
+
+    // Retourner au menu principal
+    showMainMenu();
 }
 
 function logout() {
