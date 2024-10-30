@@ -285,19 +285,52 @@
             background-color: #666;
         }
 
+        .submenu {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .back-button {
+            margin-top: 20px;
+            background-color: #444;
+        }
+
     </style>
 </head>
 <body>
     <div id="mainMenu">
         <h1>Djambi</h1>
-        <div class="menu-container">
+        <div class="menu-container" id="mainMenuContainer">
+            <button class="menu-button" onclick="showSubmenu('onlineMenu')">Partie en ligne</button>
+            <button class="menu-button" onclick="showSubmenu('aiMenu')">Partie contre IA</button>
+            <button class="menu-button" onclick="showRules()">Règles du jeu</button>
+            <button class="menu-button" onclick="showSubmenu('accountMenu')">Compte</button>
+        </div>
+
+        <!-- Sous-menu parties en ligne -->
+        <div class="menu-container submenu" id="onlineMenu" style="display: none;">
             <button class="menu-button" onclick="startGame(2)">Partie 2 joueurs</button>
             <button class="menu-button" onclick="startGame(6)">Partie 6 joueurs</button>
-            <button class="menu-button" onclick="showSettings()">Paramètres</button>
-            <button class="menu-button" onclick="showRules()">Règles du jeu</button>
+            <button class="menu-button back-button" onclick="showMainMenu()">Retour</button>
+        </div>
+
+        <!-- Sous-menu IA -->
+        <div class="menu-container submenu" id="aiMenu" style="display: none;">
+            <button class="menu-button" onclick="startAIGame('minimax')">Partie contre minimax</button>
+            <button class="menu-button" onclick="startAIGame('rl')">Partie contre RL</button>
+            <button class="menu-button back-button" onclick="showMainMenu()">Retour</button>
+        </div>
+
+        <!-- Sous-menu compte -->
+        <div class="menu-container submenu" id="accountMenu" style="display: none;">
             <button class="menu-button" onclick="createAccount()">Créer un compte</button>
             <button class="menu-button" onclick="login()">Se connecter</button>
-
+            <button class="menu-button back-button" onclick="showMainMenu()">Retour</button>
         </div>
     </div>
 

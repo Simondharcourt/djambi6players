@@ -101,6 +101,27 @@ function startGame(playerCount) {
     }));
 }
 
+function startAIGame(mode) {
+    // Implémenter l'affichage des paramètres
+    alert('Partie contre IA à venir');
+}
+
+
+function showSubmenu(menuId) {
+    // Cache le menu principal
+    document.getElementById('mainMenuContainer').style.display = 'none';
+    // Affiche le sous-menu sélectionné
+    document.getElementById(menuId).style.display = 'flex';
+}
+
+function showMainMenu() {
+    // Cache tous les sous-menus
+    const submenus = document.querySelectorAll('.submenu');
+    submenus.forEach(menu => menu.style.display = 'none');
+    // Affiche le menu principal
+    document.getElementById('mainMenuContainer').style.display = 'flex';
+}
+
 function showSettings() {
     // Implémenter l'affichage des paramètres
     alert('Page des paramètres à venir');
