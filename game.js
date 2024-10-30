@@ -1,7 +1,10 @@
-
 // Variables du jeu
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+
+
+const INACTIVITY_TIMEOUT = 600000; // 10 minutes en millisecondes
+let inactivityTimer = null;
 
 const BOARD_SIZE = 7;
 const HEX_RADIUS = 35;
@@ -103,6 +106,8 @@ function startGame(playerCount) {
     document.getElementById('mainMenu').style.display = 'none';
     document.querySelector('.game-container').style.display = 'flex';
     
+    resetInactivityTimer();
+
     ws.send(JSON.stringify({
         type: 'start_game',
         nb_players: playerCount,
@@ -140,9 +145,35 @@ function showRules() {
     window.open('rules/Djambi_rules.pdf', '_blank');
 }
 
+
+function resetInactivityTimer() {
+    // Annuler le timer existant s'il y en a un
+    if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+    }
+    
+    // Démarrer un nouveau timer
+    inactivityTimer = setTimeout(() => {
+        if (isLoggedIn && gameState) {
+            alert('Vous avez été déconnecté pour inactivité');
+            backToMenu();
+        }
+    }, INACTIVITY_TIMEOUT);
+}
+
+
+
+function stopInactivityTimer() {
+    if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = null;
+    }
+}
+
 function backToMenu() {
     document.getElementById('mainMenu').style.display = 'block';
     document.querySelector('.game-container').style.display = 'none';
+    stopInactivityTimer();
     ws.send(JSON.stringify({
         type: 'quit_game'
     }));
@@ -378,8 +409,15 @@ function pixelToHex(x, y) {
 canvas.addEventListener('click', handleCanvasClick);
 
 
+canvas.addEventListener('mousemove', () => {
+    if (gameState && isLoggedIn) {
+        resetInactivityTimer();
+    }
+});
+
 function handleCanvasClick(event) {
     if (!gameState) return;
+    resetInactivityTimer();
 
     const [q, r] = getClickedHexCoordinates(event);
 
@@ -984,5 +1022,4 @@ function logout() {
     
     location.reload();
 }
-
 
