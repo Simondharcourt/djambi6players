@@ -1,5 +1,13 @@
-/labo.ipynb
+# Python
 __pycache__/
 *.pyc
 venv/
+
+# Environment variables
 .env
+
+# Database
+*.db
+
+# Notebook
+/local/labo.ipynb
