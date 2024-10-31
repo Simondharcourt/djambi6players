@@ -201,6 +201,38 @@ function redoMove() {
     draw();
 }
 
+function updateUndoRedoButtons() {
+    const undoButton = document.getElementById('undoButton');
+    const redoButton = document.getElementById('redoButton');
+
+    // Vérifier si on peut annuler
+    if (clientAssignedIndices.includes(gameState.current_player_index - 1)) {
+        enableButton(undoButton);
+    } else {
+        disableButton(undoButton);
+    }
+
+    // Vérifier si on peut refaire
+    if (clientAssignedIndices.includes(gameState.current_player_index)) {
+        enableButton(redoButton);
+    } else {
+        disableButton(redoButton);
+    }
+}
+
+function disableButton(button) {
+    button.disabled = true;
+    button.style.backgroundColor = '#666'; // Gris plus foncé
+    button.style.cursor = 'not-allowed';
+}
+
+function enableButton(button) {
+    button.disabled = false;
+    button.style.backgroundColor = '#333'; // Couleur normale
+    button.style.cursor = 'pointer';
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('backToMenu').addEventListener('click', backToMenu);
 });
@@ -748,6 +780,8 @@ function draw() {
     drawAvailableCells(); // Ajoutez cette ligne
     drawPlayerTurn();
     drawPlayerScores();
+    updateUndoRedoButtons(); // Ajouter cette ligne
+
 
 }
 // Fonction pour initialiser un état par défaut

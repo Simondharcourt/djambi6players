@@ -68,7 +68,7 @@
         }
 
         .undo-redo-button {
-            background-color: #333;
+            background-color: #333 !important;
             color: white;
             border: none;
             padding: 15px 30px;
@@ -80,17 +80,20 @@
         }
 
         .undo-redo-button:hover {
-            background-color: #555;
+            background-color: #666 !important;
         }
 
+
         .undo-redo-button:disabled {
-            background-color: #666;
-            cursor: not-allowed;
+            background-color: #222;
+            opacity: 0.5;
         }
 
         .undo-redo-button:disabled:hover {
-            background-color: #666;
+            background-color: #222;
         }
+
+
 
         /* Styles du conteneur de jeu */
         .game-container {
@@ -319,6 +322,34 @@
             .menu-button:hover {
                 background-color: #555;
             }
+
+            .undo-redo-button {
+            background-color: #333 !important;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 250px;
+            transition: background-color 0.3s;
+            }
+
+            .undo-redo-button:hover {
+                background-color: #666 !important;
+            }
+
+
+            .undo-redo-button:disabled {
+                background-color: #222;
+                opacity: 0.5;
+            }
+
+            .undo-redo-button:disabled:hover {
+                background-color: #222;
+            }
+
+
 
         }
 
