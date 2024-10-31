@@ -5,7 +5,7 @@ Djambi game with personal rules at 6 players, to develop a reinforcement learing
 
 See here: https://fr.wikipedia.org/wiki/Djambi the original game.
 
-You can find my adapted rules are in the repository.
+You can find my adapted rules in the repository.
 
 
 ## How to use locally:
