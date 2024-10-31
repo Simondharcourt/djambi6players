@@ -15,7 +15,8 @@ class DjambiServer:
         self.available_colors = list(COLORS.keys())
         self.waiting_clients = []  # Nouvelle liste pour les clients en attente
         self.db = Database()  # Initialisation de la base de données
-        self.authenticated_users = {}  # Pour suivre les utilisateurs connectés
+        self.authenticated_users = {}  # websocket -> username
+        self.connected_usernames = set()  # Pour suivre les noms d'utilisateur connectés
 
     async def register(self, websocket):
         # Au lieu d'attribuer directement une couleur, on met le client en attente
@@ -126,8 +127,10 @@ class DjambiServer:
     async def handle_authentication(self, websocket, data):
         """Gère les requêtes d'authentification"""
         message_type = data['type']
-        username = data['username']
-        password = data['password']
+        if 'username' in data:
+            username = data['username']
+        if 'password' in data:
+            password = data['password']
         
         if message_type == 'create_account':
             success = self.db.create_user(username, password)
@@ -145,8 +148,18 @@ class DjambiServer:
                 }))
 
         elif message_type == 'login':
+            # Vérifier si l'utilisateur est déjà connecté
+            if username in self.connected_usernames:
+                await websocket.send(json.dumps({
+                    'type': 'auth_response',
+                    'success': False,
+                    'message': 'Cet utilisateur est déjà connecté sur une autre session'
+                }))
+                return
+
             if self.db.verify_user(username, password):
                 self.authenticated_users[websocket] = username
+                self.connected_usernames.add(username)  # Ajouter à la liste des connectés
                 stats = self.db.get_user_stats(username)
                 await websocket.send(json.dumps({
                     'type': 'auth_response',
@@ -167,6 +180,8 @@ class DjambiServer:
 
         elif message_type == 'logout':
             if websocket in self.authenticated_users:
+                username = self.authenticated_users[websocket]
+                self.connected_usernames.remove(username)  # Retirer de la liste des connectés
                 del self.authenticated_users[websocket]
                 await websocket.send(json.dumps({
                     'type': 'auth_response',
@@ -223,6 +238,8 @@ class DjambiServer:
         finally:
             print(f"Connexion fermée : {websocket.remote_address}")
             if websocket in self.authenticated_users:
+                username = self.authenticated_users[websocket]
+                self.connected_usernames.remove(username)  # Nettoyer lors de la déconnexion
                 del self.authenticated_users[websocket]
             await self.unregister(websocket)
 

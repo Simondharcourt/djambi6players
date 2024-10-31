@@ -202,6 +202,12 @@ let clientAssignedColors = ["white"]; // Couleur par défaut
 
 ws.onmessage = function(event) {
     const data = JSON.parse(event.data);
+    if (data.type === 'loginResponse') {
+        if (data.error === 'userAlreadyConnected') {
+            alert('Cet utilisateur est déjà connecté sur une autre session');
+            return;
+        }
+    }
     if (data.type === 'color_assignment') {
         console.log("data", data)
         if (data.nb_players === 6) {
@@ -816,7 +822,7 @@ function drawPlayerTurnArrow() {
     if (gameState && gameState.current_player_index !== undefined) {
         const angle = (Math.PI / 3) * (gameState.current_player_index + 1.5 - clientAssignedIndex);
         const arrowLength = 400; // Longueur de la flèche
-        const arrowLength2 = 450;
+        const arrowLength2 = 430;
         const centerX = WINDOW_WIDTH / 2;
         const centerY = WINDOW_HEIGHT / 2 - VERTICAL_OFFSET;
 
@@ -825,12 +831,39 @@ function drawPlayerTurnArrow() {
         const arrowX2 = centerX + arrowLength2 * Math.cos(angle);
         const arrowY2 = centerY + arrowLength2 * Math.sin(angle);
 
+
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(arrowX, arrowY);
         ctx.lineTo(arrowX2, arrowY2);
         ctx.stroke();
+
+        const arrowLength3 = 15;
+
+
+        const angle3 = angle + (Math.PI / 6);
+        const arrowX3 = arrowX + arrowLength3 * Math.cos(angle3);
+        const arrowY3 = arrowY + arrowLength3 * Math.sin(angle3);
+
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(arrowX, arrowY);
+        ctx.lineTo(arrowX3, arrowY3);
+        ctx.stroke();
+
+        const angle4 = angle - (Math.PI / 6);
+        const arrowX4 = arrowX + arrowLength3 * Math.cos(angle4);
+        const arrowY4 = arrowY + arrowLength3 * Math.sin(angle4);
+
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(arrowX, arrowY);
+        ctx.lineTo(arrowX4, arrowY4);
+        ctx.stroke();
+
     }
 }
 
@@ -976,6 +1009,7 @@ function login() {
         alert('Le nom d\'utilisateur et le mot de passe sont requis');
         return;
     }
+
 
     // Envoyer les informations au serveur
     ws.send(JSON.stringify({
