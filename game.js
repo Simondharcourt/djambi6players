@@ -748,7 +748,7 @@ function drawPlayerTurn() {
         // Dessiner un cercle de la couleur du joueur
         ctx.beginPath();
         ctx.arc(202, 22, 15, 0, 2 * Math.PI);
-        ctx.fillStyle = gameState.current_player_color;
+        ctx.fillStyle = COLORS[gameState.current_player_color];
         ctx.fill();
         ctx.stroke();
         // Ajouter l'affichage de la couleur du client
