@@ -476,7 +476,8 @@ function pixelToHex(x, y) {
 
 
 
-canvas.addEventListener('click', handleCanvasClick);
+canvas.addEventListener('click', handleInteraction);
+canvas.addEventListener('touchstart', handleInteraction);
 
 
 canvas.addEventListener('mousemove', () => {
@@ -485,11 +486,17 @@ canvas.addEventListener('mousemove', () => {
     }
 });
 
-function handleCanvasClick(event) {
+function handleInteraction(event) {
+    event.preventDefault(); // Empêcher le zoom et autres comportements par défaut sur mobile
+    
     if (!gameState) return;
     resetInactivityTimer();
 
-    const [q, r] = getClickedHexCoordinates(event);
+    // Obtenir les coordonnées selon le type d'événement
+    const coordinates = getEventCoordinates(event);
+    if (!coordinates) return;
+    
+    const [q, r] = pixelToHex(coordinates.x, coordinates.y);
 
     if (selectedPiece) {
         handleSelectedPieceClick(q, r);
@@ -501,11 +508,26 @@ function handleCanvasClick(event) {
     draw();
 }
 
-function getClickedHexCoordinates(event) {
+function getEventCoordinates(event) {
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    return pixelToHex(x, y);
+    
+    // Pour les événements tactiles
+    if (event.type === 'touchstart') {
+        if (event.touches.length > 0) {
+            const touch = event.touches[0];
+            return {
+                x: touch.clientX - rect.left,
+                y: touch.clientY - rect.top
+            };
+        }
+        return null;
+    }
+    
+    // Pour les événements de souris
+    return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+    };
 }
 
 function handleSelectedPieceClick(q, r) {
