@@ -14,21 +14,22 @@ You need to install pango and cairo ('brew install cairo pango' on macos/apt-get
 
 ## How to play it online with your friends:
 Just with https://simondharcourt.github.io/djambi6players/.
-To test locally, with python backend/src/server.py and click on the html file.
+To test it locally, with python backend/src/server.py and click on the html file.
 
 ## Code structure
 - backend: python backend hosted on heroku
 - frontend: frontend hosted on github pages
-- local: to run the board locally
-- rules: a latex doc with the rules
+- local: to run the board locally and train it.
+- rules: a latex doc with the rules. Could be simplified.
 
 ## Todo:
 Plenty of things to do. On 3 parts: online part, ia part and game part.
 
 #### - online:
-Add undo/redo buttons.
+Add 4 player mode?
 Add an elo ?
 Maybe later, add possibility to host several games.
+Find the remaning bugs and fix them.
 
 #### - ai part.
 2 parts: minimax and rl.
