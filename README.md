@@ -26,6 +26,7 @@ To test it locally, with python backend/src/server.py and click on the html file
 Plenty of things to do. On 3 parts: online part, ia part and game part.
 
 #### - online:
+Make it mobile friendly. Add an ios app?
 Add 4 player mode?
 Add an elo ?
 Maybe later, add possibility to host several games.
