@@ -67,6 +67,31 @@
             background-color: #555;
         }
 
+        .undo-redo-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 250px;
+            transition: background-color 0.3s;
+        }
+
+        .undo-redo-button:hover {
+            background-color: #555;
+        }
+
+        .undo-redo-button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        .undo-redo-button:disabled:hover {
+            background-color: #666;
+        }
+
         /* Styles du conteneur de jeu */
         .game-container {
             position: relative;
@@ -389,8 +414,8 @@
             <div id="pieceDescription"></div>
         </div>
         <button id="backToMenu" class="menu-button">Retour au menu</button>
-        <button id="undoButton" class="menu-button">Undo</button>
-        <button id="redoButton" class="menu-button">Redo</button>
+        <button id="undoButton" class="undo-redo-button">Undo</button>
+        <button id="redoButton" class="undo-redo-button">Redo</button>
     </div>
 
     <script src="game.js"></script>

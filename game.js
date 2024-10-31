@@ -178,9 +178,10 @@ function backToMenu() {
     }));
 }
 
+
 function undoMove() {
-    if (!gameState || !isLoggedIn) return;
-    
+    if (!gameState || !isLoggedIn || !clientAssignedIndices.includes(gameState.current_player_index - 1)) return;
+
     ws.send(JSON.stringify({
         type: 'undo'
     }));
@@ -190,12 +191,12 @@ function undoMove() {
 }
 
 function redoMove() {
-    if (!gameState || !isLoggedIn) return;
+    if (!gameState || !isLoggedIn || !clientAssignedIndices.includes(gameState.current_player_index)) return;
     
     ws.send(JSON.stringify({
         type: 'redo'
     }));
-    
+
     resetSelection();
     draw();
 }
@@ -246,7 +247,7 @@ ws.onmessage = function(event) {
         } else if (data.nb_players === 2 || data.nb_players === 3) {
             console.log("data", data)
             console.log("colors", data.colors)
-            clientAssignedIndices = [data.indices]
+            clientAssignedIndices = data.indices
             clientAssignedColors = data.colors; // Stocker la couleur assignée
             clientAssignedIndex = data.indices[1];
         }
