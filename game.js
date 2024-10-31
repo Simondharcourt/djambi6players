@@ -210,13 +210,12 @@ ws.onmessage = function(event) {
             clientAssignedIndex = data.index;
             console.log("clientAssignedColors", clientAssignedColors)
             clientAssignedIndices = [data.index]
-        } else if (data.nb_players === 2) {
+        } else if (data.nb_players === 2 || data.nb_players === 3) {
             console.log("data", data)
             console.log("colors", data.colors)
             clientAssignedIndices = [data.indices]
             clientAssignedColors = data.colors; // Stocker la couleur assignée
             clientAssignedIndex = data.indices[1];
-            
         }
         console.log("Couleur assignée:", clientAssignedColors);
         console.log("Index assigné:", clientAssignedIndex);

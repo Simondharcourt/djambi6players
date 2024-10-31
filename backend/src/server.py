@@ -27,7 +27,8 @@ class DjambiServer:
             return
             
         if (nb_players == 2 and len(self.available_colors) < 3) or \
-           (nb_players == 6 and not self.available_colors):
+        (nb_players == 3 and len(self.available_colors) < 2) or \
+        (nb_players == 6 and not self.available_colors):
             await websocket.send(json.dumps({
                 "type": "error", 
                 "message": "La partie est pleine"
@@ -38,6 +39,11 @@ class DjambiServer:
         if nb_players == 2:
             colors = [self.available_colors.pop(0) for _ in range(3)]
             player_index = 1  # Pour le joueur 2
+            
+        elif nb_players == 3:
+            colors = [self.available_colors.pop(0) for _ in range(2)]
+            player_index = 1  # Pour le joueur 2
+            
         else:  # nb_players == 6
             self.waiting_clients.remove(websocket)
             colors = [self.available_colors.pop(0)]
