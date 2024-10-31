@@ -205,6 +205,11 @@ function updateUndoRedoButtons() {
     const undoButton = document.getElementById('undoButton');
     const redoButton = document.getElementById('redoButton');
 
+    if (!gameState || !isLoggedIn) {
+        disableButton(undoButton);
+        disableButton(redoButton);
+        return;
+    }
     // Vérifier si on peut annuler
     if (clientAssignedIndices.includes(gameState.current_player_index - 1)) {
         enableButton(undoButton);
