@@ -162,7 +162,6 @@ function resetInactivityTimer() {
 }
 
 
-
 function stopInactivityTimer() {
     if (inactivityTimer) {
         clearTimeout(inactivityTimer);
@@ -179,11 +178,39 @@ function backToMenu() {
     }));
 }
 
+function undoMove() {
+    if (!gameState || !isLoggedIn) return;
+    
+    ws.send(JSON.stringify({
+        type: 'undo'
+    }));
+    
+    resetSelection();
+    draw();
+}
+
+function redoMove() {
+    if (!gameState || !isLoggedIn) return;
+    
+    ws.send(JSON.stringify({
+        type: 'redo'
+    }));
+    
+    resetSelection();
+    draw();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('backToMenu').addEventListener('click', backToMenu);
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('undoButton').addEventListener('click', undoMove);
+});
 
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('redoButton').addEventListener('click', redoMove);
+});
 
 ws.onopen = function() {
     console.log('Connecté au serveur WebSocket');

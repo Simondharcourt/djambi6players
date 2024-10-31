@@ -34,6 +34,8 @@ class Board:
         self.available_cells = []  # Cellules disponibles pour placer la pièce tuée
         self.board_surface = self.create_board_surface()
         self.hex_pixel_positions = self.calculate_hex_pixel_positions()
+        self.save_state(self.current_player_index)
+
 
     def create_board_surface(self):
         board_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))

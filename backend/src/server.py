@@ -58,7 +58,7 @@ class DjambiServer:
         
         # Envoyer l'état initial
         await self.send_board_state(websocket)
-        
+
         # Envoyer l'attribution des couleurs
         await websocket.send(json.dumps({
             "type": "color_assignment",
@@ -100,7 +100,6 @@ class DjambiServer:
                 for player in state['players']:
                     if player['color'] == color:
                         player['name'] = self.authenticated_users[websocket]
-                        print("added this name for this color:", player['name'], player['color'])
 
         
         # Envoyer soit à un client spécifique, soit à tous
@@ -232,7 +231,9 @@ class DjambiServer:
                 elif data['type'] in ['undo', 'redo']:
                     print(f"Commande {data['type']} reçue")
                     async with self.lock:
-                        success = self.board.undo() if data['type'] == 'undo' else self.board.redo()
+                        new_index = self.board.undo() if data['type'] == 'undo' else self.board.redo()
+                        if new_index is not None:
+                            self.board.current_player_index = new_index
                         print(f"{data['type']} effectué : {success}")
                         await self._prepare_and_send_state()
         finally:

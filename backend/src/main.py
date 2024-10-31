@@ -20,7 +20,6 @@ def main():
     font = pygame.font.Font(None, FONT_SIZE)
 
     # Sauvegarder l'état initial explicitement
-    board.save_state(current_player_index)
 
     # Boucle principale du jeu
     running = True
@@ -129,7 +128,6 @@ def main():
                     # Réinitialiser le jeu
                     current_player_index = 4
                     board = Board(current_player_index)
-                    board.save_state(current_player_index)
                     game_over = False
                     winner = None
                     selected_piece = None

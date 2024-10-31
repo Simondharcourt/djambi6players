@@ -118,6 +118,26 @@
             z-index: 1000;
         }
 
+        /* Styles pour les boutons undo/redo */
+        #undoButton, #redoButton {
+            position: fixed;
+            bottom: 200px;
+            padding: 20px 10px;
+            font-size: 16px;
+            z-index: 1000;
+            width: 170px;
+        }
+
+        #undoButton {
+            left: 50%;
+            transform: translateX(-370px);
+        }
+
+        #redoButton {
+            left: 50%;
+            transform: translateX(200px);
+        }
+
         /* Media Queries */
         @media screen and (max-width: 1200px) {
             #pieceInfo {
@@ -128,6 +148,16 @@
                 transform: none;
             }
         }
+
+        #undoButton, #redoButton {
+            position: fixed;
+            bottom: 50px;
+            padding: 20px 10px;
+            font-size: 16px;
+            z-index: 1000;
+            width: 170px;
+        }
+
 
         @media screen and (max-width: 768px) {
             .menu-button {
@@ -165,7 +195,27 @@
             #backToMenu {
                 padding: 15px 25px;
                 font-size: 15px;
+                right: 80px;
             }
+
+            #undoButton, #redoButton {
+                position: fixed;
+                bottom: 250px;
+                padding: 10px 10px;
+                font-size: 16px;
+                z-index: 1000;
+                width: 150px;
+            }
+            #undoButton {
+                left: 50%;
+                transform: translateX(-200px);
+            }
+
+            #redoButton {
+                left: 50%;
+                transform: translateX(-20px);
+            }
+
 
             #pieceInfo {
                 position: fixed;
@@ -197,7 +247,7 @@
 
             .game-container {
                 position: relative;
-                display: none;
+                display: None;
                 justify-content: center;
                 align-items: center;    /* Changé de flex-start à center */
                 gap: 20px;
@@ -212,16 +262,9 @@
                 margin: 0 auto;
                 position: relative;      /* Changé de absolute à relative */
                 top: 0;                  /* Réinitialisé à 0 */
-                max-width: 100%;
+                max-width: 140%;
                 height: auto;
                 z-index: 1;
-            }
-
-            #backToMenu {
-                position: fixed;
-                top: 10px;              /* Ajusté pour être plus haut */
-                right: 10px;
-                z-index: 2;             /* Pour être au-dessus du canvas */
             }
 
             .menu-container {
@@ -337,8 +380,8 @@
     </div>
 
     <div class="game-container">
-        <canvas id="gameCanvas" width="1000" height="1000"></canvas>
-        <div id="pieceInfo">
+        <canvas id="gameCanvas" width="1000" height="1000"></canvas> 
+       <div id="pieceInfo">
             <h3>Pièce sélectionnée</h3>
             <img id="pieceImage" src="" alt="Pièce">
             <p id="pieceClass"></p>
@@ -346,6 +389,8 @@
             <div id="pieceDescription"></div>
         </div>
         <button id="backToMenu" class="menu-button">Retour au menu</button>
+        <button id="undoButton" class="menu-button">Undo</button>
+        <button id="redoButton" class="menu-button">Redo</button>
     </div>
 
     <script src="game.js"></script>
