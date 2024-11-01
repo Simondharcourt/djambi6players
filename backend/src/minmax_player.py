@@ -8,13 +8,14 @@ class MinMaxPlayer(Player):
         super().__init__(color, pieces)
         self.depth = depth
 
-    def play_turn(self, board):
+    def think_and_play_turn(self, board):
         """Joue un tour en utilisant l'algorithme MinMax avec élagage alpha-beta."""
         best_move = self.alpha_beta(board, self.depth, float('-inf'), float('inf'))[1]
         if best_move:
             piece, move = best_move
             piece.move(move[0], move[1], board)
             logging.info(f"MinMax a joué : {piece.piece_class} de ({piece.q}, {piece.r}) à {move}, eval: {self.evaluate_board(board)}")
+
 
     def alpha_beta(self, board, depth, alpha, beta):
         if depth == 0:

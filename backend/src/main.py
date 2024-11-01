@@ -53,6 +53,9 @@ def main():
                 elif event.key == pygame.K_SPACE and not game_over and not auto_play:
                     board.players[board.current_player_index].play_turn(board)
                     board.next_player()
+                elif event.key == pygame.K_LSHIFT and not game_over and not auto_play:
+                    board.players[board.current_player_index].think_and_play_turn(board)
+                    board.next_player()
                 elif event.key == pygame.K_RETURN:
                     auto_play = not auto_play  # Basculer l'état de auto_play
                 elif event.key == pygame.K_LEFT:  # Flèche gauche pour annuler
