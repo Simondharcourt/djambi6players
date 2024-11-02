@@ -4,7 +4,7 @@ import logging
 from player import Player
 
 class MinMaxPlayer(Player):
-    def __init__(self, color, pieces, depth=4):
+    def __init__(self, color, pieces, depth=1):
         super().__init__(color, pieces)
         self.depth = depth
 
@@ -24,42 +24,37 @@ class MinMaxPlayer(Player):
         valid_moves = self.get_all_valid_moves(board)
         if not valid_moves:
             return self.evaluate_board(board), None
-
-        # Trier les mouvements pour prioriser les kills
-        #valid_moves.sort(key=lambda x: x[2], reverse=True)  # first sort
-
-        max_eval = float('-inf')
-        best_moves = []
-        for piece, move in valid_moves:
-                new_board = self.copy_board_state(board)
-                new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
-                new_piece.move(move[0], move[1], new_board)
-                new_board.next_player()
-                next_player = new_board.players[new_board.current_player_index]
-                eval = next_player.evaluate_board(new_board)
-                if eval > max_eval:
-                    max_eval = eval
-                    best_moves += [(piece, move)]
-
-
-        # best_moves.sort(key=lambda x: x[1][2], reverse=True) # second sort
-
+        
+        # # Tri des coups valides basé sur une évaluation rapide/ or opportunity
+        # scored_moves = []
+        # for piece, move in valid_moves:
+        #     # Évaluation simple et rapide du coup
+        #     score = 0
+        #     if piece.piece_class == "King":
+        #         score += 100
+        #     elif piece.piece_class == "Queen":
+        #         score += 50
+        #     scored_moves.append((score, piece, move))
+        
+        # # Trier les coups par score décroissant
+        # scored_moves.sort(reverse=True)
+        
         max_eval = float('-inf')
         best_move = None
-        for piece, move in best_moves:
+        for piece, move in valid_moves:  # Utilisation des coups triés
                 new_board = self.copy_board_state(board)
                 new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
                 new_piece.move(move[0], move[1], new_board)
                 new_board.next_player()
                 next_player = new_board.players[new_board.current_player_index]
-                eval = next_player.alpha_beta(new_board, depth - 1, alpha, beta)[0] # third sort
+                eval = -next_player.alpha_beta(new_board, depth - 1, -beta, -alpha)[0]  # Négamax
                 if eval > max_eval:
                     max_eval = eval
                     best_move = (piece, move)
-                    print(f"max_eval: {max_eval}, best_move: {best_move}")
+                    logging.info(f"max_eval: {max_eval}, best_move: {best_move}")
                 alpha = max(alpha, eval)
                 if beta <= alpha:
-                    break  # Élagage beta
+                    break
         return max_eval, best_move
 
 
@@ -72,15 +67,19 @@ class MinMaxPlayer(Player):
     def copy_board_state(self, board):
         """Crée une copie légère du plateau avec seulement les données nécessaires pour MinMax."""
         new_board = type(board)()
-        new_board.pieces = [self.copy_piece(p) for p in board.pieces]
-        new_board.pieces_by_pos = {(p.q, p.r): p for p in new_board.pieces}
         
-        # Créer de nouveaux joueurs avec leurs pièces respectives
-        new_board.players = []
-        for player in board.players:
-            player_pieces = [p for p in new_board.pieces if p.color == player.color]
-            new_player = type(player)(player.color, player_pieces)
-            new_board.players.append(new_player)
+        new_pieces = [self.copy_piece(p) for p in board.pieces]
+        new_board.pieces = new_pieces
+        new_board.pieces_by_pos = {(p.q, p.r): p for p in new_pieces}
+        
+        pieces_by_color = {}
+        for piece in new_pieces:
+            pieces_by_color.setdefault(piece.color, []).append(piece)
+        
+        new_board.players = [
+            type(player)(player.color, pieces_by_color[player.color])
+            for player in board.players
+        ]
         
         new_board.current_player_index = board.current_player_index
         new_board.rl = True
@@ -94,7 +93,10 @@ class MinMaxPlayer(Player):
             r=piece.r,
             color=piece.color,
             piece_class=piece.piece_class,
-            svg_path=piece.svg_path if hasattr(piece, 'svg_path') else None
+            svg_path=piece.svg_path if hasattr(piece, 'svg_path') else None,
+            menace_score=piece.menace_score,
+            opportunity_score=piece.opportunity_score,
+            std_value=piece.std_value
         )
         new_piece.is_dead = piece.is_dead
         return new_piece

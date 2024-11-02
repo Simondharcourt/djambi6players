@@ -1,4 +1,3 @@
-
 from constants import *
 import math
 import pygame
@@ -17,7 +16,7 @@ class Board:
         self.pieces = []
         self.current_player_index = current_player_index
         self.one_player_mode = one_player_mode
-        logging.info("Initialisation du plateau")
+        logging.debug("Initialisation du plateau")
         
         # Initialisation des hexagones du plateau
         for q in range(-BOARD_SIZE + 1, BOARD_SIZE):
@@ -60,7 +59,7 @@ class Board:
 
     def initialize_pieces(self):
         # Position de départ des pièces (exemple arbitraire)
-        logging.info("Initialisation des pièces")
+        logging.debug("Initialisation des pièces")
         start_positions = [
             # Pièces violettes (en bas à gauche)
             (-5, -1, 'purple', 'assassin'), (-4, -2, 'purple', 'militant'), (-6, 0, 'purple', 'chief'),
@@ -207,7 +206,7 @@ class Board:
                 animate_player_elimination(pygame.display.get_surface(), self.players, killed_player_index, self)
             self.players.pop(killed_player_index)
 
-        logging.info(f"Le chef {killed_chief.name} a été tué{'.' if not killer_chief else f' par le chef {killer_chief.name}.'} Toutes ses pièces sont maintenant {'mortes' if not killer_chief else f'contrôlées par {killer_chief.name}'}.")
+        logging.debug(f"Le chef {killed_chief.name} a été tué{'.' if not killer_chief else f' par le chef {killer_chief.name}.'} Toutes ses pièces sont maintenant {'mortes' if not killer_chief else f'contrôlées par {killer_chief.name}'}.")
 
         # Mettre à jour l'index du joueur courant si nécessaire
         if self.current_player_index >= len(self.players):
@@ -244,6 +243,10 @@ class Board:
             corners.append((corner_x, corner_y))
         return corners
 
+    def update_all_opportunity_scores(self):
+        map(lambda p: setattr(p, 'menace_score', 0), self.pieces)
+        map(lambda p: p.update_opportunity_score(self), self.pieces)
+
     def select_piece(self, q, r):
         """Sélectionne une pièce à la position (q, r)."""
         piece = self.get_piece_at(q, r)
@@ -267,23 +270,23 @@ class Board:
         if (new_q, new_r) in self.get_possible_moves(piece):
             target_piece = self.get_piece_at(new_q, new_r)
             original_q, original_r = piece.q, piece.r
-            logging.info(f"Le {piece.piece_class} {piece.name} se déplace de {piece.q},{piece.r} à {new_q},{new_r}")
+            logging.debug(f"Le {piece.piece_class} {piece.name} se déplace de {piece.q},{piece.r} à {new_q},{new_r}")
             if target_piece and isinstance(piece, (MilitantPiece, ChiefPiece, DiplomatPiece, NecromobilePiece)):
                 # Tuer la pièce ennemie
                 if isinstance(piece, (MilitantPiece, ChiefPiece)):
                     if isinstance(target_piece, ChiefPiece):
                         self.chief_killed(target_piece, self.get_chief_of_color(piece.color))
-                        logging.info(f"Le chef {target_piece.name} a été tué par le {piece.piece_class} {piece.name}.")
+                        logging.debug(f"Le chef {target_piece.name} a été tué par le {piece.piece_class} {piece.name}.")
                             
                     if target_piece.on_central_cell and isinstance(piece, ChiefPiece):
                         piece.enter_central_cell(self)
-                        logging.info(f"Le chef {piece.name} entre sur la case centrale.")
+                        logging.debug(f"Le chef {piece.name} entre sur la case centrale.")
                         
                     target_piece.die()
-                    logging.info(f"Le {target_piece.piece_class} {target_piece.name} a té tué par le {piece.piece_class} {piece.name}.") 
+                    logging.debug(f"Le {target_piece.piece_class} {target_piece.name} a té tué par le {piece.piece_class} {piece.name}.") 
                         
                 if isinstance(piece, DiplomatPiece) and isinstance(target_piece, ChiefPiece) and target_piece.on_central_cell and not target_piece.is_dead:
-                    logging.info(f"Le diplomate {piece.name} fait quitter le chef {target_piece.name} de la case centrale.")
+                    logging.debug(f"Le diplomate {piece.name} fait quitter le chef {target_piece.name} de la case centrale.")
                     target_piece.leave_central_cell(self)
                     
                 self.piece_to_place = target_piece  # Stocker la pièce tuée pour un placement manuel
@@ -302,7 +305,7 @@ class Board:
             chief = next((piece for piece in player.pieces if isinstance(piece, ChiefPiece)), None)
             if chief and not chief.on_central_cell:
                 if chief.is_surrounded(self):
-                    logging.info(f"Le chef {chief.name} a été éliminé car il était encerclé!")
+                    logging.debug(f"Le chef {chief.name} a été éliminé car il était encerclé!")
                     self.chief_killed(chief, None)
 
     def place_dead_piece(self, new_q, new_r):
@@ -351,7 +354,7 @@ class Board:
         if self.rl:
             return
         frames = 30  # Nombre de frames pour l'animation
-        logging.info(f"Animation de déplacement de {piece.piece_class} {piece.name} de {start_q},{start_r} à {end_q},{end_r}")
+        logging.debug(f"Animation de déplacement de {piece.piece_class} {piece.name} de {start_q},{start_r} à {end_q},{end_r}")
         
         original_q, original_r = piece.q, piece.r  # Sauvegarder la position originale
         current_player_index = self.current_player_index
@@ -418,30 +421,30 @@ class Board:
         # Vérifier si c'est le tour du joueur
         current_player = self.players[self.current_player_index]
         if tuple(current_player.color) != tuple(COLORS[player_color]):
-            logging.info(f"Ce n'est pas le tour du joueur {tuple(COLORS[player_color])} mais du joueur {tuple(current_player.color)}")
+            logging.debug(f"Ce n'est pas le tour du joueur {tuple(COLORS[player_color])} mais du joueur {tuple(current_player.color)}")
             return False
 
         # Sélectionner la pièce
         selected_piece = self.get_piece_at(*selected_pos)
         if not selected_piece or tuple(selected_piece.color) != tuple(COLORS[player_color]):
-            logging.info(f"Pièce invalide sélectionnée à {selected_pos}")
+            logging.debug(f"Pièce invalide sélectionnée à {selected_pos}")
             return False
 
         # Vérifier si le mouvement est valide
         if destination_pos not in self.get_possible_moves(selected_piece):
-            logging.info(f"Mouvement invalide de {selected_pos} à {destination_pos}")
+            logging.debug(f"Mouvement invalide de {selected_pos} à {destination_pos}")
             return False
 
         # Effectuer le mouvement
         success = self.move_piece(selected_piece, *destination_pos)
         if not success:
-            logging.info(f"Échec du déplacement de {selected_pos} à {destination_pos}")
+            logging.debug(f"Échec du déplacement de {selected_pos} à {destination_pos}")
             return False
 
         # Gérer la pièce capturée si nécessaire
         if self.piece_to_place and captured_piece_pos:
             if not self.place_dead_piece(*captured_piece_pos):
-                logging.info(f"Échec du placement de la pièce capturée à {captured_piece_pos}")
+                logging.debug(f"Échec du placement de la pièce capturée à {captured_piece_pos}")
                 return False
 
         # Si tout s'est bien passé, passer au joueur suivant

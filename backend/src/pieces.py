@@ -1,6 +1,3 @@
-
-
-
 from constants import *
 import logging
 import pygame
@@ -32,7 +29,7 @@ def hex_to_pixel(q, r):
 class Piece:
     necromobile_image = None
 
-    def __init__(self, q, r, color, piece_class, svg_path=None):
+    def __init__(self, q, r, color, piece_class, svg_path=None, menace_score=0, opportunity_score=0, std_value=1):
         self.q = q  # Coordonnée hexagonale q
         self.r = r  # Coordonnée hexagonale r
         self.color = color  # Couleur de la pièce
@@ -43,11 +40,37 @@ class Piece:
         self.name = NAMES[color]
         self.on_central_cell = False  # Nouvel attribut pour suivre si le chef est sur la case centrale
 
+        self.menace_score = 0
+        self.opportunity_score = 0
+        self.threaten = []
+        self.protect = []
+        self.is_treatened_by = []
+        self.is_protected_by = []
+        self.std_value = 1
+
+
+    def update_opportunity_score(self, board):
+        self.opportunity_score = 0
+        possible_moves = self.all_possible_moves(board)        
+        pieces = [board.get_piece_at(q, r) for q, r in possible_moves]
+        pieces = [p for p in pieces if p]  # Filtrer les cases vides
+        self.threaten = [p for p in pieces if p.color != self.color]
+        self.protect = [p for p in pieces if p.color == self.color]
+        self.opportunity_score = max(p.std_value for p in pieces)
+        self.menace_score = sum(p.std_value for p in pieces)
+        for piece in pieces:
+            piece.menace_score += self.std_value
+        for piece in self.treaten:
+            piece.is_treatened_by.append(self)
+        for piece in self.protect:
+            piece.is_protected_by.append(self)
+
+
     def die(self):
         """Marque la pièce comme morte et change sa couleur en grise."""
         self.is_dead = True
         self.color = DARKER_GREY  # Couleur grise pour les pièces mortes
-        logging.info(f"Pièce en {self.q}, {self.r} est morte")
+        logging.debug(f"Pièce en {self.q}, {self.r} est morte")
 
     @staticmethod
     def load_svg_as_surface(svg_path, target_size=(SIZE_IMAGE, SIZE_IMAGE)):
@@ -138,8 +161,8 @@ class Piece:
         return True  # Toutes les directions sont bloquées ou conduisent à des pièces mortes/alliées encerclées
 
 class MilitantPiece(Piece):
-    def __init__(self, q, r, color, piece_class, svg_path):
-        super().__init__(q, r, color, piece_class, svg_path)
+    def __init__(self, q, r, color, piece_class, svg_path, menace_score=0, opportunity_score=0, std_value=1):
+        super().__init__(q, r, color, piece_class, svg_path, menace_score, opportunity_score, std_value)
 
     def all_possible_moves(self, board):
         if self.is_dead:
@@ -188,15 +211,15 @@ class MilitantPiece(Piece):
             else:
                 return False # moved_piece_position is not a valid position.
             target_piece.q, target_piece.r = new_position
-            logging.info(f"Le militant a tué la pièce en {new_q}, {new_r} et l'a déplacée en {target_piece.q,}, {target_piece.r}")
+            logging.debug(f"Le militant a tué la pièce en {new_q}, {new_r} et l'a déplacée en {target_piece.q,}, {target_piece.r}")
 
         self.q, self.r = new_q, new_r
-        logging.info(f"Le militant s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        logging.debug(f"Le militant s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
         return True
 
 class AssassinPiece(Piece):
-    def __init__(self, q, r, color, piece_class, svg_path):
-        super().__init__(q, r, color, piece_class, svg_path)
+    def __init__(self, q, r, color, piece_class, svg_path, menace_score=0, opportunity_score=0, std_value=2):
+        super().__init__(q, r, color, piece_class, svg_path, menace_score, opportunity_score, std_value)
 
     def all_possible_moves(self, board):
         """Retourne tous les mouvements possibles pour l'assassin, y compris les cases occupées par des ennemis,
@@ -240,17 +263,17 @@ class AssassinPiece(Piece):
                 board.chief_killed(target_piece, board.get_chief_of_color(self.color))
             target_piece.die()
             target_piece.q, target_piece.r = original_q, original_r
-            logging.info(f"L'assassin a tué la pièce en {new_q}, {new_r} et l'a déplacée en {original_q}, {original_r}")
+            logging.debug(f"L'assassin a tué la pièce en {new_q}, {new_r} et l'a déplacée en {original_q}, {original_r}")
 
 
         # Déplacer l'assassin
         self.q, self.r = new_q, new_r
-        logging.info(f"L'assassin s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        logging.debug(f"L'assassin s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
         return True
     
 class ChiefPiece(Piece):
-    def __init__(self, q, r, color, piece_class, svg_path):
-        super().__init__(q, r, color, piece_class, svg_path)
+    def __init__(self, q, r, color, piece_class, svg_path, menace_score=0, opportunity_score=0, std_value=5):
+        super().__init__(q, r, color, piece_class, svg_path, menace_score, opportunity_score, std_value)
 
     def all_possible_moves(self, board):
         if self.is_dead:
@@ -297,11 +320,11 @@ class ChiefPiece(Piece):
             else:
                 return False # moved_piece_position is not a valid position.
             target_piece.q, target_piece.r = new_position
-            logging.info(f"Le chef a tué la pièce en {new_q}, {new_r} et l'a déplacée en {target_piece.q,}, {target_piece.r}")
+            logging.debug(f"Le chef a tué la pièce en {new_q}, {new_r} et l'a déplacée en {target_piece.q,}, {target_piece.r}")
 
         # Déplacer le chef
         self.q, self.r = new_q, new_r
-        logging.info(f"Le chef s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        logging.debug(f"Le chef s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
 
         # Vérifier si le chef est sur la case centrale
         if not self.on_central_cell and self.q == 0 and self.r == 0:
@@ -312,7 +335,8 @@ class ChiefPiece(Piece):
 
     def enter_central_cell(self, board):
         self.on_central_cell = True
-        logging.info(f"Le chef {self.name} est arrivé sur la case centrale!")
+        self.std_value += 5
+        logging.debug(f"Le chef {self.name} est arrivé sur la case centrale!")
         new_order = []
         for player_index in range(board.current_player_index + 1, len(board.players) + board.current_player_index):
             new_order.append(board.players[player_index%len(board.players)])
@@ -322,7 +346,8 @@ class ChiefPiece(Piece):
 
     def leave_central_cell(self, board):
         self.on_central_cell = False
-        logging.info(f"Le chef {self.name} n'est plus sur la case centrale.")
+        self.std_value -= 5
+        logging.debug(f"Le chef {self.name} n'est plus sur la case centrale.")
         new_order = []
         for player_index in range(board.current_player_index + 1, len(board.players) + board.current_player_index):
             player = board.players[player_index%len(board.players)]
@@ -339,8 +364,8 @@ class ChiefPiece(Piece):
 
 class DiplomatPiece(Piece):
     """Ajoute un comportement spécifique pour les diplomates."""
-    def __init__(self, q, r, color, piece_class, svg_path):
-        super().__init__(q, r, color, piece_class, svg_path)
+    def __init__(self, q, r, color, piece_class, svg_path, menace_score=0, opportunity_score=0, std_value=2):
+        super().__init__(q, r, color, piece_class, svg_path, menace_score, opportunity_score, std_value)
 
     def all_possible_moves(self, board):
         if self.is_dead:
@@ -384,21 +409,21 @@ class DiplomatPiece(Piece):
                 return False # moved_piece_position is not a valid position.
             # Déplacer la pièce rencontrée vers la nouvelle position
             target_piece.q, target_piece.r = new_position
-            logging.info(f"Le diplomate {self.name} a déplacé le {target_piece.piece_class} {target_piece.name} de {new_q}, {new_r} vers {new_position}")
+            logging.debug(f"Le diplomate {self.name} a déplacé le {target_piece.piece_class} {target_piece.name} de {new_q}, {new_r} vers {new_position}")
             
             if isinstance(target_piece, ChiefPiece) and target_piece.on_central_cell:
                 target_piece.leave_central_cell(board)
                 
         # Déplacer le diplomate
         self.q, self.r = new_q, new_r
-        logging.info(f"Le diplomate s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        logging.debug(f"Le diplomate s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
         return True
         
 class NecromobilePiece(Piece):
     """Ajoute un comportement spécifique pour les necromobiles."""
     
-    def __init__(self, q, r, color, piece_class, svg_path):
-        super().__init__(q, r, color, piece_class, svg_path)
+    def __init__(self, q, r, color, piece_class, svg_path, menace_score=0, opportunity_score=0, std_value=3):
+        super().__init__(q, r, color, piece_class, svg_path, menace_score, opportunity_score, std_value)
 
     def all_possible_moves(self, board):
         if self.is_dead:
@@ -441,15 +466,15 @@ class NecromobilePiece(Piece):
                 return False # moved_piece_position is not a valid position.
             # Déplacer la pièce rencontrée vers la nouvelle position
             target_piece.q, target_piece.r = new_position
-            logging.info(f"Le necromobile a déplacé la pièce de {new_q}, {new_r} vers {new_position}")
+            logging.debug(f"Le necromobile a déplacé la pièce de {new_q}, {new_r} vers {new_position}")
         # Déplacer le necromobile
         self.q, self.r = new_q, new_r
-        logging.info(f"Le necromobile s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        logging.debug(f"Le necromobile s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
         return True
 
 class ReporterPiece(Piece):
-    def __init__(self, q, r, color, piece_class, svg_path):
-        super().__init__(q, r, color, piece_class, svg_path)
+    def __init__(self, q, r, color, piece_class, svg_path, menace_score=0, opportunity_score=0, std_value=2):
+        super().__init__(q, r, color, piece_class, svg_path, menace_score, opportunity_score, std_value)
 
     def all_possible_moves(self, board):
         """Le reporter peut se déplacer normalement."""
@@ -471,7 +496,7 @@ class ReporterPiece(Piece):
             adjacent_r = self.r + dr
             piece = board.get_piece_at(adjacent_q, adjacent_r)
             if piece and piece.color != self.color and not piece.is_dead:
-                logging.info(f"Le reporter tue la pièce ennemie en {adjacent_q}, {adjacent_r}")
+                logging.debug(f"Le reporter tue la pièce ennemie en {adjacent_q}, {adjacent_r}")
                 if isinstance(piece, ChiefPiece):
                     board.chief_killed(piece, board.get_chief_of_color(self.color))
                 piece.die()
