@@ -16,32 +16,34 @@ class MinMaxPlayer(Player):
             piece.move(move[0], move[1], board)
             logging.info(f"MinMax a joué : {piece.piece_class} de ({piece.q}, {piece.r}) à {move}, eval: {self.evaluate_board(board)}")
 
+    def get_best_moves(self): # should go in minmax class
+        best_moves = {}
+        for piece in self.pieces:
+            for move, info in piece.opportunity_moves.items():
+                score = info['victim_value'] - info['protected_value'] * piece.std_value
+                if score > 0:
+                    best_moves[move] = score
+        best_moves = sorted(best_moves, key=lambda x: x.value, reverse=True)
+        print(best_moves)
+        return list(best_moves)
 
+            
     def alpha_beta(self, board, depth, alpha, beta):
         if depth == 0:
             return self.evaluate_board(board), None
 
-        valid_moves = self.get_all_valid_moves(board)
-        if not valid_moves:
-            return self.evaluate_board(board), None
-        
-        # # Tri des coups valides basé sur une évaluation rapide/ or opportunity
-        # scored_moves = []
-        # for piece, move in valid_moves:
-        #     # Évaluation simple et rapide du coup
-        #     score = 0
-        #     if piece.piece_class == "King":
-        #         score += 100
-        #     elif piece.piece_class == "Queen":
-        #         score += 50
-        #     scored_moves.append((score, piece, move))
-        
-        # # Trier les coups par score décroissant
-        # scored_moves.sort(reverse=True)
-        
+        best_moves = self.get_best_moves()
+        if not best_moves:
+            valid_moves = self.get_all_valid_moves(board)
+            if not valid_moves:
+                return self.evaluate_board(board), None
+            best_moves = [random.choice(valid_moves)]
+
+        logging.info(f'there is {len(best_moves)} good moves for {self.color}')
+
         max_eval = float('-inf')
         best_move = None
-        for piece, move in valid_moves:  # Utilisation des coups triés
+        for piece, move in best_moves:  # Utilisation des coups triés
                 new_board = self.copy_board_state(board)
                 new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
                 new_piece.move(move[0], move[1], new_board)
@@ -94,9 +96,6 @@ class MinMaxPlayer(Player):
             color=piece.color,
             piece_class=piece.piece_class,
             svg_path=piece.svg_path if hasattr(piece, 'svg_path') else None,
-            menace_score=piece.menace_score,
-            opportunity_score=piece.opportunity_score,
-            std_value=piece.std_value
         )
         new_piece.is_dead = piece.is_dead
         return new_piece

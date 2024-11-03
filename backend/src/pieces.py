@@ -40,30 +40,36 @@ class Piece:
         self.name = NAMES[color]
         self.on_central_cell = False  # Nouvel attribut pour suivre si le chef est sur la case centrale
 
-        self.menace_score = 0
-        self.opportunity_score = 0
+        # self.menace_score = menace_score
+        # self.opportunity_score = opportunity_score
+        self.opportunity_moves = {}
         self.threaten = []
         self.protect = []
         self.is_treatened_by = []
         self.is_protected_by = []
-        self.std_value = 1
+        self.std_value = std_value
 
 
-    def update_opportunity_score(self, board):
-        self.opportunity_score = 0
-        possible_moves = self.all_possible_moves(board)        
+
+    def update_threat_and_protections(self, board):
+        possible_moves = self.all_possible_moves(board)
         pieces = [board.get_piece_at(q, r) for q, r in possible_moves]
         pieces = [p for p in pieces if p]  # Filtrer les cases vides
         self.threaten = [p for p in pieces if p.color != self.color]
         self.protect = [p for p in pieces if p.color == self.color]
-        self.opportunity_score = max(p.std_value for p in pieces)
-        self.menace_score = sum(p.std_value for p in pieces)
         for piece in pieces:
-            piece.menace_score += self.std_value
-        for piece in self.treaten:
-            piece.is_treatened_by.append(self)
-        for piece in self.protect:
-            piece.is_protected_by.append(self)
+            if piece in self.threaten:
+                piece.is_treatened_by.append(self)
+                                
+            elif piece in self.protect:
+                piece.is_protected_by.append(self)
+
+
+    def update_threat_score(self):
+        self.opportunity_moves = {(self, (p.q, p.r)): {'victim_value': p.std_value, 'protected_value': 1 if p in p.is_protected_by else 0} for p in self.threaten}
+        
+        # if isinstance(self, ChiefPiece) and (0, 0) in possible_moves:
+        #     self.opportunity_moves[(self, (0, 0))] = 10
 
 
     def die(self):
@@ -103,7 +109,6 @@ class Piece:
             class_image_rect = self.class_image.get_rect(center=(x, y))
             screen.blit(self.class_image, class_image_rect)
             
-            # Dessiner le cercle de surbrillance si c'est le tour du joueur
             if is_current_player:
                 pygame.draw.circle(screen, GREY, (x, y), PIECE_RADIUS + 2, HIGHLIGHT_WIDTH)
         else:

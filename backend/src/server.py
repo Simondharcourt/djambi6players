@@ -4,6 +4,9 @@ import websockets
 import os
 from board import Board, COLORS
 from database import Database
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class DjambiServer:
     def __init__(self):
@@ -116,11 +119,11 @@ class DjambiServer:
         self.available_colors = list(COLORS.keys())
 
     async def send_board_state(self, websocket):
-        print(f"Sending state to specific client: {websocket.remote_address}")
+        logging.info(f"Sending state to specific client: {websocket.remote_address}")
         await self._prepare_and_send_state(specific_client=websocket)
 
     async def broadcast(self, message):
-        print(f"Broadcasting message: {message[:100]}...")
+        logging.info(f"Broadcasting message: {message[:100]}...")
         websockets.broadcast(self.clients, message)
 
     async def handle_authentication(self, websocket, data):
@@ -189,12 +192,12 @@ class DjambiServer:
                 }))
 
     async def handler(self, websocket, path):
-        print(f"Nouvelle connexion établie : {websocket.remote_address}")
+        logging.info(f"Nouvelle connexion établie : {websocket.remote_address}")
         await self.register(websocket)
         try:
             async for message in websocket:
                 data = json.loads(message)
-                print(f"Message reçu du client : {data}")
+                logging.info(f"Message reçu du client : {data}")
 
                 # Gérer l'authentification
                 if data['type'] in ['create_account', 'login', 'logout']:
@@ -221,7 +224,7 @@ class DjambiServer:
                         )
                         
                         if success:
-                            print("Mouvement réussi")
+                            logging.info("Mouvement réussi")
                             await self._prepare_and_send_state(data)
                         else:
                             await websocket.send(json.dumps({
@@ -229,15 +232,15 @@ class DjambiServer:
                                 'message': 'Mouvement invalide'
                             }))
                 elif data['type'] in ['undo', 'redo']:
-                    print(f"Commande {data['type']} reçue")
+                    logging.info(f"Commande {data['type']} reçue")
                     async with self.lock:
                         new_index = self.board.undo() if data['type'] == 'undo' else self.board.redo()
                         if new_index is not None:
                             self.board.current_player_index = new_index
-                        print(f"{data['type']} effectué : {success}")
+                        logging.info(f"{data['type']} effectué : {success}")
                         await self._prepare_and_send_state()
         finally:
-            print(f"Connexion fermée : {websocket.remote_address}")
+            logging.info(f"Connexion fermée : {websocket.remote_address}")
             if websocket in self.authenticated_users:
                 username = self.authenticated_users[websocket]
                 self.connected_usernames.remove(username)  # Nettoyer lors de la déconnexion
@@ -245,7 +248,7 @@ class DjambiServer:
             await self.unregister(websocket)
 
     async def quit_game(self, websocket):
-        print(f"Client {websocket.remote_address} quitte la partie")
+        logging.info(f"Client {websocket.remote_address} quitte la partie")
         
         # Gérer les couleurs du joueur qui quitte
         colors = self.clients.pop(websocket)
@@ -272,7 +275,7 @@ async def main():
     port = int(os.environ.get('PORT', 8765))
     server = DjambiServer()
     async with websockets.serve(server.handler, '0.0.0.0', port):
-        print(f"Serveur lancé sur le port {port}")
+        logging.info(f"Serveur lancé sur le port {port}")
         await asyncio.Future()  # Run forever
 
 if __name__ == "__main__":

@@ -106,6 +106,7 @@ class Board:
             self.players.append(MinMaxPlayer(COLORS[color], pieces))
             self.pieces.extend(pieces)
         self.update_all_scores()
+        self.update_all_opportunity_scores()
 
     def save_state(self, current_player_index):
         state = {
@@ -231,7 +232,6 @@ class Board:
             is_current_player = (piece.color == self.current_player_color and selected_piece is None and piece_to_place is None)
             piece.draw(screen, is_current_player)
 
-
     def hex_corners(self, x, y):
         """Retourne les coins de l'hexagone en fonction de sa position pixel."""
         corners = []
@@ -243,9 +243,11 @@ class Board:
             corners.append((corner_x, corner_y))
         return corners
 
-    def update_all_opportunity_scores(self):
-        map(lambda p: setattr(p, 'menace_score', 0), self.pieces)
-        map(lambda p: p.update_opportunity_score(self), self.pieces)
+    def update_all_opportunity_scores(self):        
+        for p in self.pieces:
+            p.update_threat_and_protections(self)
+        for p in self.pieces:
+            p.update_threat_score()
 
     def select_piece(self, q, r):
         """Sélectionne une pièce à la position (q, r)."""

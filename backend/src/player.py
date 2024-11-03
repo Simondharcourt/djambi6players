@@ -36,7 +36,7 @@ class Player:
     def play_turn(self, board):
         """Joue un tour : déplace une de ses pièces aléatoirement parmi les mouvements possibles."""
         all_moves = self.get_all_valid_moves(board)
-        
+
         if not all_moves:
             return
         
