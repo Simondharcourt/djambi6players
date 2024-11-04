@@ -24,11 +24,10 @@ class MinMaxPlayer(Player):
                 score = info['victim_value'] - info['protected_value'] * piece.std_value
                 if score > 0:
                     best_moves[move] = score
-        best_moves = sorted(best_moves, key=lambda x: x.value, reverse=True)
+        best_moves = sorted(best_moves.items(), key=lambda x: x[1], reverse=True)
         print(best_moves)
-        return list(best_moves)
-
-
+        return [move[0] for move in best_moves]  # Retourne uniquement les tuples (piece, move)
+    
     def alpha_beta(self, board, depth, alpha, beta):
         if depth == 0:
             return self.evaluate_board(board), None
