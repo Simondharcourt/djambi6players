@@ -19,8 +19,6 @@ def main():
     pygame.font.init()
     font = pygame.font.Font(None, FONT_SIZE)
 
-    # Sauvegarder l'état initial explicitement
-
     # Boucle principale du jeu
     running = True
     game_over = False

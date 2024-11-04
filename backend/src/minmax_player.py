@@ -16,6 +16,7 @@ class MinMaxPlayer(Player):
             piece.move(move[0], move[1], board)
             logging.info(f"MinMax a joué : {piece.piece_class} de ({piece.q}, {piece.r}) à {move}, eval: {self.evaluate_board(board)}")
 
+
     def get_best_moves(self): # should go in minmax class
         best_moves = {}
         for piece in self.pieces:
@@ -27,7 +28,7 @@ class MinMaxPlayer(Player):
         print(best_moves)
         return list(best_moves)
 
-            
+
     def alpha_beta(self, board, depth, alpha, beta):
         if depth == 0:
             return self.evaluate_board(board), None

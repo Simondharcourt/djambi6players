@@ -129,7 +129,7 @@ class Board:
         self.players = []
         for player_data in state['players']:
             player_pieces = [piece for piece in self.pieces if piece.color == player_data['color']]
-            self.players.append(Player(player_data['color'], player_pieces))
+            self.players.append(MinMaxPlayer(player_data['color'], player_pieces))
         self.update_all_scores()
         return state['current_player_index']
 
