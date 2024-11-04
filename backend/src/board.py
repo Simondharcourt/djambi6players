@@ -247,7 +247,8 @@ class Board:
         for p in self.pieces:
             p.update_threat_and_protections(self)
         for p in self.pieces:
-            p.update_threat_score()
+            p.update_piece_best_moves(self)
+            p.evaluate_threat_score(self)
 
     def select_piece(self, q, r):
         """Sélectionne une pièce à la position (q, r)."""

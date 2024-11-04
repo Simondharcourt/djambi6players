@@ -16,14 +16,10 @@ class MinMaxPlayer(Player):
             piece.move(move[0], move[1], board)
             logging.info(f"MinMax a joué : {piece.piece_class} de ({piece.q}, {piece.r}) à {move}, eval: {self.evaluate_board(board)}")
 
-
-    def get_best_moves(self): # should go in minmax class
+    def get_best_moves(self, board): # should go in minmax class
         best_moves = {}
         for piece in self.pieces:
-            for move, info in piece.opportunity_moves.items():
-                score = info['victim_value'] - info['protected_value'] * piece.std_value
-                if score > 0:
-                    best_moves[move] = score
+            best_moves.update(piece.update_piece_best_moves(board))
         best_moves = sorted(best_moves.items(), key=lambda x: x[1], reverse=True)
         print(best_moves)
         return [move[0] for move in best_moves]  # Retourne uniquement les tuples (piece, move)
@@ -32,7 +28,7 @@ class MinMaxPlayer(Player):
         if depth == 0:
             return self.evaluate_board(board), None
 
-        best_moves = self.get_best_moves()
+        best_moves = self.get_best_moves(board)
         if not best_moves:
             valid_moves = self.get_all_valid_moves(board)
             if not valid_moves:

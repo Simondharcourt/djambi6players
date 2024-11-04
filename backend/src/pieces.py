@@ -45,13 +45,27 @@ class Piece:
         self.opportunity_moves = {}
         self.threaten = []
         self.protect = []
-        self.is_treatened_by = []
+        self.is_threatened_by = []
         self.is_protected_by = []
         self.std_value = std_value
+        
+        self.possible_moves = []
+        self.best_moves = {}
 
+        self.threat_score = 0
+
+    def remove_threat_and_protections_after_move(self):
+        for piece in self.threaten:
+            piece.is_threatened_by.remove(self)
+        for piece in self.protect:
+            piece.is_protected_by.remove(self)
+        self.threaten = []
+        self.protect = []
 
 
     def update_threat_and_protections(self, board):
+        self.remove_threat_and_protections_after_move()
+        
         possible_moves = self.all_possible_moves(board)
         pieces = [board.get_piece_at(q, r) for q, r in possible_moves]
         pieces = [p for p in pieces if p]  # Filtrer les cases vides
@@ -59,17 +73,53 @@ class Piece:
         self.protect = [p for p in pieces if p.color == self.color]
         for piece in pieces:
             if piece in self.threaten:
-                piece.is_treatened_by.append(self)
+                piece.is_threatened_by.append(self)
                                 
             elif piece in self.protect:
                 piece.is_protected_by.append(self)
-
-
-    def update_threat_score(self):
-        self.opportunity_moves = {(self, (p.q, p.r)): {'victim_value': p.std_value, 'protected_value': 1 if p in p.is_protected_by else 0} for p in self.threaten}
         
-        # if isinstance(self, ChiefPiece) and (0, 0) in possible_moves:
-        #     self.opportunity_moves[(self, (0, 0))] = 10
+    def evaluate_threat_score(self, board):
+        threat_score = 0
+        threatened_score = 0
+
+        is_protected = 1 if len(self.is_protected_by)>0 else 0
+        for threat in self.is_threatened_by:
+            threatened_score += max(0, self.std_value - threat.std_value * is_protected)
+
+        if isinstance(self, ChiefPiece) and (0,0) in self.possible_moves:
+            threat_score += 2 * self.std_value * (len(board.players)-2)
+            
+        for target in self.threaten:
+            is_protected = 1 if len(target.is_protected_by)>0 else 0
+            threat_score += max(0, target.std_value - self.std_value * is_protected)
+            
+        self.threat_score = threat_score - threatened_score * self.std_value * (len(board.players) - 1)
+        return self.threat_score
+
+    def update_piece_best_moves(self, board):
+        # self.opportunity_moves = {(self, (p.q, p.r)): {'victim_value': p.std_value, 'protected_value': len(p.is_protected_by)} for p in self.threaten}
+        is_protected = 1 if len(self.is_protected_by)>0 else 0
+        
+        get_out_score = 0
+        for threat in self.is_threatened_by:
+            get_out_score += max(0, self.std_value - threat.std_value * is_protected) * (len(board.players)-1)
+        
+        best_moves = {}
+        possible_moves = self.all_possible_moves(board)
+        
+        if isinstance(self, ChiefPiece) and (0,0) in possible_moves:
+            best_moves[(self, possible_moves)] = 2 * self.std_value * (len(board.players)-2)
+        
+        if get_out_score>0:
+            for move in possible_moves:
+                best_moves[(self, move)] = get_out_score
+        
+        for target in self.threaten:
+            is_protected = 1 if len(target.is_protected_by)>0 else 0
+            best_moves[(self, (target.q, target.r))] = target.std_value - self.std_value * is_protected * (len(board.players)-1) + get_out_score
+        
+        self.best_moves = best_moves
+        return best_moves
 
 
     def die(self):
@@ -133,6 +183,7 @@ class Piece:
                     possible_moves.append((new_q, new_r))
                 step += 1  # Continuer dans la même direction
 
+        self.possible_moves = possible_moves
         return possible_moves
 
     def move(self, new_q, new_r, board):
@@ -140,6 +191,7 @@ class Piece:
             return False # new_q, new_r is not a valid move.
         self.q = new_q
         self.r = new_r
+        self.update_threat_and_protections(board)
         return True
 
     def is_surrounded(self, board, visited=None):
@@ -220,6 +272,7 @@ class MilitantPiece(Piece):
 
         self.q, self.r = new_q, new_r
         logging.debug(f"Le militant s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        self.update_threat_and_protections(board)
         return True
 
 class AssassinPiece(Piece):
@@ -274,6 +327,7 @@ class AssassinPiece(Piece):
         # Déplacer l'assassin
         self.q, self.r = new_q, new_r
         logging.debug(f"L'assassin s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        self.update_threat_and_protections(board)
         return True
     
 class ChiefPiece(Piece):
@@ -331,6 +385,8 @@ class ChiefPiece(Piece):
         self.q, self.r = new_q, new_r
         logging.debug(f"Le chef s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
 
+        self.update_threat_and_protections(board)
+        
         # Vérifier si le chef est sur la case centrale
         if not self.on_central_cell and self.q == 0 and self.r == 0:
             self.enter_central_cell(board)
@@ -422,6 +478,7 @@ class DiplomatPiece(Piece):
         # Déplacer le diplomate
         self.q, self.r = new_q, new_r
         logging.debug(f"Le diplomate s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        self.update_threat_and_protections(board)
         return True
         
 class NecromobilePiece(Piece):
@@ -475,6 +532,7 @@ class NecromobilePiece(Piece):
         # Déplacer le necromobile
         self.q, self.r = new_q, new_r
         logging.debug(f"Le necromobile s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}")
+        self.update_threat_and_protections(board)
         return True
 
 class ReporterPiece(Piece):
@@ -505,6 +563,8 @@ class ReporterPiece(Piece):
                 if isinstance(piece, ChiefPiece):
                     board.chief_killed(piece, board.get_chief_of_color(self.color))
                 piece.die()
+        self.update_threat_and_protections(board)
+        return True
 
 def create_piece(q, r, color, piece_class, svg_path):
     """Crée une pièce de la classe appropriée."""

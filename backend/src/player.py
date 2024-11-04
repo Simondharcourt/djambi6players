@@ -6,6 +6,7 @@ class Player:
         self.pieces = pieces
         self.score = 0
         self.relative_score = 0
+        self.threat_score = 0
 
     def compute_score(self, board):
         """Calcule le score actuel du joueur en fonction des pièces qu'il possède."""
@@ -20,10 +21,19 @@ class Player:
         score = sum(piece_values[piece.piece_class] for piece in self.pieces if not piece.is_dead)
         if any(piece.piece_class == 'chief' and not piece.is_dead and piece.on_central_cell for piece in self.pieces):
             score += (score-180) * (len([player for player in board.players if player.color != self.color])-1)
-        self.score = score
+            
+        self.score = score + self.evaluate_threat_score(board)
 
     def compute_relative_score(self, board):
         self.relative_score = self.score * 600 // sum(player.score for player in list(set(board.players)))
+
+    def evaluate_threat_score(self, board):
+        threat_score = 0
+        for piece in self.pieces:
+            threat_score += piece.evaluate_threat_score(board)
+        self.threat_score = threat_score
+        return threat_score
+            
 
     def get_all_valid_moves(self, board):
         all_moves = []
@@ -39,7 +49,7 @@ class Player:
 
         if not all_moves:
             return
-        
+
         piece, move = random.choice(all_moves)
         piece.move(move[0], move[1], board)
 
