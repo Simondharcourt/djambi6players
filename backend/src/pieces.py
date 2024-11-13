@@ -9,14 +9,20 @@ import math
 
 def is_within_board(q, r):
     """Vérifie si les coordonnées q, r sont dans les limites du plateau."""
-    s = -q - r  # Coordonnée s dans un système hexagonal
-    return abs(q) < BOARD_SIZE and abs(r) < BOARD_SIZE and abs(s) < BOARD_SIZE
+    if NB_PLAYER_MODE in [3, 6]:
+        s = -q - r  # Coordonnée s dans un système hexagonal
+        return abs(q) < BOARD_SIZE and abs(r) < BOARD_SIZE and abs(s) < BOARD_SIZE
+    elif NB_PLAYER_MODE == 4:
+        return abs(q) < BOARD_SIZE and abs(r) < BOARD_SIZE
 
 
 def hex_to_pixel(q, r):
-    x = HEX_RADIUS * 3/2 * q
-    y = HEX_RADIUS * math.sqrt(3) * (r + q/2)
-    
+    if NB_PLAYER_MODE in [3, 6]:
+        x = HEX_RADIUS * 3/2 * q
+        y = HEX_RADIUS * math.sqrt(3) * (r + q/2)
+    elif NB_PLAYER_MODE == 4:
+        x = math.sqrt(3) * HEX_RADIUS * q  # Ajustement pour le mode 4 joueurs
+        y = math.sqrt(3) * HEX_RADIUS * r  # Ajustement pour le mode 4 joueurs
     # Décalage vertical pour centrer le plateau plus haut
     pixel_coords = (
         int(x + WINDOW_WIDTH // 2),

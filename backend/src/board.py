@@ -21,8 +21,9 @@ class Board:
         # Initialisation des hexagones du plateau
         for q in range(-BOARD_SIZE + 1, BOARD_SIZE):
             for r in range(-BOARD_SIZE + 1, BOARD_SIZE):
-                if -q - r in range(-BOARD_SIZE + 1, BOARD_SIZE):
+                if -q - r in range(-BOARD_SIZE + 1, BOARD_SIZE) or NB_PLAYER_MODE == 4:
                     self.hexagons.append((q, r))
+
 
         # Ajouter des pièces aux positions de départ
         self.initialize_pieces()
@@ -204,13 +205,24 @@ class Board:
     def hex_corners(self, x, y):
         """Retourne les coins de l'hexagone en fonction de sa position pixel."""
         corners = []
-        for i in range(6):
-            angle_deg = 60 * i
-            angle_rad = math.radians(angle_deg)
-            corner_x = x + HEX_RADIUS * math.cos(angle_rad)
-            corner_y = y + HEX_RADIUS * math.sin(angle_rad)
-            corners.append((corner_x, corner_y))
+        if NB_PLAYER_MODE in [3, 6]:
+            for i in range(6):
+                angle_deg = 60 * i
+                angle_rad = math.radians(angle_deg)
+                corner_x = x + HEX_RADIUS * math.cos(angle_rad)
+                corner_y = y + HEX_RADIUS * math.sin(angle_rad)
+                corners.append((corner_x, corner_y))
+        elif NB_PLAYER_MODE == 4:
+            # Créer un carré en utilisant des offsets directs
+            half_size = HEX_RADIUS * math.sqrt(3)/2  # Ajusté pour avoir la même taille approximative que l'hexagone
+            corners = [
+                (x - half_size, y - half_size),  # Coin supérieur gauche
+                (x + half_size, y - half_size),  # Coin supérieur droit
+                (x + half_size, y + half_size),  # Coin inférieur droit
+                (x - half_size, y + half_size)   # Coin inférieur gauche
+            ]
         return corners
+
 
     def update_all_opportunity_scores(self):        
         for p in self.pieces:
@@ -301,11 +313,21 @@ class Board:
 
     def pixel_to_hex(self, x, y):
         """Convertit les coordonnées pixel en coordonnées hexagonales."""
-        x = (x - WINDOW_WIDTH // 2) / (HEX_RADIUS * 3/2)
-        y = (y - (WINDOW_HEIGHT // 2 - VERTICAL_OFFSET)) / (HEX_RADIUS * math.sqrt(3))
-        q = x
-        r = y - x/2
-        return round(q), round(r)
+
+        
+        if NB_PLAYER_MODE in [3, 6]:
+            x = (x - WINDOW_WIDTH // 2) / (HEX_RADIUS * 3/2)
+            y = (y - (WINDOW_HEIGHT // 2 - VERTICAL_OFFSET)) / (HEX_RADIUS * math.sqrt(3))
+            q = x
+            r = y - x / 2
+            return round(q), round(r)
+        elif NB_PLAYER_MODE == 4:
+            # Ajustement pour le mode 4 joueurs (carrés)
+            x = (x - WINDOW_WIDTH // 2) / (HEX_RADIUS * math.sqrt(3))  # Ajusté pour les carrés
+            y = (y - (WINDOW_HEIGHT // 2 - VERTICAL_OFFSET)) / (HEX_RADIUS * math.sqrt(3))  # Ajusté pour les carrés
+            q = x
+            r = y
+            return round(q), round(r)
 
     def draw_possible_moves(self, screen, possible_moves):
         """Dessine les mouvements possibles sur l'écran."""

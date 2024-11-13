@@ -2,10 +2,14 @@
 import os
 
 
-NB_PLAYER_MODE = 6 # in [3, 6]
+NB_PLAYER_MODE = 6 # in [3, 4, 6]
 ADVANCED_RULES = True
 
-BOARD_SIZE = 5 if NB_PLAYER_MODE == 3 else 7 # Nombre de cases par ligne/colonne sur le plateau
+if NB_PLAYER_MODE == 6:
+    BOARD_SIZE = 7
+elif NB_PLAYER_MODE in [3, 4]:
+    BOARD_SIZE = 5  
+    
 HEX_RADIUS = 35  # Rayon des hexagones
 WINDOW_WIDTH = 1000
 WINDOW_HEIGHT = 1000
@@ -75,7 +79,17 @@ if NB_PLAYER_MODE == 6:
         (-6, 5, 'green', 'reporter'), (-6, 4, 'green', 'militant'), (-5, 5, 'green', 'diplomat'),
         (-4, 5, 'green', 'militant'), (-5, 4, 'green', 'militant'), (-4, 4, 'green', 'necromobile'),
     ]
-    
+        
+    ADJACENT_DIRECTIONS = [
+        (1, 0), (-1, 0), (0, 1), (0, -1), (1, -1), (-1, 1),  # Directions existantes
+    ]
+
+    DIAG_DIRECTIONS = [
+        (2, -1), (1, -2), (-1, -1), (-2, 1), (-1, 2), (1, 1)  # Nouvelles directions diagonales
+    ]
+
+
+
 elif NB_PLAYER_MODE == 3:
     COLORS = {
         'red': (255, 0, 0),
@@ -105,12 +119,54 @@ elif NB_PLAYER_MODE == 3:
             (0, 2, 'yellow', 'necromobile'), (2, 2, 'yellow', 'militant'), (1, 2, 'yellow', 'militant'),
         ]
     
-ADJACENT_DIRECTIONS = [
-    (1, 0), (-1, 0), (0, 1), (0, -1), (1, -1), (-1, 1),  # Directions existantes
-]
-DIAG_DIRECTIONS = [
-    (2, -1), (1, -2), (-1, -1), (-2, 1), (-1, 2), (1, 1)  # Nouvelles directions diagonales
-] if NB_PLAYER_MODE != 3 else []
+    ADJACENT_DIRECTIONS = [
+        (1, 0), (-1, 0), (0, 1), (0, -1), (1, -1), (-1, 1),  # Directions existantes
+    ]
+    DIAG_DIRECTIONS = []
+        
+
+elif NB_PLAYER_MODE == 4:
+    COLORS = {
+        'blue': (0, 0, 255),
+        'red': (255, 0, 0),
+        'yellow': (255, 255, 0),
+        'green': (0, 255, 0),
+    }
+    ALL_COLORS = {**COLORS, 'white': (255, 255, 255), 'grey': (100, 100, 100)}
+    COLORS_REVERSE = {v: k for k, v in ALL_COLORS.items()}
+    NAMES = {
+        (0, 0, 255): 'Bleu',
+        (255, 0, 0): 'Rouge',
+        (255, 255, 0): 'Jaune',
+        (0, 255, 0): 'Vert',
+        (100, 100, 100): 'Mort',
+    }
+    START_POSITIONS = [
+            # Pièces violettes (en bas à gauche)
+            (-3, 4, 'green', 'assassin'), (-2, 4, 'green', 'militant'), (-4, 4, 'green', 'chief'),
+            (-4, 3, 'green', 'reporter'), (-4, 2, 'green', 'militant'), (-3, 3, 'green', 'diplomat'),
+            (-2, 3, 'green', 'militant'), (-3, 2, 'green', 'militant'), (-2, 2, 'green', 'necromobile'),
+            
+            (4, -2, 'red', 'militant'), (4, -3, 'red', 'assassin'), (4, -4, 'red', 'chief'),
+            (3, -4, 'red', 'reporter'), (2, -4, 'red', 'militant'), (3, -3, 'red', 'diplomat'),
+            (2, -2, 'red', 'necromobile'), (2, -3, 'red', 'militant'), (3, -2, 'red', 'militant'),
+            
+            (4, 2, 'blue', 'militant'), (4, 3, 'blue', 'assassin'), (4, 4, 'blue', 'chief'),
+            (3, 4, 'blue', 'reporter'), (2, 4, 'blue', 'militant'), (3, 3, 'blue', 'diplomat'),
+            (2, 2, 'blue', 'necromobile'), (2, 3, 'blue', 'militant'), (3, 2, 'blue', 'militant'),
+            
+            (-4, -2, 'yellow', 'militant'), (-4, -3, 'yellow', 'assassin'), (-4, -4, 'yellow', 'chief'),
+            (-3, -4, 'yellow', 'reporter'), (-2, -4, 'yellow', 'militant'), (-3, -3, 'yellow', 'diplomat'),
+            (-2, -2, 'yellow', 'necromobile'), (-2, -3, 'yellow', 'militant'), (-3, -2, 'yellow', 'militant'),
+        ]
+    
+    ADJACENT_DIRECTIONS = [
+        (1, 0), (-1, 0), (0, 1), (0, -1)
+    ]
+
+    DIAG_DIRECTIONS = [
+        (1, -1), (1, 1), (-1, -1), (-1, 1)
+    ]
 
 ALL_DIRECTIONS = ADJACENT_DIRECTIONS + DIAG_DIRECTIONS
 HIGHLIGHT_WIDTH = 3  # Épaisseur du cercle de surbrillance
