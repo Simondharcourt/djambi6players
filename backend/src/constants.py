@@ -1,10 +1,23 @@
-
 import os
+import argparse
 
-######### PARAMETERS #########
-NB_PLAYER_MODE = 6 # in [3, 4, 6]
-ADVANCED_RULES = True # in [True, False]
-##############################
+# Ajout de la fonction pour traiter les arguments
+def parse_arguments():
+    parser = argparse.ArgumentParser(description='Choisissez les paramètres du jeu.')
+    parser.add_argument('--nb_player_mode', type=int, choices=[3, 4, 6], default=6, 
+                        help='Nombre de joueurs (3, 4 ou 6)')
+    return parser.parse_args()
+
+# Récupération des arguments
+args = parse_arguments()
+NB_PLAYER_MODE = args.nb_player_mode  # Utilisation de l'argument
+
+if NB_PLAYER_MODE not in [3, 4, 6]:
+    raise ValueError("Nombre de joueurs invalide. Veuillez choisir 3, 4 ou 6.") 
+if NB_PLAYER_MODE in [3, 6]:
+    ADVANCED_RULES = False
+else:
+    ADVANCED_RULES = True
 
 if NB_PLAYER_MODE == 6:
     BOARD_SIZE = 7
