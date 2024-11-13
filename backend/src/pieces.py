@@ -31,6 +31,15 @@ def hex_to_pixel(q, r):
     return pixel_coords
 
 
+def find_adjacent_vectors(dq, dr):
+    for v1 in ADJACENT_DIRECTIONS:
+        for v2 in ADJACENT_DIRECTIONS:
+            if v1 != v2:  # Vérifie que v1 et v2 sont différents
+                if (v1[0] + v2[0] == dq) and (v1[1] + v2[1] == dr):
+                    return v1, v2  # Retourne les vecteurs trouvés
+    return None  
+
+
 class Piece:
     necromobile_image = None
 
@@ -169,7 +178,6 @@ class Piece:
         else:
             pygame.draw.circle(screen, GREY, (x, y), PIECE_RADIUS)
 
-
     def all_possible_moves(self, board):
         """Retourne une liste de toutes les cases possibles où la pièce peut aller."""
         if self.is_dead:
@@ -179,11 +187,18 @@ class Piece:
         # Pour chaque direction, explorer les cases jusqu'à rencontrer un obstacle ou le bord du plateau
         for dq, dr in ALL_DIRECTIONS:
             step = 1
+            if (dq, dr) in DIAG_DIRECTIONS:
+                v1, v2 = find_adjacent_vectors(dq, dr)
+            new_q, new_r = self.q, self.r
             while True:
+                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
+                    break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
                 if not is_within_board(new_q, new_r) or board.is_occupied(new_q, new_r):
                     break
+                
+                
                 if not (new_q == 0 and new_r == 0 and not isinstance(self, ChiefPiece)):
                     possible_moves.append((new_q, new_r))
                 step += 1  # Continuer dans la même direction
@@ -206,7 +221,7 @@ class Piece:
             return True
         visited.add((self.q, self.r))
 
-        for dq, dr in ALL_DIRECTIONS:
+        for dq, dr in ADJACENT_DIRECTIONS:
             new_q = self.q + dq
             new_r = self.r + dr
 
@@ -241,6 +256,12 @@ class MilitantPiece(Piece):
             for step in range(1, max_steps['diagonal' if is_diagonal else 'adjacent'] + 1):
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
+                
+                
+                if (dq, dr) in DIAG_DIRECTIONS:
+                    v1, v2 = find_adjacent_vectors(dq, dr)
+                    if board.is_occupied(self.q + v1[0], self.r + v1[1]) and board.is_occupied(self.q + v2[0], self.r + v2[1]):
+                        break
                 
                 if not is_within_board(new_q, new_r):
                     break
@@ -292,7 +313,17 @@ class AssassinPiece(Piece):
         possible_moves = []
         for dq, dr in ALL_DIRECTIONS:
             step = 1
+            new_q, new_r = self.q, self.r
+            if (dq, dr) in DIAG_DIRECTIONS:
+                v1, v2 = find_adjacent_vectors(dq, dr)
             while True:
+                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
+                    if not ADVANCED_RULES:
+                        break
+                    piece1 = board.get_piece_at(new_q + v1[0], new_r + v1[1])
+                    piece2 = board.get_piece_at(new_q + v2[0], new_r + v2[1])
+                    if not (piece1.color != self.color or piece1.is_dead) and (piece2.color != self.color or piece2.is_dead):
+                        break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
 
@@ -347,13 +378,19 @@ class ChiefPiece(Piece):
         possible_moves = []
         for dq, dr in ALL_DIRECTIONS:
             step = 1
+            new_q, new_r = self.q, self.r
+            if (dq, dr) in DIAG_DIRECTIONS:
+                v1, v2 = find_adjacent_vectors(dq, dr)
             while True:
+                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
+                    break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
-
                 if not is_within_board(new_q, new_r):
                     break
+                
 
+                    
                 piece_at_position = board.get_piece_at(new_q, new_r)
                 if piece_at_position:
                     if piece_at_position.color != self.color:
@@ -430,6 +467,8 @@ class ChiefPiece(Piece):
             return False  # Le chef n'est jamais considéré comme encerclé s'il est sur la case centrale
         return super().is_surrounded(board, visited)
 
+
+
 class DiplomatPiece(Piece):
     """Ajoute un comportement spécifique pour les diplomates."""
     def __init__(self, q, r, color, piece_class, svg_path, menace_score=0, opportunity_score=0, std_value=2):
@@ -441,9 +480,17 @@ class DiplomatPiece(Piece):
         possible_moves = []
         for dq, dr in ALL_DIRECTIONS:
             step = 1
+            new_q, new_r = self.q, self.r
+            if (dq, dr) in DIAG_DIRECTIONS:
+                v1, v2 = find_adjacent_vectors(dq, dr)
             while True:
+                
+                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
+                    break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
+
+
 
                 if not is_within_board(new_q, new_r):
                     break
@@ -500,11 +547,18 @@ class NecromobilePiece(Piece):
         possible_moves = []
         for dq, dr in ALL_DIRECTIONS:
             step = 1
+            new_q, new_r = self.q, self.r
+            if (dq, dr) in DIAG_DIRECTIONS:
+                v1, v2 = find_adjacent_vectors(dq, dr)
             while True:
+                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
+                    break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
                 if not is_within_board(new_q, new_r):
                     break
+
+                
                 piece_at_position = board.get_piece_at(new_q, new_r)
                 if piece_at_position:
                     if piece_at_position.is_dead:
