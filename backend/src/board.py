@@ -326,7 +326,6 @@ class Board:
             y = (y - (WINDOW_HEIGHT // 2 - VERTICAL_OFFSET)) / (HEX_RADIUS * math.sqrt(3))  # Ajusté pour les carrés
             q = x
             r = y
-            print(q, r)
             return round(q), round(r)
 
     def draw_possible_moves(self, screen, possible_moves):

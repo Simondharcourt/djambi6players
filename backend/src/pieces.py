@@ -322,7 +322,7 @@ class AssassinPiece(Piece):
                         break
                     piece1 = board.get_piece_at(new_q + v1[0], new_r + v1[1])
                     piece2 = board.get_piece_at(new_q + v2[0], new_r + v2[1])
-                    if not (piece1.color != self.color or piece1.is_dead) and (piece2.color != self.color or piece2.is_dead):
+                    if (piece1.color != self.color or piece1.is_dead) and (piece2.color != self.color or piece2.is_dead):
                         break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
