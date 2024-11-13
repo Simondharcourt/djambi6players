@@ -313,7 +313,6 @@ class Board:
 
     def pixel_to_hex(self, x, y):
         """Convertit les coordonnées pixel en coordonnées hexagonales."""
-
         
         if NB_PLAYER_MODE in [3, 6]:
             x = (x - WINDOW_WIDTH // 2) / (HEX_RADIUS * 3/2)
@@ -327,6 +326,7 @@ class Board:
             y = (y - (WINDOW_HEIGHT // 2 - VERTICAL_OFFSET)) / (HEX_RADIUS * math.sqrt(3))  # Ajusté pour les carrés
             q = x
             r = y
+            print(q, r)
             return round(q), round(r)
 
     def draw_possible_moves(self, screen, possible_moves):

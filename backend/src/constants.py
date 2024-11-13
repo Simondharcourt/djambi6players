@@ -14,15 +14,14 @@ NB_PLAYER_MODE = args.nb_player_mode  # Utilisation de l'argument
 
 if NB_PLAYER_MODE not in [3, 4, 6]:
     raise ValueError("Nombre de joueurs invalide. Veuillez choisir 3, 4 ou 6.") 
-if NB_PLAYER_MODE in [3, 6]:
-    ADVANCED_RULES = False
-else:
-    ADVANCED_RULES = True
 
-if NB_PLAYER_MODE == 6:
-    BOARD_SIZE = 7
-elif NB_PLAYER_MODE in [3, 4]:
+if NB_PLAYER_MODE in [3, 4]:
+    ADVANCED_RULES = False
     BOARD_SIZE = 5  
+elif NB_PLAYER_MODE == 6:
+    ADVANCED_RULES = True
+    BOARD_SIZE = 7
+
     
 HEX_RADIUS = 35  # Rayon des hexagones
 WINDOW_WIDTH = 1000
@@ -44,11 +43,11 @@ IS_PRODUCTION = os.environ.get('ENVIRONMENT') == 'production'
 
 if NB_PLAYER_MODE == 6:
     COLORS = {
-        'purple': (128, 0, 128),
-        'blue': (0, 0, 255),
-        'red': (255, 0, 0),
-        'pink': (255, 105, 180),
         'yellow': (255, 255, 0),
+        'pink': (255, 105, 180),
+        'red': (255, 0, 0),
+        'blue': (0, 0, 255),
+        'purple': (128, 0, 128),
         'green': (0, 255, 0),
     }
     ALL_COLORS = {**COLORS, 'white': (255, 255, 255), 'grey': (100, 100, 100)}
@@ -103,11 +102,10 @@ if NB_PLAYER_MODE == 6:
     ]
 
 
-
 elif NB_PLAYER_MODE == 3:
     COLORS = {
-        'red': (255, 0, 0),
         'yellow': (255, 255, 0),
+        'red': (255, 0, 0),
         'green': (0, 255, 0),
     }
     ALL_COLORS = {**COLORS, 'white': (255, 255, 255), 'grey': (100, 100, 100)}
@@ -141,10 +139,10 @@ elif NB_PLAYER_MODE == 3:
 
 elif NB_PLAYER_MODE == 4:
     COLORS = {
-        'blue': (0, 0, 255),
-        'red': (255, 0, 0),
         'yellow': (255, 255, 0),
         'green': (0, 255, 0),
+        'blue': (0, 0, 255),
+        'red': (255, 0, 0),
     }
     ALL_COLORS = {**COLORS, 'white': (255, 255, 255), 'grey': (100, 100, 100)}
     COLORS_REVERSE = {v: k for k, v in ALL_COLORS.items()}
@@ -157,21 +155,21 @@ elif NB_PLAYER_MODE == 4:
     }
     START_POSITIONS = [
             # Pièces violettes (en bas à gauche)
-            (-3, 4, 'green', 'assassin'), (-2, 4, 'green', 'militant'), (-4, 4, 'green', 'chief'),
-            (-4, 3, 'green', 'reporter'), (-4, 2, 'green', 'militant'), (-3, 3, 'green', 'diplomat'),
-            (-2, 3, 'green', 'militant'), (-3, 2, 'green', 'militant'), (-2, 2, 'green', 'necromobile'),
+            (-3, 4, 'yellow', 'assassin'), (-2, 4, 'yellow', 'militant'), (-4, 4, 'yellow', 'chief'),
+            (-4, 3, 'yellow', 'reporter'), (-4, 2, 'yellow', 'militant'), (-3, 3, 'yellow', 'diplomat'),
+            (-2, 3, 'yellow', 'militant'), (-3, 2, 'yellow', 'militant'), (-2, 2, 'yellow', 'necromobile'),
             
-            (4, -2, 'red', 'militant'), (4, -3, 'red', 'assassin'), (4, -4, 'red', 'chief'),
-            (3, -4, 'red', 'reporter'), (2, -4, 'red', 'militant'), (3, -3, 'red', 'diplomat'),
-            (2, -2, 'red', 'necromobile'), (2, -3, 'red', 'militant'), (3, -2, 'red', 'militant'),
+            (4, -2, 'blue', 'militant'), (4, -3, 'blue', 'assassin'), (4, -4, 'blue', 'chief'),
+            (3, -4, 'blue', 'reporter'), (2, -4, 'blue', 'militant'), (3, -3, 'blue', 'diplomat'),
+            (2, -2, 'blue', 'necromobile'), (2, -3, 'blue', 'militant'), (3, -2, 'blue', 'militant'),
             
-            (4, 2, 'blue', 'militant'), (4, 3, 'blue', 'assassin'), (4, 4, 'blue', 'chief'),
-            (3, 4, 'blue', 'reporter'), (2, 4, 'blue', 'militant'), (3, 3, 'blue', 'diplomat'),
-            (2, 2, 'blue', 'necromobile'), (2, 3, 'blue', 'militant'), (3, 2, 'blue', 'militant'),
+            (4, 2, 'green', 'militant'), (4, 3, 'green', 'assassin'), (4, 4, 'green', 'chief'),
+            (3, 4, 'green', 'reporter'), (2, 4, 'green', 'militant'), (3, 3, 'green', 'diplomat'),
+            (2, 2, 'green', 'necromobile'), (2, 3, 'green', 'militant'), (3, 2, 'green', 'militant'),
             
-            (-4, -2, 'yellow', 'militant'), (-4, -3, 'yellow', 'assassin'), (-4, -4, 'yellow', 'chief'),
-            (-3, -4, 'yellow', 'reporter'), (-2, -4, 'yellow', 'militant'), (-3, -3, 'yellow', 'diplomat'),
-            (-2, -2, 'yellow', 'necromobile'), (-2, -3, 'yellow', 'militant'), (-3, -2, 'yellow', 'militant'),
+            (-4, -2, 'red', 'militant'), (-4, -3, 'red', 'assassin'), (-4, -4, 'red', 'chief'),
+            (-3, -4, 'red', 'reporter'), (-2, -4, 'red', 'militant'), (-3, -3, 'red', 'diplomat'),
+            (-2, -2, 'red', 'necromobile'), (-2, -3, 'red', 'militant'), (-3, -2, 'red', 'militant'),
         ]
     
     ADJACENT_DIRECTIONS = [

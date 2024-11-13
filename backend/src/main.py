@@ -12,7 +12,7 @@ def main():
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption("Djambi")
     clock = pygame.time.Clock()
-    current_player_index = 4 % NB_PLAYER_MODE
+    current_player_index = 0
     board = Board(current_player_index)
 
     # Initialiser la police pour le texte
