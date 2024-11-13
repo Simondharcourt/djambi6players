@@ -1,9 +1,10 @@
 
 import os
 
-
+######### PARAMETERS #########
 NB_PLAYER_MODE = 6 # in [3, 4, 6]
-ADVANCED_RULES = True
+ADVANCED_RULES = True # in [True, False]
+##############################
 
 if NB_PLAYER_MODE == 6:
     BOARD_SIZE = 7
