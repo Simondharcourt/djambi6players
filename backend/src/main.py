@@ -115,7 +115,7 @@ def main():
             draw_legend(screen)
         else:
             # Afficher le message de victoire
-            win_text = font.render(f"Le joueur {winner.name} a gagné !", True, WHITE)
+            win_text = font.render(f"Le joueur {winner.color} a gagné !", True, WHITE)
             win_rect = win_text.get_rect(center=(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 3))
             screen.blit(win_text, win_rect)
 
