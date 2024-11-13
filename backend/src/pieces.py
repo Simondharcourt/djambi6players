@@ -18,7 +18,6 @@ def hex_to_pixel(q, r):
     y = HEX_RADIUS * math.sqrt(3) * (r + q/2)
     
     # Décalage vertical pour centrer le plateau plus haut
-    
     pixel_coords = (
         int(x + WINDOW_WIDTH // 2),
         int(y + (WINDOW_HEIGHT // 2) - VERTICAL_OFFSET)
@@ -296,11 +295,13 @@ class AssassinPiece(Piece):
 
                 piece_at_position = board.get_piece_at(new_q, new_r)
                 if piece_at_position:
-                    if piece_at_position.color != self.color:
-                        if not piece_at_position.is_dead:
-                            possible_moves.append((new_q, new_r))  # L'assassin peut se déplacer sur une pièce ennemie
-                        break  # Arrêter après avoir rencontré une pièce ennemie
-                    # Si c'est une pièce alliée, on continue sans l'ajouter aux mouvements possibles
+                    if piece_at_position.is_dead:
+                        break
+                    elif piece_at_position.color != self.color:
+                        possible_moves.append((new_q, new_r))  # L'assassin peut se déplacer sur une pièce ennemie
+                        break
+                    elif not ADVANCED_RULES:
+                        break
                 elif not (new_q == 0 and new_r == 0) or (board.is_occupied(0, 0) and not isinstance(piece_at_position, ChiefPiece) and not piece_at_position.is_dead):
                     possible_moves.append((new_q, new_r))
                 step += 1
@@ -443,8 +444,8 @@ class DiplomatPiece(Piece):
 
                 piece_at_position = board.get_piece_at(new_q, new_r)
                 if piece_at_position:
-                    if not piece_at_position.is_dead: # toutes les pièces sont accessibles
-                        possible_moves.append((new_q, new_r))  # L'assassin peut se déplacer sur une pièce ennemie
+                    if not piece_at_position.is_dead and (ADVANCED_RULES or piece_at_position.color != self.color): # toutes les pièces sont accessibles
+                        possible_moves.append((new_q, new_r))
                     break  # Arrêter dans cette direction aprs avoir rencontré une pièce
                 elif not (new_q == 0 and new_r == 0) or (board.is_occupied(0, 0) and not isinstance(piece_at_position, ChiefPiece) and not piece_at_position.is_dead):
                     possible_moves.append((new_q, new_r))
@@ -500,8 +501,8 @@ class NecromobilePiece(Piece):
                     break
                 piece_at_position = board.get_piece_at(new_q, new_r)
                 if piece_at_position:
-                    if piece_at_position.is_dead: # toutes les pièces sont accessibles
-                        possible_moves.append((new_q, new_r))  # L'assassin peut se déplacer sur une pièce ennemie
+                    if piece_at_position.is_dead:
+                        possible_moves.append((new_q, new_r)) 
                     break  # Arrêter dans cette direction après avoir rencontré une pièce
                 elif not (new_q == 0 and new_r == 0) or (board.is_occupied(0, 0) and piece_at_position.is_dead):
                     possible_moves.append((new_q, new_r))
@@ -554,15 +555,20 @@ class ReporterPiece(Piece):
         board.animate_move(pygame.display.get_surface(), self, original_q, original_r, new_q, new_r)
         
         # Tuer les ennemis adjacents après le déplacement
-        for dq, dr in ADJACENT_DIRECTIONS:
-            adjacent_q = self.q + dq
-            adjacent_r = self.r + dr
-            piece = board.get_piece_at(adjacent_q, adjacent_r)
-            if piece and piece.color != self.color and not piece.is_dead:
-                logging.debug(f"Le reporter tue la pièce ennemie en {adjacent_q}, {adjacent_r}")
-                if isinstance(piece, ChiefPiece):
-                    board.chief_killed(piece, board.get_chief_of_color(self.color))
-                piece.die()
+        if ADVANCED_RULES:
+            for dq, dr in ADJACENT_DIRECTIONS:
+                adjacent_q = self.q + dq
+                adjacent_r = self.r + dr
+                piece = board.get_piece_at(adjacent_q, adjacent_r)
+                if piece and piece.color != self.color and not piece.is_dead:
+                    logging.debug(f"Le reporter tue la pièce ennemie en {adjacent_q}, {adjacent_r}")
+                    if isinstance(piece, ChiefPiece):
+                        board.chief_killed(piece, board.get_chief_of_color(self.color))
+                    piece.die()
+        else:
+            # implement only one kill from the reporter.
+            pass
+        
         self.update_threat_and_protections(board)
         return True
 
