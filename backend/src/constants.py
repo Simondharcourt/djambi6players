@@ -19,7 +19,7 @@ if NB_PLAYER_MODE in [3, 4]:
     ADVANCED_RULES = False
     BOARD_SIZE = 5  
 elif NB_PLAYER_MODE == 6:
-    ADVANCED_RULES = True
+    ADVANCED_RULES = False
     BOARD_SIZE = 7
 
     
