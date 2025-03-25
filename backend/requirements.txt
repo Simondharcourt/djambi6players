@@ -1,4 +1,3 @@
-cairo
 CairoSVG==2.7.1
 numpy==1.23.5
 pygame==2.6.1
