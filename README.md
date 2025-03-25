@@ -12,6 +12,8 @@ You can find my adapted rules in the repository.
 Runs on python3.10.13 with backend/src/main.py
 You need to install pango and cairo ('brew install cairo pango' on macos/apt-get install 'cairo pango')
 
+Specify --nb_player_mode (3, 4 or 6. Default is 6)
+
 ## How to play it online with your friends:
 Just with https://simondharcourt.github.io/djambi6players/.
 To test it locally, with python backend/src/server.py and click on the html file.

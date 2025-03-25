@@ -98,10 +98,10 @@ let currentUsername = null;
 
 // Modifier la fonction startGame
 function startGame(playerCount) {
-    if (!isLoggedIn) {
-        alert('Vous devez être connecté pour jouer. Veuillez vous connecter ou créer un compte.');
-        return;
-    }
+    // if (!isLoggedIn) {
+    //     alert('Vous devez être connecté pour jouer. Veuillez vous connecter ou créer un compte.');
+    //     return;
+    // }
 
     document.getElementById('mainMenu').style.display = 'none';
     document.querySelector('.game-container').style.display = 'flex';
@@ -111,7 +111,7 @@ function startGame(playerCount) {
     ws.send(JSON.stringify({
         type: 'start_game',
         nb_players: playerCount,
-        username: currentUsername
+        username: currentUsername || 'Anonymous' // Ajouter un nom par défaut si non connecté
     }));
 }
 
@@ -1041,7 +1041,7 @@ function drawPlayerScores() {
     const jetonRadius = 15;
     const spacing = 10;
     const scoreSpacing = 10;
-    const nameSpacing = 60; // Espacement pour le nom
+    const nameSpacing = 60;
 
     ctx.font = '20px Arial';
     
@@ -1109,6 +1109,8 @@ function login() {
 }
 
 function updateUIAfterAuth(username) {
+    if (!username) return; // Ne rien faire si utilisateur anonyme
+    
     isLoggedIn = true;
     currentUsername = username;
     
