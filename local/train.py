@@ -1,4 +1,4 @@
-import torch
+import gymnasium as gym
 import numpy as np
 from djambi_env import DjambiEnv
 from dqn_model import DQNAgent
@@ -84,7 +84,7 @@ def train(env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: 
 
 if __name__ == "__main__":
     # Créer l'environnement
-    env = DjambiEnv()
+    env = DjambiEnv(render_mode=None)  # Set to "human" if you want to see the game
     
     # Définir la forme de l'état et le nombre d'actions
     board_shape = env.observation_space["board"].shape
@@ -104,4 +104,7 @@ if __name__ == "__main__":
     print(f"\nEntraînement terminé !")
     print(f"Nombre total de victoires : {wins}")
     print(f"Récompense moyenne : {np.mean(rewards):.2f}")
-    print(f"Récompense maximale : {np.max(rewards):.2f}") 
+    print(f"Récompense maximale : {np.max(rewards):.2f}")
+    
+    # Fermer l'environnement
+    env.close() 

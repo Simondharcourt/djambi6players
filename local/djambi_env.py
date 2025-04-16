@@ -6,6 +6,8 @@ import random
 import sys
 import os
 import logging
+import pygame
+from backend.src.constants import WINDOW_WIDTH, WINDOW_HEIGHT, FONT_SIZE
 
 # Configure logging
 logging.basicConfig(
@@ -18,10 +20,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Add the backend directory to Python path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+# Add the project root to Python path
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(project_root)
 
-from djambi6players.backend.src import (
+from backend.src import (
     Board,
     BOARD_SIZE, COLORS, START_POSITIONS, NB_PLAYER_MODE, NAMES,
     create_piece, hex_to_pixel, is_within_board,
@@ -35,13 +38,22 @@ class DjambiEnv(gym.Env):
     Utilise le backend existant pour la logique du jeu.
     """
     
-    def __init__(self):
+    def __init__(self, render_mode: Optional[str] = None):
         super().__init__()
         logger.info("Initializing Djambi environment")
         
+        self.render_mode = render_mode
+        if render_mode == "human":
+            pygame.init()
+            self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+            pygame.display.set_caption("Djambi")
+            self.clock = pygame.time.Clock()
+            pygame.font.init()
+            self.font = pygame.font.Font(None, FONT_SIZE)
+        
         # Initialisation du plateau
         self.board = Board(current_player_index=0)
-        self.board.rl = False  # Mode reinforcement learning
+        self.board.rl = True  # Mode reinforcement learning
         
         # Définition des espaces d'observation et d'action
         self.observation_space = spaces.Dict({
@@ -70,7 +82,7 @@ class DjambiEnv(gym.Env):
         
         # Réinitialiser le plateau
         self.board = Board(current_player_index=0)
-        self.board.rl = False
+        self.board.rl = True
         
         # Garder seulement 3 joueurs
         self.board.players = self.board.players[:3]
@@ -79,6 +91,9 @@ class DjambiEnv(gym.Env):
         # Joueur actuel (commence aléatoirement)
         self.board.current_player_index = random.randint(0, 2)
         logger.info(f"Game started with player {self.board.current_player_index + 1}")
+        
+        if self.render_mode == "human":
+            self.render()
         
         return self._get_observation(), self._get_info()
     
@@ -188,15 +203,31 @@ class DjambiEnv(gym.Env):
         self.board.next_player()
         logger.info(f"Next player: {self.board.current_player_index + 1}")
         
+        if self.render_mode == "human":
+            self.render()
+        
         return self._get_observation(), reward, terminated, False, self._get_info()
     
     def render(self):
         """
         Affiche l'état actuel du plateau.
         """
-        logger.info("Rendering current board state")
-        print("\nPlateau actuel:")
-        board_state = self._get_observation()["board"]
-        print(board_state)
-        print(f"Joueur actuel: {self.board.current_player_index + 1}")
-        print(f"Statut des joueurs: {self._get_info()['player_status']}") 
+        if self.render_mode == "human":
+            self.screen.fill((0, 0, 0))  # BLACK
+            self.board.draw(self.screen)
+            pygame.display.flip()
+            self.clock.tick(60)
+        else:
+            logger.info("Rendering current board state")
+            print("\nPlateau actuel:")
+            board_state = self._get_observation()["board"]
+            print(board_state)
+            print(f"Joueur actuel: {self.board.current_player_index + 1}")
+            print(f"Statut des joueurs: {self._get_info()['player_status']}")
+    
+    def close(self):
+        """
+        Ferme l'environnement et libère les ressources.
+        """
+        if self.render_mode == "human":
+            pygame.quit() 

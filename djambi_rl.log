@@ -1,0 +1,890 @@
+2025-04-16 18:16:19,850 - INFO - Initializing Djambi environment
+2025-04-16 18:16:19,987 - INFO - Resetting environment
+2025-04-16 18:16:20,105 - INFO - Game started with player 1
+2025-04-16 18:16:20,865 - INFO - Resetting environment
+2025-04-16 18:16:20,988 - INFO - Game started with player 2
+2025-04-16 18:16:20,988 - INFO - Player 2 attempting move: piece at (5, 11) to (5, 8)
+2025-04-16 18:16:20,988 - WARNING - Invalid move: Piece at (-1, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,988 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,988 - INFO - Player 2 attempting move: piece at (4, 0) to (3, 8)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (-2, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (7, 0) to (8, 4)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (1, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (3, 12) to (12, 11)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (-3, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (10, 12) to (0, 0)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (4, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (3, 10) to (10, 10)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (-3, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (4, 8) to (11, 0)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (-2, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (11, 9) to (6, 4)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (5, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (11, 11) to (11, 9)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (5, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (1, 10) to (8, 1)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (-5, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (7, 3) to (8, 2)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (1, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (8, 2) to (1, 8)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (2, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (9, 9) to (8, 10)
+2025-04-16 18:16:20,989 - WARNING - Invalid move: Piece at (3, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,989 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,989 - INFO - Player 2 attempting move: piece at (12, 4) to (3, 10)
+2025-04-16 18:16:20,990 - WARNING - Invalid move: Move to (-3, 4) not in possible moves [(5, -2), (4, -2), (6, -3), (6, -4), (5, -3), (4, -1)]
+2025-04-16 18:16:20,990 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,990 - INFO - Player 2 attempting move: piece at (4, 10) to (3, 2)
+2025-04-16 18:16:20,990 - WARNING - Invalid move: Piece at (-2, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,990 - WARNING - Invalid move attempted
+2025-04-16 18:16:20,990 - INFO - Player 2 attempting move: piece at (8, 7) to (0, 10)
+2025-04-16 18:16:20,990 - WARNING - Invalid move: Piece at (2, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:20,990 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,004 - INFO - Player 2 attempting move: piece at (12, 3) to (10, 1)
+2025-04-16 18:16:21,004 - WARNING - Invalid move: Piece at (6, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,004 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (1, 9) to (2, 2)
+2025-04-16 18:16:21,005 - WARNING - Invalid move: Piece at (-5, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,005 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (5, 12) to (5, 5)
+2025-04-16 18:16:21,005 - WARNING - Invalid move: Piece at (-1, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,005 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (7, 6) to (2, 6)
+2025-04-16 18:16:21,005 - WARNING - Invalid move: Piece at (1, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,005 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (1, 11) to (1, 4)
+2025-04-16 18:16:21,005 - WARNING - Invalid move: Piece at (-5, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,005 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (8, 5) to (11, 12)
+2025-04-16 18:16:21,005 - WARNING - Invalid move: Piece at (2, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,005 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (1, 11) to (6, 1)
+2025-04-16 18:16:21,005 - WARNING - Invalid move: Piece at (-5, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,005 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (3, 9) to (8, 10)
+2025-04-16 18:16:21,005 - WARNING - Invalid move: Piece at (-3, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,005 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (3, 1) to (12, 9)
+2025-04-16 18:16:21,005 - WARNING - Invalid move: Piece at (-3, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,005 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (3, 10) to (11, 3)
+2025-04-16 18:16:21,005 - WARNING - Invalid move: Piece at (-3, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:16:21,005 - WARNING - Invalid move attempted
+2025-04-16 18:16:21,005 - INFO - Player 2 attempting move: piece at (10, 7) to (9, 9)
+2025-04-16 18:19:43,492 - INFO - Initializing Djambi environment
+2025-04-16 18:19:43,629 - INFO - Resetting environment
+2025-04-16 18:19:43,748 - INFO - Game started with player 2
+2025-04-16 18:19:44,486 - INFO - Resetting environment
+2025-04-16 18:19:44,610 - INFO - Game started with player 3
+2025-04-16 18:19:44,610 - INFO - Player 3 attempting move: piece at (8, 4) to (0, 0)
+2025-04-16 18:19:44,610 - WARNING - Invalid move: Piece at (2, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,610 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (11, 4) to (2, 2)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (5, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (11, 7) to (2, 7)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (5, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (0, 8) to (10, 6)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (-6, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (10, 9) to (10, 11)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (4, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (4, 8) to (1, 9)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (-2, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (0, 5) to (1, 4)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (-6, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (1, 2) to (5, 5)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (-5, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (8, 10) to (11, 3)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (2, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (6, 12) to (4, 12)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (0, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (8, 9) to (9, 2)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (2, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,611 - INFO - Player 3 attempting move: piece at (0, 8) to (1, 4)
+2025-04-16 18:19:44,611 - WARNING - Invalid move: Piece at (-6, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,611 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,612 - INFO - Player 3 attempting move: piece at (7, 5) to (5, 3)
+2025-04-16 18:19:44,612 - WARNING - Invalid move: Piece at (1, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,612 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,625 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,626 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,626 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,628 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,628 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,628 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,628 - INFO - Player 3 attempting move: piece at (1, 9) to (11, 3)
+2025-04-16 18:19:44,628 - WARNING - Invalid move: Piece at (-5, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,628 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,628 - INFO - Player 3 attempting move: piece at (3, 1) to (9, 0)
+2025-04-16 18:19:44,628 - WARNING - Invalid move: Piece at (-3, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,628 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,628 - INFO - Player 3 attempting move: piece at (8, 11) to (4, 5)
+2025-04-16 18:19:44,628 - WARNING - Invalid move: Piece at (2, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,628 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,628 - INFO - Player 3 attempting move: piece at (2, 1) to (4, 3)
+2025-04-16 18:19:44,628 - WARNING - Invalid move: Piece at (-4, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,628 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,628 - INFO - Player 3 attempting move: piece at (5, 2) to (3, 1)
+2025-04-16 18:19:44,628 - WARNING - Invalid move: Piece at (-1, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,628 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,628 - INFO - Player 3 attempting move: piece at (1, 9) to (3, 3)
+2025-04-16 18:19:44,628 - WARNING - Invalid move: Piece at (-5, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,628 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,628 - INFO - Player 3 attempting move: piece at (6, 4) to (11, 5)
+2025-04-16 18:19:44,628 - WARNING - Invalid move: Piece at (0, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,628 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,630 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,630 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,630 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,631 - INFO - Player 3 attempting move: piece at (11, 9) to (5, 9)
+2025-04-16 18:19:44,631 - WARNING - Invalid move: Piece at (5, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,631 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,631 - INFO - Player 3 attempting move: piece at (2, 11) to (0, 1)
+2025-04-16 18:19:44,631 - WARNING - Invalid move: Piece at (-4, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,631 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,631 - INFO - Player 3 attempting move: piece at (3, 9) to (10, 5)
+2025-04-16 18:19:44,631 - WARNING - Invalid move: Piece at (-3, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,631 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,631 - INFO - Player 3 attempting move: piece at (8, 11) to (1, 2)
+2025-04-16 18:19:44,631 - WARNING - Invalid move: Piece at (2, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,631 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,631 - INFO - Player 3 attempting move: piece at (6, 12) to (8, 10)
+2025-04-16 18:19:44,631 - WARNING - Invalid move: Piece at (0, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,631 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,631 - INFO - Player 3 attempting move: piece at (4, 2) to (4, 6)
+2025-04-16 18:19:44,631 - WARNING - Invalid move: Piece at (-2, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,631 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,631 - INFO - Player 3 attempting move: piece at (2, 1) to (6, 9)
+2025-04-16 18:19:44,631 - WARNING - Invalid move: Piece at (-4, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,631 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,631 - INFO - Player 3 attempting move: piece at (4, 10) to (1, 3)
+2025-04-16 18:19:44,631 - WARNING - Invalid move: Piece at (-2, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,631 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,631 - INFO - Player 3 attempting move: piece at (3, 0) to (2, 11)
+2025-04-16 18:19:44,632 - WARNING - Invalid move: Piece at (-3, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,632 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,634 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,634 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,634 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,634 - INFO - Player 3 attempting move: piece at (12, 1) to (6, 3)
+2025-04-16 18:19:44,634 - WARNING - Invalid move: Move to (0, -3) not in possible moves []
+2025-04-16 18:19:44,634 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,634 - INFO - Player 3 attempting move: piece at (2, 4) to (1, 11)
+2025-04-16 18:19:44,634 - WARNING - Invalid move: Piece at (-4, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,634 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,634 - INFO - Player 3 attempting move: piece at (5, 12) to (5, 9)
+2025-04-16 18:19:44,634 - WARNING - Invalid move: Piece at (-1, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,634 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,636 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,636 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,636 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,636 - INFO - Player 3 attempting move: piece at (7, 5) to (6, 6)
+2025-04-16 18:19:44,636 - WARNING - Invalid move: Piece at (1, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,636 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,639 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,639 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,639 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,639 - INFO - Player 3 attempting move: piece at (7, 10) to (7, 5)
+2025-04-16 18:19:44,639 - WARNING - Invalid move: Piece at (1, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,639 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,639 - INFO - Player 3 attempting move: piece at (6, 0) to (0, 2)
+2025-04-16 18:19:44,639 - WARNING - Invalid move: Piece at (0, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,639 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,639 - INFO - Player 3 attempting move: piece at (5, 10) to (5, 3)
+2025-04-16 18:19:44,639 - WARNING - Invalid move: Piece at (-1, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,639 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,639 - INFO - Player 3 attempting move: piece at (9, 6) to (4, 12)
+2025-04-16 18:19:44,639 - WARNING - Invalid move: Piece at (3, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,639 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,639 - INFO - Player 3 attempting move: piece at (10, 1) to (8, 12)
+2025-04-16 18:19:44,639 - WARNING - Invalid move: Move to (2, 6) not in possible moves [(3, -5), (2, -5), (3, -4), (2, -3), (3, -6), (2, -4), (3, -3)]
+2025-04-16 18:19:44,639 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,642 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,642 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,642 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,642 - INFO - Player 3 attempting move: piece at (6, 11) to (3, 3)
+2025-04-16 18:19:44,642 - WARNING - Invalid move: Piece at (0, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,642 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,644 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,644 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,644 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,644 - INFO - Player 3 attempting move: piece at (2, 5) to (9, 4)
+2025-04-16 18:19:44,644 - WARNING - Invalid move: Piece at (-4, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,644 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,644 - INFO - Player 3 attempting move: piece at (10, 5) to (1, 10)
+2025-04-16 18:19:44,644 - WARNING - Invalid move: Piece at (4, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,644 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,645 - INFO - Player 3 attempting move: piece at (1, 1) to (2, 11)
+2025-04-16 18:19:44,645 - WARNING - Invalid move: Piece at (-5, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,645 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,645 - INFO - Player 3 attempting move: piece at (11, 12) to (7, 6)
+2025-04-16 18:19:44,645 - WARNING - Invalid move: Piece at (5, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,645 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,647 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,647 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,647 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,647 - INFO - Player 3 attempting move: piece at (8, 12) to (2, 12)
+2025-04-16 18:19:44,647 - WARNING - Invalid move: Piece at (2, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,647 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,647 - INFO - Player 3 attempting move: piece at (12, 1) to (1, 11)
+2025-04-16 18:19:44,647 - WARNING - Invalid move: Move to (-5, 5) not in possible moves []
+2025-04-16 18:19:44,647 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,647 - INFO - Player 3 attempting move: piece at (2, 2) to (11, 10)
+2025-04-16 18:19:44,647 - WARNING - Invalid move: Piece at (-4, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,647 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,649 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,650 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,650 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,650 - INFO - Player 3 attempting move: piece at (1, 10) to (3, 7)
+2025-04-16 18:19:44,650 - WARNING - Invalid move: Piece at (-5, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,650 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,650 - INFO - Player 3 attempting move: piece at (3, 11) to (5, 6)
+2025-04-16 18:19:44,650 - WARNING - Invalid move: Piece at (-3, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,650 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,650 - INFO - Player 3 attempting move: piece at (5, 5) to (9, 5)
+2025-04-16 18:19:44,650 - WARNING - Invalid move: Piece at (-1, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,650 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,650 - INFO - Player 3 attempting move: piece at (12, 4) to (7, 12)
+2025-04-16 18:19:44,651 - WARNING - Invalid move: Piece at (6, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,651 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,653 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,653 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,653 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,655 - INFO - Player 3 attempting move: piece at (0, 7) to (7, 11)
+2025-04-16 18:19:44,655 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,655 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,655 - INFO - Player 3 attempting move: piece at (4, 0) to (6, 8)
+2025-04-16 18:19:44,656 - WARNING - Invalid move: Piece at (-2, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,656 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,656 - INFO - Player 3 attempting move: piece at (7, 3) to (12, 5)
+2025-04-16 18:19:44,656 - WARNING - Invalid move: Piece at (1, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,656 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,842 - INFO - Player 3 attempting move: piece at (1, 0) to (4, 8)
+2025-04-16 18:19:44,842 - WARNING - Invalid move: Piece at (-5, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,842 - WARNING - Invalid move attempted
+2025-04-16 18:19:44,934 - INFO - Player 3 attempting move: piece at (10, 12) to (5, 8)
+2025-04-16 18:19:44,934 - WARNING - Invalid move: Piece at (4, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:44,934 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,024 - INFO - Player 3 attempting move: piece at (3, 0) to (7, 6)
+2025-04-16 18:19:45,024 - WARNING - Invalid move: Piece at (-3, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,024 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,115 - INFO - Player 3 attempting move: piece at (0, 11) to (9, 9)
+2025-04-16 18:19:45,115 - WARNING - Invalid move: Piece at (-6, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,115 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,205 - INFO - Player 3 attempting move: piece at (8, 5) to (12, 2)
+2025-04-16 18:19:45,205 - WARNING - Invalid move: Piece at (2, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,205 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,295 - INFO - Player 3 attempting move: piece at (11, 6) to (9, 8)
+2025-04-16 18:19:45,295 - WARNING - Invalid move: Piece at (5, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,295 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,390 - INFO - Player 3 attempting move: piece at (10, 12) to (3, 4)
+2025-04-16 18:19:45,390 - WARNING - Invalid move: Piece at (4, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,390 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,484 - INFO - Player 3 attempting move: piece at (6, 3) to (1, 8)
+2025-04-16 18:19:45,484 - WARNING - Invalid move: Piece at (0, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,484 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,575 - INFO - Player 3 attempting move: piece at (5, 1) to (12, 3)
+2025-04-16 18:19:45,575 - WARNING - Invalid move: Piece at (-1, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,575 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,666 - INFO - Player 3 attempting move: piece at (0, 7) to (4, 4)
+2025-04-16 18:19:45,667 - WARNING - Invalid move: Piece at (-6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,667 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,759 - INFO - Player 3 attempting move: piece at (9, 12) to (9, 10)
+2025-04-16 18:19:45,759 - WARNING - Invalid move: Piece at (3, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,759 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,852 - INFO - Player 3 attempting move: piece at (2, 8) to (6, 9)
+2025-04-16 18:19:45,852 - WARNING - Invalid move: Piece at (-4, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,852 - WARNING - Invalid move attempted
+2025-04-16 18:19:45,941 - INFO - Player 3 attempting move: piece at (9, 7) to (9, 4)
+2025-04-16 18:19:45,941 - WARNING - Invalid move: Piece at (3, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:45,942 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,035 - INFO - Player 3 attempting move: piece at (3, 4) to (4, 10)
+2025-04-16 18:19:46,035 - WARNING - Invalid move: Piece at (-3, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,035 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,129 - INFO - Player 3 attempting move: piece at (7, 11) to (5, 12)
+2025-04-16 18:19:46,129 - WARNING - Invalid move: Piece at (1, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,129 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,220 - INFO - Player 3 attempting move: piece at (3, 7) to (10, 9)
+2025-04-16 18:19:46,220 - WARNING - Invalid move: Piece at (-3, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,220 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,312 - INFO - Player 3 attempting move: piece at (8, 10) to (3, 4)
+2025-04-16 18:19:46,312 - WARNING - Invalid move: Piece at (2, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,312 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,403 - INFO - Player 3 attempting move: piece at (12, 7) to (12, 8)
+2025-04-16 18:19:46,403 - WARNING - Invalid move: Piece at (6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,403 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,501 - INFO - Player 3 attempting move: piece at (8, 2) to (11, 1)
+2025-04-16 18:19:46,501 - WARNING - Invalid move: Piece at (2, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,501 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,597 - INFO - Player 3 attempting move: piece at (0, 5) to (0, 2)
+2025-04-16 18:19:46,597 - WARNING - Invalid move: Piece at (-6, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,597 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,690 - INFO - Player 3 attempting move: piece at (0, 10) to (3, 1)
+2025-04-16 18:19:46,690 - WARNING - Invalid move: Piece at (-6, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,690 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,781 - INFO - Player 3 attempting move: piece at (10, 1) to (1, 9)
+2025-04-16 18:19:46,781 - WARNING - Invalid move: Move to (-5, 3) not in possible moves [(3, -5), (2, -5), (3, -4), (2, -3), (3, -6), (2, -4), (3, -3)]
+2025-04-16 18:19:46,781 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,877 - INFO - Player 3 attempting move: piece at (0, 10) to (3, 1)
+2025-04-16 18:19:46,877 - WARNING - Invalid move: Piece at (-6, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,877 - WARNING - Invalid move attempted
+2025-04-16 18:19:46,970 - INFO - Player 3 attempting move: piece at (7, 1) to (7, 11)
+2025-04-16 18:19:46,970 - WARNING - Invalid move: Piece at (1, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:46,970 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,062 - INFO - Player 3 attempting move: piece at (0, 11) to (0, 3)
+2025-04-16 18:19:47,062 - WARNING - Invalid move: Piece at (-6, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,062 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,156 - INFO - Player 3 attempting move: piece at (1, 9) to (4, 10)
+2025-04-16 18:19:47,156 - WARNING - Invalid move: Piece at (-5, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,156 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,249 - INFO - Player 3 attempting move: piece at (2, 3) to (11, 1)
+2025-04-16 18:19:47,249 - WARNING - Invalid move: Piece at (-4, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,249 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,342 - INFO - Player 3 attempting move: piece at (5, 10) to (8, 4)
+2025-04-16 18:19:47,342 - WARNING - Invalid move: Piece at (-1, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,342 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,433 - INFO - Player 3 attempting move: piece at (1, 5) to (9, 12)
+2025-04-16 18:19:47,433 - WARNING - Invalid move: Piece at (-5, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,433 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,525 - INFO - Player 3 attempting move: piece at (2, 6) to (2, 8)
+2025-04-16 18:19:47,525 - WARNING - Invalid move: Piece at (-4, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,525 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,616 - INFO - Player 3 attempting move: piece at (12, 12) to (11, 0)
+2025-04-16 18:19:47,616 - WARNING - Invalid move: Piece at (6, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,616 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,707 - INFO - Player 3 attempting move: piece at (4, 0) to (12, 5)
+2025-04-16 18:19:47,707 - WARNING - Invalid move: Piece at (-2, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,707 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,801 - INFO - Player 3 attempting move: piece at (2, 0) to (5, 6)
+2025-04-16 18:19:47,801 - WARNING - Invalid move: Piece at (-4, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,801 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,891 - INFO - Player 3 attempting move: piece at (4, 10) to (12, 5)
+2025-04-16 18:19:47,891 - WARNING - Invalid move: Piece at (-2, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,891 - WARNING - Invalid move attempted
+2025-04-16 18:19:47,983 - INFO - Player 3 attempting move: piece at (3, 2) to (1, 12)
+2025-04-16 18:19:47,983 - WARNING - Invalid move: Piece at (-3, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:47,983 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,073 - INFO - Player 3 attempting move: piece at (4, 1) to (9, 2)
+2025-04-16 18:19:48,073 - WARNING - Invalid move: Piece at (-2, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,073 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,167 - INFO - Player 3 attempting move: piece at (1, 1) to (4, 8)
+2025-04-16 18:19:48,167 - WARNING - Invalid move: Piece at (-5, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,167 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,257 - INFO - Player 3 attempting move: piece at (7, 1) to (11, 12)
+2025-04-16 18:19:48,257 - WARNING - Invalid move: Piece at (1, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,257 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,348 - INFO - Player 3 attempting move: piece at (3, 9) to (7, 4)
+2025-04-16 18:19:48,348 - WARNING - Invalid move: Piece at (-3, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,348 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,440 - INFO - Player 3 attempting move: piece at (5, 7) to (3, 6)
+2025-04-16 18:19:48,440 - WARNING - Invalid move: Piece at (-1, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,440 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,532 - INFO - Player 3 attempting move: piece at (7, 1) to (8, 6)
+2025-04-16 18:19:48,532 - WARNING - Invalid move: Piece at (1, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,532 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,625 - INFO - Player 3 attempting move: piece at (12, 7) to (4, 1)
+2025-04-16 18:19:48,625 - WARNING - Invalid move: Piece at (6, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,625 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,716 - INFO - Player 3 attempting move: piece at (4, 1) to (7, 5)
+2025-04-16 18:19:48,716 - WARNING - Invalid move: Piece at (-2, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,716 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,808 - INFO - Player 3 attempting move: piece at (1, 6) to (8, 8)
+2025-04-16 18:19:48,808 - WARNING - Invalid move: Piece at (-5, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,808 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,901 - INFO - Player 3 attempting move: piece at (9, 2) to (0, 8)
+2025-04-16 18:19:48,901 - WARNING - Invalid move: Piece at (3, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,901 - WARNING - Invalid move attempted
+2025-04-16 18:19:48,993 - INFO - Player 3 attempting move: piece at (12, 4) to (7, 11)
+2025-04-16 18:19:48,994 - WARNING - Invalid move: Piece at (6, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:48,994 - WARNING - Invalid move attempted
+2025-04-16 18:19:49,090 - INFO - Player 3 attempting move: piece at (12, 4) to (7, 11)
+2025-04-16 18:19:49,091 - WARNING - Invalid move: Piece at (6, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:49,091 - WARNING - Invalid move attempted
+2025-04-16 18:19:49,183 - INFO - Player 3 attempting move: piece at (11, 10) to (8, 0)
+2025-04-16 18:19:49,183 - WARNING - Invalid move: Piece at (5, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:49,183 - WARNING - Invalid move attempted
+2025-04-16 18:19:49,274 - INFO - Player 3 attempting move: piece at (12, 1) to (5, 3)
+2025-04-16 18:19:49,274 - WARNING - Invalid move: Move to (-1, -3) not in possible moves []
+2025-04-16 18:19:49,274 - WARNING - Invalid move attempted
+2025-04-16 18:19:49,366 - INFO - Player 3 attempting move: piece at (10, 3) to (12, 9)
+2025-04-16 18:19:49,366 - WARNING - Invalid move: Piece at (4, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:49,367 - WARNING - Invalid move attempted
+2025-04-16 18:19:49,457 - INFO - Player 3 attempting move: piece at (10, 0) to (6, 11)
+2025-04-16 18:19:49,458 - WARNING - Invalid move: Move to (0, 5) not in possible moves [(3, -6), (2, -6), (3, -5), (2, -4), (2, -5), (3, -4)]
+2025-04-16 18:19:49,458 - WARNING - Invalid move attempted
+2025-04-16 18:19:49,570 - INFO - Player 3 attempting move: piece at (12, 0) to (1, 5)
+2025-04-16 18:19:49,570 - WARNING - Invalid move: Move to (-5, -1) not in possible moves []
+2025-04-16 18:19:49,570 - WARNING - Invalid move attempted
+2025-04-16 18:19:49,692 - INFO - Player 3 attempting move: piece at (12, 4) to (0, 4)
+2025-04-16 18:19:49,692 - WARNING - Invalid move: Piece at (6, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:49,692 - WARNING - Invalid move attempted
+2025-04-16 18:19:49,814 - INFO - Player 3 attempting move: piece at (6, 8) to (11, 10)
+2025-04-16 18:19:49,814 - WARNING - Invalid move: Piece at (0, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:49,814 - WARNING - Invalid move attempted
+2025-04-16 18:19:49,994 - INFO - Player 3 attempting move: piece at (6, 8) to (11, 10)
+2025-04-16 18:19:49,994 - WARNING - Invalid move: Piece at (0, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:49,995 - WARNING - Invalid move attempted
+2025-04-16 18:19:50,127 - INFO - Player 3 attempting move: piece at (8, 2) to (5, 9)
+2025-04-16 18:19:50,127 - WARNING - Invalid move: Piece at (2, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:50,127 - WARNING - Invalid move attempted
+2025-04-16 18:19:50,226 - INFO - Player 3 attempting move: piece at (3, 12) to (9, 3)
+2025-04-16 18:19:50,226 - WARNING - Invalid move: Piece at (-3, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:50,226 - WARNING - Invalid move attempted
+2025-04-16 18:19:50,334 - INFO - Player 3 attempting move: piece at (0, 0) to (0, 5)
+2025-04-16 18:19:50,335 - WARNING - Invalid move: Piece at (-6, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:50,335 - WARNING - Invalid move attempted
+2025-04-16 18:19:50,425 - INFO - Player 3 attempting move: piece at (2, 4) to (6, 8)
+2025-04-16 18:19:50,425 - WARNING - Invalid move: Piece at (-4, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:50,425 - WARNING - Invalid move attempted
+2025-04-16 18:19:50,517 - INFO - Player 3 attempting move: piece at (1, 5) to (3, 8)
+2025-04-16 18:19:50,517 - WARNING - Invalid move: Piece at (-5, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:50,517 - WARNING - Invalid move attempted
+2025-04-16 18:19:50,610 - INFO - Player 3 attempting move: piece at (8, 0) to (2, 12)
+2025-04-16 18:19:50,610 - WARNING - Invalid move: Piece at (2, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:50,610 - WARNING - Invalid move attempted
+2025-04-16 18:19:50,742 - INFO - Player 3 attempting move: piece at (12, 9) to (9, 1)
+2025-04-16 18:19:50,742 - WARNING - Invalid move: Piece at (6, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:50,742 - WARNING - Invalid move attempted
+2025-04-16 18:19:50,839 - INFO - Player 3 attempting move: piece at (6, 0) to (4, 2)
+2025-04-16 18:19:50,840 - WARNING - Invalid move: Piece at (0, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:50,840 - WARNING - Invalid move attempted
+2025-04-16 18:19:50,942 - INFO - Player 3 attempting move: piece at (10, 11) to (3, 4)
+2025-04-16 18:19:50,942 - WARNING - Invalid move: Piece at (4, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:50,942 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,036 - INFO - Player 3 attempting move: piece at (11, 8) to (3, 9)
+2025-04-16 18:19:51,036 - WARNING - Invalid move: Piece at (5, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,036 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,128 - INFO - Player 3 attempting move: piece at (5, 5) to (4, 8)
+2025-04-16 18:19:51,128 - WARNING - Invalid move: Piece at (-1, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,128 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,223 - INFO - Player 3 attempting move: piece at (2, 2) to (6, 9)
+2025-04-16 18:19:51,224 - WARNING - Invalid move: Piece at (-4, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,224 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,315 - INFO - Player 3 attempting move: piece at (7, 4) to (7, 11)
+2025-04-16 18:19:51,315 - WARNING - Invalid move: Piece at (1, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,315 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,406 - INFO - Player 3 attempting move: piece at (11, 4) to (11, 3)
+2025-04-16 18:19:51,406 - WARNING - Invalid move: Piece at (5, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,406 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,499 - INFO - Player 3 attempting move: piece at (2, 3) to (6, 8)
+2025-04-16 18:19:51,499 - WARNING - Invalid move: Piece at (-4, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,499 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,595 - INFO - Player 3 attempting move: piece at (6, 6) to (10, 0)
+2025-04-16 18:19:51,595 - WARNING - Invalid move: Piece at (0, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,595 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,687 - INFO - Player 3 attempting move: piece at (4, 7) to (7, 3)
+2025-04-16 18:19:51,687 - WARNING - Invalid move: Piece at (-2, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,687 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,781 - INFO - Player 3 attempting move: piece at (12, 2) to (9, 10)
+2025-04-16 18:19:51,781 - WARNING - Invalid move: Move to (3, 4) not in possible moves [(6, -3), (6, -2), (5, -3), (4, -2), (4, -3), (5, -2)]
+2025-04-16 18:19:51,781 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,875 - INFO - Player 3 attempting move: piece at (8, 2) to (3, 8)
+2025-04-16 18:19:51,875 - WARNING - Invalid move: Piece at (2, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,876 - WARNING - Invalid move attempted
+2025-04-16 18:19:51,969 - INFO - Player 3 attempting move: piece at (12, 10) to (0, 3)
+2025-04-16 18:19:51,969 - WARNING - Invalid move: Piece at (6, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:51,969 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,061 - INFO - Player 3 attempting move: piece at (12, 10) to (0, 3)
+2025-04-16 18:19:52,061 - WARNING - Invalid move: Piece at (6, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:52,061 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,158 - INFO - Player 3 attempting move: piece at (11, 9) to (7, 1)
+2025-04-16 18:19:52,158 - WARNING - Invalid move: Piece at (5, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:52,158 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,252 - INFO - Player 3 attempting move: piece at (10, 2) to (8, 7)
+2025-04-16 18:19:52,252 - WARNING - Invalid move: Move to (2, 1) not in possible moves [(3, -4), (2, -4), (1, -4), (0, -4), (-1, -4), (-2, -4), (4, -3), (4, -2), (4, -1), (3, -3), (2, -2), (1, -1), (-1, 1), (-2, 2), (-3, 3), (-4, 4), (-5, 5), (-6, 6), (3, -5), (2, -6), (2, -3), (0, -2), (-2, -1), (-4, 0), (-6, 1), (3, -2), (2, 0), (1, 2), (5, -3)]
+2025-04-16 18:19:52,252 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,350 - INFO - Player 3 attempting move: piece at (2, 9) to (11, 10)
+2025-04-16 18:19:52,351 - WARNING - Invalid move: Piece at (-4, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:52,351 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,449 - INFO - Player 3 attempting move: piece at (7, 5) to (8, 4)
+2025-04-16 18:19:52,449 - WARNING - Invalid move: Piece at (1, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:52,449 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,544 - INFO - Player 3 attempting move: piece at (7, 5) to (8, 4)
+2025-04-16 18:19:52,544 - WARNING - Invalid move: Piece at (1, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:52,544 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,638 - INFO - Player 3 attempting move: piece at (10, 3) to (1, 5)
+2025-04-16 18:19:52,638 - WARNING - Invalid move: Piece at (4, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:52,638 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,729 - INFO - Player 3 attempting move: piece at (12, 3) to (6, 11)
+2025-04-16 18:19:52,730 - WARNING - Invalid move: Piece at (6, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:52,730 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,821 - INFO - Player 3 attempting move: piece at (3, 9) to (8, 12)
+2025-04-16 18:19:52,821 - WARNING - Invalid move: Piece at (-3, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:52,821 - WARNING - Invalid move attempted
+2025-04-16 18:19:52,914 - INFO - Player 3 attempting move: piece at (10, 3) to (1, 5)
+2025-04-16 18:19:52,914 - WARNING - Invalid move: Piece at (4, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:52,914 - WARNING - Invalid move attempted
+2025-04-16 18:19:53,006 - INFO - Player 3 attempting move: piece at (12, 2) to (11, 12)
+2025-04-16 18:19:53,006 - WARNING - Invalid move: Move to (5, 6) not in possible moves [(6, -3), (6, -2), (5, -3), (4, -2), (4, -3), (5, -2)]
+2025-04-16 18:19:53,006 - WARNING - Invalid move attempted
+2025-04-16 18:19:53,100 - INFO - Player 3 attempting move: piece at (10, 2) to (10, 3)
+2025-04-16 18:19:53,101 - INFO - Move executed successfully: NecromobilePiece moved to (4, -3)
+2025-04-16 18:19:53,101 - INFO - Next player: 2
+2025-04-16 18:19:53,192 - INFO - Player 2 attempting move: piece at (11, 5) to (9, 5)
+2025-04-16 18:19:53,192 - INFO - Move executed successfully: MilitantPiece moved to (3, -1)
+2025-04-16 18:19:53,192 - INFO - Next player: 1
+2025-04-16 18:19:53,288 - INFO - Player 1 attempting move: piece at (7, 4) to (4, 2)
+2025-04-16 18:19:53,288 - WARNING - Invalid move: Piece at (1, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:53,288 - WARNING - Invalid move attempted
+2025-04-16 18:19:53,392 - INFO - Player 1 attempting move: piece at (3, 1) to (2, 3)
+2025-04-16 18:19:53,392 - WARNING - Invalid move: Piece at (-3, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:53,392 - WARNING - Invalid move attempted
+2025-04-16 18:19:53,484 - INFO - Player 1 attempting move: piece at (3, 12) to (10, 5)
+2025-04-16 18:19:53,484 - WARNING - Invalid move: Piece at (-3, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:53,484 - WARNING - Invalid move attempted
+2025-04-16 18:19:53,577 - INFO - Player 1 attempting move: piece at (5, 11) to (12, 5)
+2025-04-16 18:19:53,577 - WARNING - Invalid move: Move to (6, -1) not in possible moves [(-2, 5), (-3, 5), (-1, 4), (-1, 3), (0, 3), (-2, 4), (-3, 6)]
+2025-04-16 18:19:53,577 - WARNING - Invalid move attempted
+2025-04-16 18:19:53,669 - INFO - Player 1 attempting move: piece at (5, 11) to (12, 5)
+2025-04-16 18:19:53,670 - WARNING - Invalid move: Move to (6, -1) not in possible moves [(-2, 5), (-3, 5), (-1, 4), (-1, 3), (0, 3), (-2, 4), (-3, 6)]
+2025-04-16 18:19:53,670 - WARNING - Invalid move attempted
+2025-04-16 18:19:53,763 - INFO - Player 1 attempting move: piece at (10, 0) to (7, 11)
+2025-04-16 18:19:53,763 - WARNING - Invalid move: Piece at (4, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:53,763 - WARNING - Invalid move attempted
+2025-04-16 18:19:53,857 - INFO - Player 1 attempting move: piece at (12, 12) to (10, 3)
+2025-04-16 18:19:53,857 - WARNING - Invalid move: Piece at (6, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:53,857 - WARNING - Invalid move attempted
+2025-04-16 18:19:53,948 - INFO - Player 1 attempting move: piece at (6, 4) to (6, 5)
+2025-04-16 18:19:53,949 - WARNING - Invalid move: Piece at (0, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:53,949 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,042 - INFO - Player 1 attempting move: piece at (12, 12) to (10, 3)
+2025-04-16 18:19:54,042 - WARNING - Invalid move: Piece at (6, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,042 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,134 - INFO - Player 1 attempting move: piece at (5, 5) to (3, 0)
+2025-04-16 18:19:54,134 - WARNING - Invalid move: Piece at (-1, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,134 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,228 - INFO - Player 1 attempting move: piece at (11, 3) to (6, 6)
+2025-04-16 18:19:54,228 - WARNING - Invalid move: Piece at (5, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,228 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,318 - INFO - Player 1 attempting move: piece at (0, 9) to (8, 2)
+2025-04-16 18:19:54,318 - WARNING - Invalid move: Piece at (-6, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,318 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,411 - INFO - Player 1 attempting move: piece at (12, 3) to (2, 1)
+2025-04-16 18:19:54,412 - WARNING - Invalid move: Piece at (6, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,412 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,506 - INFO - Player 1 attempting move: piece at (11, 11) to (9, 8)
+2025-04-16 18:19:54,506 - WARNING - Invalid move: Piece at (5, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,506 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,602 - INFO - Player 1 attempting move: piece at (11, 11) to (9, 8)
+2025-04-16 18:19:54,602 - WARNING - Invalid move: Piece at (5, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,602 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,696 - INFO - Player 1 attempting move: piece at (1, 0) to (3, 4)
+2025-04-16 18:19:54,697 - WARNING - Invalid move: Piece at (-5, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,697 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,788 - INFO - Player 1 attempting move: piece at (5, 7) to (4, 8)
+2025-04-16 18:19:54,788 - WARNING - Invalid move: Piece at (-1, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,788 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,882 - INFO - Player 1 attempting move: piece at (3, 2) to (3, 5)
+2025-04-16 18:19:54,882 - WARNING - Invalid move: Piece at (-3, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,882 - WARNING - Invalid move attempted
+2025-04-16 18:19:54,978 - INFO - Player 1 attempting move: piece at (4, 6) to (3, 6)
+2025-04-16 18:19:54,978 - WARNING - Invalid move: Piece at (-2, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:54,978 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,071 - INFO - Player 1 attempting move: piece at (4, 6) to (3, 6)
+2025-04-16 18:19:55,071 - WARNING - Invalid move: Piece at (-2, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,071 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,161 - INFO - Player 1 attempting move: piece at (3, 1) to (11, 11)
+2025-04-16 18:19:55,161 - WARNING - Invalid move: Piece at (-3, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,161 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,254 - INFO - Player 1 attempting move: piece at (5, 5) to (5, 1)
+2025-04-16 18:19:55,254 - WARNING - Invalid move: Piece at (-1, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,254 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,357 - INFO - Player 1 attempting move: piece at (11, 10) to (2, 9)
+2025-04-16 18:19:55,357 - WARNING - Invalid move: Piece at (5, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,357 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,451 - INFO - Player 1 attempting move: piece at (12, 1) to (11, 8)
+2025-04-16 18:19:55,451 - WARNING - Invalid move: Piece at (6, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,451 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,545 - INFO - Player 1 attempting move: piece at (12, 1) to (11, 8)
+2025-04-16 18:19:55,545 - WARNING - Invalid move: Piece at (6, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,545 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,642 - INFO - Player 1 attempting move: piece at (10, 8) to (1, 12)
+2025-04-16 18:19:55,642 - WARNING - Invalid move: Piece at (4, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,642 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,742 - INFO - Player 1 attempting move: piece at (4, 9) to (8, 9)
+2025-04-16 18:19:55,742 - WARNING - Invalid move: Piece at (-2, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,742 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,835 - INFO - Player 1 attempting move: piece at (10, 8) to (1, 12)
+2025-04-16 18:19:55,836 - WARNING - Invalid move: Piece at (4, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,836 - WARNING - Invalid move attempted
+2025-04-16 18:19:55,930 - INFO - Player 1 attempting move: piece at (9, 12) to (6, 3)
+2025-04-16 18:19:55,931 - WARNING - Invalid move: Piece at (3, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:55,931 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,025 - INFO - Player 1 attempting move: piece at (1, 8) to (8, 2)
+2025-04-16 18:19:56,025 - WARNING - Invalid move: Piece at (-5, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,025 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,119 - INFO - Player 1 attempting move: piece at (1, 8) to (8, 2)
+2025-04-16 18:19:56,119 - WARNING - Invalid move: Piece at (-5, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,119 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,212 - INFO - Player 1 attempting move: piece at (1, 8) to (8, 2)
+2025-04-16 18:19:56,212 - WARNING - Invalid move: Piece at (-5, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,212 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,305 - INFO - Player 1 attempting move: piece at (1, 8) to (8, 2)
+2025-04-16 18:19:56,305 - WARNING - Invalid move: Piece at (-5, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,305 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,395 - INFO - Player 1 attempting move: piece at (6, 7) to (1, 12)
+2025-04-16 18:19:56,395 - WARNING - Invalid move: Piece at (0, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,395 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,495 - INFO - Player 1 attempting move: piece at (10, 11) to (6, 7)
+2025-04-16 18:19:56,495 - WARNING - Invalid move: Piece at (4, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,495 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,596 - INFO - Player 1 attempting move: piece at (11, 2) to (3, 9)
+2025-04-16 18:19:56,596 - WARNING - Invalid move: Piece at (5, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,596 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,690 - INFO - Player 1 attempting move: piece at (9, 3) to (1, 11)
+2025-04-16 18:19:56,690 - WARNING - Invalid move: Piece at (3, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,691 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,783 - INFO - Player 1 attempting move: piece at (3, 11) to (10, 3)
+2025-04-16 18:19:56,783 - WARNING - Invalid move: Piece at (-3, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,783 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,876 - INFO - Player 1 attempting move: piece at (9, 7) to (4, 8)
+2025-04-16 18:19:56,876 - WARNING - Invalid move: Piece at (3, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,877 - WARNING - Invalid move attempted
+2025-04-16 18:19:56,970 - INFO - Player 1 attempting move: piece at (3, 11) to (10, 3)
+2025-04-16 18:19:56,970 - WARNING - Invalid move: Piece at (-3, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:56,970 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,061 - INFO - Player 1 attempting move: piece at (9, 2) to (5, 0)
+2025-04-16 18:19:57,061 - WARNING - Invalid move: Piece at (3, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,061 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,153 - INFO - Player 1 attempting move: piece at (10, 4) to (0, 5)
+2025-04-16 18:19:57,153 - WARNING - Invalid move: Piece at (4, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,153 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,245 - INFO - Player 1 attempting move: piece at (6, 1) to (9, 3)
+2025-04-16 18:19:57,245 - WARNING - Invalid move: Piece at (0, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,245 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,345 - INFO - Player 1 attempting move: piece at (0, 12) to (1, 9)
+2025-04-16 18:19:57,345 - WARNING - Invalid move: Piece at (-6, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,346 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,436 - INFO - Player 1 attempting move: piece at (1, 8) to (9, 7)
+2025-04-16 18:19:57,436 - WARNING - Invalid move: Piece at (-5, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,436 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,530 - INFO - Player 1 attempting move: piece at (1, 11) to (4, 8)
+2025-04-16 18:19:57,531 - WARNING - Invalid move: Piece at (-5, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,531 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,624 - INFO - Player 1 attempting move: piece at (6, 10) to (6, 12)
+2025-04-16 18:19:57,624 - WARNING - Invalid move: Move to (0, 6) not in possible moves [(-1, 4), (-2, 4), (-3, 4), (-4, 4), (-5, 4), (-6, 4), (0, 3), (0, 2), (0, 1), (0, -1), (0, -2), (0, -3), (0, -4), (0, -5), (0, -6), (1, 3), (2, 2), (3, 1), (2, 3), (1, 2), (2, 0), (3, -2), (4, -4), (-1, 3), (-2, 2), (-3, 1), (-4, 0), (-5, -1), (-2, 5), (-4, 6)]
+2025-04-16 18:19:57,624 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,716 - INFO - Player 1 attempting move: piece at (0, 2) to (11, 4)
+2025-04-16 18:19:57,716 - WARNING - Invalid move: Piece at (-6, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,716 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,807 - INFO - Player 1 attempting move: piece at (11, 6) to (9, 10)
+2025-04-16 18:19:57,808 - WARNING - Invalid move: Piece at (5, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,808 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,899 - INFO - Player 1 attempting move: piece at (12, 1) to (6, 8)
+2025-04-16 18:19:57,899 - WARNING - Invalid move: Piece at (6, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,899 - WARNING - Invalid move attempted
+2025-04-16 18:19:57,993 - INFO - Player 1 attempting move: piece at (12, 10) to (8, 4)
+2025-04-16 18:19:57,993 - WARNING - Invalid move: Piece at (6, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:57,993 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,087 - INFO - Player 1 attempting move: piece at (2, 6) to (4, 10)
+2025-04-16 18:19:58,087 - WARNING - Invalid move: Piece at (-4, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,087 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,182 - INFO - Player 1 attempting move: piece at (5, 8) to (7, 0)
+2025-04-16 18:19:58,182 - WARNING - Invalid move: Piece at (-1, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,182 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,274 - INFO - Player 1 attempting move: piece at (2, 8) to (8, 10)
+2025-04-16 18:19:58,274 - WARNING - Invalid move: Piece at (-4, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,274 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,369 - INFO - Player 1 attempting move: piece at (12, 12) to (10, 4)
+2025-04-16 18:19:58,370 - WARNING - Invalid move: Piece at (6, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,370 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,464 - INFO - Player 1 attempting move: piece at (5, 9) to (12, 1)
+2025-04-16 18:19:58,464 - WARNING - Invalid move: Piece at (-1, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,464 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,557 - INFO - Player 1 attempting move: piece at (5, 9) to (12, 1)
+2025-04-16 18:19:58,558 - WARNING - Invalid move: Piece at (-1, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,558 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,649 - INFO - Player 1 attempting move: piece at (2, 6) to (10, 8)
+2025-04-16 18:19:58,649 - WARNING - Invalid move: Piece at (-4, 0) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,649 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,743 - INFO - Player 1 attempting move: piece at (3, 1) to (0, 5)
+2025-04-16 18:19:58,743 - WARNING - Invalid move: Piece at (-3, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,743 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,838 - INFO - Player 1 attempting move: piece at (10, 4) to (4, 11)
+2025-04-16 18:19:58,838 - WARNING - Invalid move: Piece at (4, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,838 - WARNING - Invalid move attempted
+2025-04-16 18:19:58,933 - INFO - Player 1 attempting move: piece at (10, 4) to (4, 11)
+2025-04-16 18:19:58,933 - WARNING - Invalid move: Piece at (4, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:58,933 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,027 - INFO - Player 1 attempting move: piece at (9, 11) to (10, 5)
+2025-04-16 18:19:59,027 - WARNING - Invalid move: Piece at (3, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:59,027 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,121 - INFO - Player 1 attempting move: piece at (9, 11) to (10, 5)
+2025-04-16 18:19:59,121 - WARNING - Invalid move: Piece at (3, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:59,121 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,213 - INFO - Player 1 attempting move: piece at (4, 0) to (12, 7)
+2025-04-16 18:19:59,213 - WARNING - Invalid move: Piece at (-2, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:59,213 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,306 - INFO - Player 1 attempting move: piece at (4, 12) to (7, 12)
+2025-04-16 18:19:59,306 - WARNING - Invalid move: Move to (1, 6) not in possible moves [(-3, 6), (-4, 6), (-2, 5), (-2, 4), (-1, 4), (-3, 5)]
+2025-04-16 18:19:59,306 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,401 - INFO - Player 1 attempting move: piece at (4, 12) to (7, 12)
+2025-04-16 18:19:59,401 - WARNING - Invalid move: Move to (1, 6) not in possible moves [(-3, 6), (-4, 6), (-2, 5), (-2, 4), (-1, 4), (-3, 5)]
+2025-04-16 18:19:59,401 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,496 - INFO - Player 1 attempting move: piece at (4, 12) to (7, 12)
+2025-04-16 18:19:59,497 - WARNING - Invalid move: Move to (1, 6) not in possible moves [(-3, 6), (-4, 6), (-2, 5), (-2, 4), (-1, 4), (-3, 5)]
+2025-04-16 18:19:59,497 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,589 - INFO - Player 1 attempting move: piece at (4, 12) to (7, 12)
+2025-04-16 18:19:59,590 - WARNING - Invalid move: Move to (1, 6) not in possible moves [(-3, 6), (-4, 6), (-2, 5), (-2, 4), (-1, 4), (-3, 5)]
+2025-04-16 18:19:59,590 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,685 - INFO - Player 1 attempting move: piece at (7, 8) to (9, 9)
+2025-04-16 18:19:59,685 - WARNING - Invalid move: Piece at (1, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:59,685 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,778 - INFO - Player 1 attempting move: piece at (7, 8) to (9, 9)
+2025-04-16 18:19:59,778 - WARNING - Invalid move: Piece at (1, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:59,778 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,870 - INFO - Player 1 attempting move: piece at (2, 3) to (1, 9)
+2025-04-16 18:19:59,870 - WARNING - Invalid move: Piece at (-4, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:59,870 - WARNING - Invalid move attempted
+2025-04-16 18:19:59,962 - INFO - Player 1 attempting move: piece at (1, 10) to (10, 6)
+2025-04-16 18:19:59,962 - WARNING - Invalid move: Piece at (-5, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:19:59,962 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,057 - INFO - Player 1 attempting move: piece at (7, 8) to (0, 3)
+2025-04-16 18:20:00,057 - WARNING - Invalid move: Piece at (1, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,057 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,151 - INFO - Player 1 attempting move: piece at (7, 8) to (0, 3)
+2025-04-16 18:20:00,151 - WARNING - Invalid move: Piece at (1, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,151 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,244 - INFO - Player 1 attempting move: piece at (7, 8) to (0, 3)
+2025-04-16 18:20:00,244 - WARNING - Invalid move: Piece at (1, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,244 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,339 - INFO - Player 1 attempting move: piece at (3, 1) to (3, 12)
+2025-04-16 18:20:00,339 - WARNING - Invalid move: Piece at (-3, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,339 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,432 - INFO - Player 1 attempting move: piece at (3, 1) to (3, 12)
+2025-04-16 18:20:00,432 - WARNING - Invalid move: Piece at (-3, -5) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,432 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,527 - INFO - Player 1 attempting move: piece at (1, 7) to (12, 0)
+2025-04-16 18:20:00,527 - WARNING - Invalid move: Piece at (-5, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,527 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,622 - INFO - Player 1 attempting move: piece at (9, 9) to (5, 11)
+2025-04-16 18:20:00,623 - WARNING - Invalid move: Piece at (3, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,623 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,717 - INFO - Player 1 attempting move: piece at (9, 9) to (5, 11)
+2025-04-16 18:20:00,717 - WARNING - Invalid move: Piece at (3, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,717 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,811 - INFO - Player 1 attempting move: piece at (11, 12) to (12, 8)
+2025-04-16 18:20:00,811 - WARNING - Invalid move: Piece at (5, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,812 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,902 - INFO - Player 1 attempting move: piece at (11, 11) to (4, 4)
+2025-04-16 18:20:00,903 - WARNING - Invalid move: Piece at (5, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,903 - WARNING - Invalid move attempted
+2025-04-16 18:20:00,999 - INFO - Player 1 attempting move: piece at (3, 3) to (7, 3)
+2025-04-16 18:20:00,999 - WARNING - Invalid move: Piece at (-3, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:00,999 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,091 - INFO - Player 1 attempting move: piece at (7, 12) to (11, 0)
+2025-04-16 18:20:01,091 - WARNING - Invalid move: Piece at (1, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,091 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,186 - INFO - Player 1 attempting move: piece at (9, 10) to (9, 0)
+2025-04-16 18:20:01,186 - WARNING - Invalid move: Piece at (3, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,186 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,282 - INFO - Player 1 attempting move: piece at (9, 10) to (9, 0)
+2025-04-16 18:20:01,282 - WARNING - Invalid move: Piece at (3, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,282 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,375 - INFO - Player 1 attempting move: piece at (9, 10) to (9, 0)
+2025-04-16 18:20:01,376 - WARNING - Invalid move: Piece at (3, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,376 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,469 - INFO - Player 1 attempting move: piece at (10, 0) to (8, 9)
+2025-04-16 18:20:01,469 - WARNING - Invalid move: Piece at (4, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,469 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,572 - INFO - Player 1 attempting move: piece at (10, 0) to (8, 9)
+2025-04-16 18:20:01,572 - WARNING - Invalid move: Piece at (4, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,572 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,664 - INFO - Player 1 attempting move: piece at (6, 7) to (8, 2)
+2025-04-16 18:20:01,664 - WARNING - Invalid move: Piece at (0, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,664 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,758 - INFO - Player 1 attempting move: piece at (9, 3) to (3, 9)
+2025-04-16 18:20:01,758 - WARNING - Invalid move: Piece at (3, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,758 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,852 - INFO - Player 1 attempting move: piece at (4, 2) to (11, 7)
+2025-04-16 18:20:01,852 - WARNING - Invalid move: Piece at (-2, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,852 - WARNING - Invalid move attempted
+2025-04-16 18:20:01,946 - INFO - Player 1 attempting move: piece at (4, 2) to (11, 7)
+2025-04-16 18:20:01,946 - WARNING - Invalid move: Piece at (-2, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:01,946 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,040 - INFO - Player 1 attempting move: piece at (11, 4) to (2, 1)
+2025-04-16 18:20:02,040 - WARNING - Invalid move: Piece at (5, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:02,040 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,133 - INFO - Player 1 attempting move: piece at (8, 4) to (10, 11)
+2025-04-16 18:20:02,133 - WARNING - Invalid move: Piece at (2, -2) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:02,133 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,226 - INFO - Player 1 attempting move: piece at (10, 2) to (10, 3)
+2025-04-16 18:20:02,226 - WARNING - Invalid move: Piece at (4, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:02,226 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,330 - INFO - Player 1 attempting move: piece at (11, 5) to (9, 5)
+2025-04-16 18:20:02,330 - WARNING - Invalid move: Piece at (5, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:02,330 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,424 - INFO - Player 1 attempting move: piece at (11, 5) to (9, 5)
+2025-04-16 18:20:02,424 - WARNING - Invalid move: Piece at (5, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:02,424 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,518 - INFO - Player 1 attempting move: piece at (0, 9) to (2, 12)
+2025-04-16 18:20:02,518 - WARNING - Invalid move: Piece at (-6, 3) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:02,518 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,612 - INFO - Player 1 attempting move: piece at (3, 12) to (7, 0)
+2025-04-16 18:20:02,612 - WARNING - Invalid move: Piece at (-3, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:02,612 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,709 - INFO - Player 1 attempting move: piece at (8, 10) to (5, 9)
+2025-04-16 18:20:02,709 - WARNING - Invalid move: Move to (-1, 3) not in possible moves [(2, 3), (2, 2), (3, 3), (4, 2), (3, 2), (1, 3)]
+2025-04-16 18:20:02,709 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,806 - INFO - Player 1 attempting move: piece at (2, 12) to (5, 11)
+2025-04-16 18:20:02,806 - WARNING - Invalid move: Piece at (-4, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:02,806 - WARNING - Invalid move attempted
+2025-04-16 18:20:02,903 - INFO - Player 1 attempting move: piece at (3, 12) to (7, 0)
+2025-04-16 18:20:02,903 - WARNING - Invalid move: Piece at (-3, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:02,903 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,001 - INFO - Player 1 attempting move: piece at (10, 11) to (10, 2)
+2025-04-16 18:20:03,001 - WARNING - Invalid move: Piece at (4, 5) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,001 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,098 - INFO - Player 1 attempting move: piece at (5, 7) to (3, 4)
+2025-04-16 18:20:03,098 - WARNING - Invalid move: Piece at (-1, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,098 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,198 - INFO - Player 1 attempting move: piece at (1, 8) to (6, 1)
+2025-04-16 18:20:03,198 - WARNING - Invalid move: Piece at (-5, 2) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,198 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,293 - INFO - Player 1 attempting move: piece at (1, 2) to (3, 3)
+2025-04-16 18:20:03,293 - WARNING - Invalid move: Piece at (-5, -4) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,293 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,399 - INFO - Player 1 attempting move: piece at (3, 5) to (9, 10)
+2025-04-16 18:20:03,399 - WARNING - Invalid move: Piece at (-3, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,399 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,606 - INFO - Player 1 attempting move: piece at (3, 5) to (9, 10)
+2025-04-16 18:20:03,607 - WARNING - Invalid move: Piece at (-3, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,607 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,701 - INFO - Player 1 attempting move: piece at (3, 5) to (9, 10)
+2025-04-16 18:20:03,701 - WARNING - Invalid move: Piece at (-3, -1) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,701 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,793 - INFO - Player 1 attempting move: piece at (11, 3) to (1, 9)
+2025-04-16 18:20:03,793 - WARNING - Invalid move: Piece at (5, -3) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,793 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,887 - INFO - Player 1 attempting move: piece at (11, 0) to (9, 6)
+2025-04-16 18:20:03,887 - WARNING - Invalid move: Piece at (5, -6) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,887 - WARNING - Invalid move attempted
+2025-04-16 18:20:03,981 - INFO - Player 1 attempting move: piece at (10, 12) to (8, 0)
+2025-04-16 18:20:03,981 - WARNING - Invalid move: Piece at (4, 6) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:03,981 - WARNING - Invalid move attempted
+2025-04-16 18:20:04,076 - INFO - Player 1 attempting move: piece at (6, 7) to (9, 3)
+2025-04-16 18:20:04,076 - WARNING - Invalid move: Piece at (0, 1) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:04,076 - WARNING - Invalid move attempted
+2025-04-16 18:20:04,168 - INFO - Player 1 attempting move: piece at (10, 10) to (11, 10)
+2025-04-16 18:20:04,168 - WARNING - Invalid move: Piece at (4, 4) doesn't exist or doesn't belong to current player
+2025-04-16 18:20:04,168 - WARNING - Invalid move attempted
