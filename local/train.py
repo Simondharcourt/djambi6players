@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import os
 import random
-import time  # Add time module for sleep
 
 def train(env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: str = "models"):
     """
@@ -56,10 +55,6 @@ def train(env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: 
             # Si un joueur a gagné
             if reward == 1.0:
                 wins += 1
-            
-            # Add delay if rendering is enabled
-            if env.render_mode == "human":
-                time.sleep(0.5)  # 0.5 second delay between actions
         
         # Mettre à jour les statistiques
         rewards.append(episode_reward)
@@ -95,7 +90,7 @@ def train(env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: 
 
 if __name__ == "__main__":
     # Créer l'environnement
-    env = DjambiEnv(render_mode="human")  # Changed to "human" to see the game
+    env = DjambiEnv(render_mode="human")  # Set to "human" to see the game
     
     # Définir la forme de l'état et le nombre d'actions
     board_shape = env.observation_space["board"].shape
