@@ -5,6 +5,18 @@ from typing import Tuple, Dict, List, Optional
 import random
 import sys
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('djambi_rl.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Add the backend directory to Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -25,10 +37,11 @@ class DjambiEnv(gym.Env):
     
     def __init__(self):
         super().__init__()
+        logger.info("Initializing Djambi environment")
         
         # Initialisation du plateau
         self.board = Board(current_player_index=0)
-        self.board.rl = True  # Mode reinforcement learning
+        self.board.rl = False  # Mode reinforcement learning
         
         # Définition des espaces d'observation et d'action
         self.observation_space = spaces.Dict({
@@ -52,11 +65,12 @@ class DjambiEnv(gym.Env):
         """
         Réinitialise l'environnement pour une nouvelle partie.
         """
+        logger.info("Resetting environment")
         super().reset(seed=seed)
         
         # Réinitialiser le plateau
         self.board = Board(current_player_index=0)
-        self.board.rl = True
+        self.board.rl = False
         
         # Garder seulement 3 joueurs
         self.board.players = self.board.players[:3]
@@ -64,6 +78,7 @@ class DjambiEnv(gym.Env):
         
         # Joueur actuel (commence aléatoirement)
         self.board.current_player_index = random.randint(0, 2)
+        logger.info(f"Game started with player {self.board.current_player_index + 1}")
         
         return self._get_observation(), self._get_info()
     
@@ -115,20 +130,26 @@ class DjambiEnv(gym.Env):
         # Vérifier si la pièce existe et appartient au joueur actuel
         piece = self.board.get_piece_at(piece_q, piece_r)
         if not piece or piece.color != self.board.players[self.board.current_player_index].color:
+            logger.warning(f"Invalid move: Piece at ({piece_q}, {piece_r}) doesn't exist or doesn't belong to current player")
             return False
         
         # Vérifier si le mouvement est possible
         possible_moves = self.board.get_possible_moves(piece)
-        return (move_q, move_r) in possible_moves
+        is_valid = (move_q, move_r) in possible_moves
+        if not is_valid:
+            logger.warning(f"Invalid move: Move to ({move_q}, {move_r}) not in possible moves {possible_moves}")
+        return is_valid
     
     def step(self, action: np.ndarray) -> Tuple[Dict, float, bool, bool, Dict]:
         """
         Exécute une action et retourne (observation, reward, terminated, truncated, info)
         """
         piece_q, piece_r, move_q, move_r = action
+        logger.info(f"Player {self.board.current_player_index + 1} attempting move: piece at ({piece_q}, {piece_r}) to ({move_q}, {move_r})")
         
         # Vérifie si l'action est valide
         if not self._is_valid_move(piece_q, piece_r, move_q, move_r):
+            logger.warning("Invalid move attempted")
             return self._get_observation(), -0.1, False, False, self._get_info()
         
         # Convertir les coordonnées
@@ -142,7 +163,10 @@ class DjambiEnv(gym.Env):
         success = self.board.move_piece(piece, move_q, move_r)
         
         if not success:
+            logger.warning("Move execution failed")
             return self._get_observation(), -0.1, False, False, self._get_info()
+        
+        logger.info(f"Move executed successfully: {piece.__class__.__name__} moved to ({move_q}, {move_r})")
         
         # Vérifier les éliminations
         reward = 0.0
@@ -153,13 +177,16 @@ class DjambiEnv(gym.Env):
             if not any(not p.is_dead for p in player.pieces):
                 if i == self.board.current_player_index:
                     reward = -1.0  # Le joueur actuel a été éliminé
+                    logger.info(f"Player {i + 1} (current player) has been eliminated")
                 else:
                     reward = 1.0   # Le joueur actuel a éliminé un autre joueur
+                    logger.info(f"Player {i + 1} has been eliminated by current player")
                 terminated = True
                 break
         
         # Passer au joueur suivant
         self.board.next_player()
+        logger.info(f"Next player: {self.board.current_player_index + 1}")
         
         return self._get_observation(), reward, terminated, False, self._get_info()
     
@@ -167,6 +194,7 @@ class DjambiEnv(gym.Env):
         """
         Affiche l'état actuel du plateau.
         """
+        logger.info("Rendering current board state")
         print("\nPlateau actuel:")
         board_state = self._get_observation()["board"]
         print(board_state)
