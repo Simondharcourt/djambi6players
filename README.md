@@ -1,5 +1,49 @@
+# Djambi 6 Players
 
+A Python implementation of the Djambi board game with 6 players and reinforcement learning capabilities.
 
+## Installation
+
+1. Install Poetry if you haven't already:
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+2. Clone this repository and install dependencies:
+```bash
+git clone https://github.com/yourusername/djambi6players.git
+cd djambi6players
+poetry install
+```
+
+## Usage
+
+To run the game:
+```bash
+poetry run djambi
+```
+
+For reinforcement learning:
+```bash
+poetry run python local/train.py
+```
+
+## Development
+
+To run tests:
+```bash
+poetry run pytest
+```
+
+To format code:
+```bash
+poetry run black .
+poetry run isort .
+```
+
+## License
+
+MIT
 
 Djambi game with personal rules at 6 players, to develop a reinforcement learing strategy. You can play it online.
 

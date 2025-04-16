@@ -9,7 +9,7 @@ import os
 # Add the backend directory to Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from backend.src import (
+from djambi6players.backend.src import (
     Board,
     BOARD_SIZE, COLORS, START_POSITIONS, NB_PLAYER_MODE, NAMES,
     create_piece, hex_to_pixel, is_within_board,
