@@ -73,6 +73,45 @@ class DjambiEnv(gym.Env):
         # Initialisation
         self.reset()
     
+    def get_valid_actions(self) -> List[np.ndarray]:
+        """
+        Retourne la liste des actions valides pour le joueur actuel.
+        """
+        valid_actions = []
+        current_player = self.board.players[self.board.current_player_index]
+        
+        # Pour chaque pièce du joueur actuel
+        for piece in current_player.pieces:
+            if piece.is_dead:
+                continue
+                
+            # Obtenir les mouvements possibles pour cette pièce
+            possible_moves = self.board.get_possible_moves(piece)
+            
+            # Convertir les coordonnées hexagonales en coordonnées de l'espace d'action
+            piece_q = piece.q + (BOARD_SIZE - 1)
+            piece_r = piece.r + (BOARD_SIZE - 1)
+            
+            for move_q, move_r in possible_moves:
+                move_q = move_q + (BOARD_SIZE - 1)
+                move_r = move_r + (BOARD_SIZE - 1)
+                
+                # Créer l'action
+                action = np.array([piece_q, piece_r, move_q, move_r])
+                valid_actions.append(action)
+        
+        return valid_actions
+    
+    def sample_action(self) -> np.ndarray:
+        """
+        Échantillonne une action valide aléatoire.
+        """
+        valid_actions = self.get_valid_actions()
+        if not valid_actions:
+            # Si aucune action valide, retourner une action invalide (sera rejetée par step)
+            return self.action_space.sample()
+        return random.choice(valid_actions)
+    
     def reset(self, seed: Optional[int] = None) -> Tuple[Dict, Dict]:
         """
         Réinitialise l'environnement pour une nouvelle partie.

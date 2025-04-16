@@ -5,6 +5,7 @@ from dqn_model import DQNAgent
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import os
+import random
 
 def train(env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: str = "models"):
     """
@@ -30,7 +31,12 @@ def train(env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: 
         
         while not done:
             # Sélectionner une action
-            action = agent.select_action(state)
+            if random.random() < agent.eps:
+                # Exploration: choisir une action valide aléatoire
+                action = env.sample_action()
+            else:
+                # Exploitation: utiliser le modèle
+                action = agent.select_action(state)
             
             # Exécuter l'action
             next_state, reward, terminated, truncated, _ = env.step(action)
