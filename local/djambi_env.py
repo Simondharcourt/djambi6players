@@ -9,6 +9,10 @@ import logging
 import pygame
 from backend.src.constants import WINDOW_WIDTH, WINDOW_HEIGHT, FONT_SIZE
 
+
+
+
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -38,12 +42,12 @@ class DjambiEnv(gym.Env):
     Utilise le backend existant pour la logique du jeu.
     """
     
-    def __init__(self, render_mode: Optional[str] = None):
+    def __init__(self, render_mode: Optional[str] = "human"):
         super().__init__()
         logger.info("Initializing Djambi environment")
         
         self.render_mode = render_mode
-        if render_mode == "human":
+        if True:
             pygame.init()
             self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
             pygame.display.set_caption("Djambi")
@@ -53,7 +57,7 @@ class DjambiEnv(gym.Env):
         
         # Initialisation du plateau
         self.board = Board(current_player_index=0)
-        self.board.rl = True  # Mode reinforcement learning
+        self.board.rl = render_mode != "human"  # Set rl to False when rendering is enabled
         
         # Définition des espaces d'observation et d'action
         self.observation_space = spaces.Dict({
@@ -121,7 +125,7 @@ class DjambiEnv(gym.Env):
         
         # Réinitialiser le plateau
         self.board = Board(current_player_index=0)
-        self.board.rl = True
+        self.board.rl = self.render_mode != "human"  # Use self.render_mode instead of render_mode
         
         # Garder seulement 3 joueurs
         self.board.players = self.board.players[:3]
@@ -252,6 +256,12 @@ class DjambiEnv(gym.Env):
         Affiche l'état actuel du plateau.
         """
         if self.render_mode == "human":
+            # Handle pygame events to keep window responsive
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            
             self.screen.fill((0, 0, 0))  # BLACK
             self.board.draw(self.screen)
             pygame.display.flip()
