@@ -1,166 +1,169 @@
 import numpy as np
+import gymnasium as gym
+from gymnasium import spaces
+from typing import Tuple, Dict, List, Optional
 import random
-from collections import deque
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Input, Reshape, Multiply
-from tensorflow.keras.optimizers import Adam
-from backend.src.board import Board, BOARD_SIZE, ORDER_PLAYERS
-from gym import spaces
 
-
-class DjambiEnv:
+class DjambiEnv(gym.Env):
+    """
+    Environnement Djambi pour 3 joueurs avec reinforcement learning.
+    Un joueur gagne s'il élimine un autre joueur (+1).
+    Un joueur perd s'il est éliminé (-1).
+    La partie se termine dès qu'un joueur est éliminé.
+    """
+    
     def __init__(self):
-        self.current_player_index = 0
-        self.board = Board(self.current_player_index)
-        self.board.rl = True
-
-    def reset(self):
-        self.current_player_index = 0
-        self.board = Board(self.current_player_index)
-        self.board.rl = True
-        return self.get_state()
-
-    def get_state(self):
-        state = np.zeros((BOARD_SIZE*2-1, BOARD_SIZE*2-1, 7), dtype=np.int8)
-        piece_types = ['militant', 'assassin', 'chief', 'diplomat', 'necromobile', 'reporter']
-        for piece in self.board.pieces:
-            x, y = piece.q + BOARD_SIZE - 1, piece.r + BOARD_SIZE - 1
-            color_index = ORDER_PLAYERS.index(piece.color)
-            piece_type_index = piece_types.index(piece.piece_class) + 1  # +1 pour réserver 0 aux cases vides
-            state[x, y, color_index] = piece_type_index
-            if piece.is_dead:
-                state[x, y, 6] = 1  # Marquer les pièces mortes dans le 7e canal
-        return state
-
-    def step(self, action):
-        # Sauvegardez l'état actuel avant d'exécuter l'action
-        previous_state = self.board.copy()
-        previous_player_index = self.current_player_index
+        super().__init__()
         
-        # Exécuter l'action
-        piece, new_position, killed_piece_position = self.decode_action(action)
-        if not piece.move(new_position[0], new_position[1], self.board, killed_piece_position):
-            return self.get_state(), -10, False, {"illegal_move": True, "undo": True}
-        else:
-            self.board.next_player() # handle possible chief surrounding.
-            # Exécuter l'action et retourner new_state, reward, done, info
-            new_state = self.get_state()
-            reward = self.calculate_reward()
-            done = len(self.board.players) == 1
-            
-            info = {
-                "illegal_move": False,
-                "undo": False,
-                "previous_state": previous_state,
-                "previous_player_index": previous_player_index
-            }
-            return new_state, reward, done, info
-
-    # Ajoutez une nouvelle méthode pour annuler le dernier mouvement
-    def undo_last_move(self, previous_state, previous_player_index):
-        self.board = previous_state
-        self.current_player_index = previous_player_index
-
-    def decode_action(self, action):
-        piece_index, new_q, new_r, killed_piece_q, killed_piece_r = action
-        piece = self.board.pieces[piece_index]
-        new_position = (new_q, new_r)
-        killed_piece_position = (killed_piece_q, killed_piece_r) if killed_piece_q != -1 and killed_piece_r != -1 else None
-        return piece, new_position, killed_piece_position
-
-    def calculate_reward(self):
-        # Calculez la récompense basée sur l'état du jeu
-        # Par exemple, +1 pour tuer une pièce ennemie, +10 pour tuer un chef, etc.
-        pass
-
-class DQNAgent:
-    def __init__(self, state_size, action_size):
-        self.state_size = state_size
-        self.action_size = action_size
-        self.memory = deque(maxlen=2000)
-        self.gamma = 0.95    # discount rate
-        self.epsilon = 1.0   # exploration rate
-        self.epsilon_min = 0.01
-        self.epsilon_decay = 0.995
-        self.learning_rate = 0.001
-        self.model = self._build_model()
-
-    def _build_model(self):
-        state_input = Input(shape=self.state_size)
-        legal_actions_mask = Input(shape=self.action_size)
+        # Dimensions du plateau
+        self.board_size = 6
+        self.num_players = 3
         
-        model = Sequential()
-        model.add(Dense(24, input_shape=self.state_size, activation='relu'))
-        model.add(Dense(24, activation='relu'))
-        model.add(Dense(self.action_size, activation='linear'))
-        model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
+        # Définition des espaces d'observation et d'action
+        # Observation : plateau (6x6) + état des joueurs
+        self.observation_space = spaces.Dict({
+            "board": spaces.Box(low=0, high=3, shape=(self.board_size, self.board_size), dtype=np.int8),
+            "player_status": spaces.Box(low=0, high=1, shape=(self.num_players,), dtype=np.int8),
+            "current_player": spaces.Discrete(self.num_players)
+        })
         
-        output = Dense(np.prod(self.action_size))(x)
-        output = Reshape(self.action_size)(output)
-        masked_output = Multiply()([output, legal_actions_mask])
-
-        model = Model(inputs=[state_input, legal_actions_mask], outputs=masked_output)
-        model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
-        return model
+        # Action : (piece_x, piece_y, move_x, move_y)
+        self.action_space = spaces.MultiDiscrete([
+            self.board_size,  # piece_x
+            self.board_size,  # piece_y
+            self.board_size,  # move_x
+            self.board_size   # move_y
+        ])
         
-
-    def remember(self, state, action, reward, next_state, done):
-        self.memory.append((state, action, reward, next_state, done))
-
-    def act(self, state):
-        legal_actions_mask = self.env.get_legal_actions_mask()
-        if np.random.rand() <= self.epsilon:
-            # Choisissez une action aléatoire parmi les actions légales
-            legal_actions = np.argwhere(legal_actions_mask.flatten() == 1)
-            return legal_actions[np.random.randint(len(legal_actions))].reshape(-1)
+        # Initialisation
+        self.reset()
+    
+    def reset(self, seed: Optional[int] = None) -> Tuple[Dict, Dict]:
+        """
+        Réinitialise l'environnement pour une nouvelle partie.
+        """
+        super().reset(seed=seed)
         
-        act_values = self.model.predict(state)
-        act_values[legal_actions_mask == 0] = -np.inf  # Masquer les actions illégales
-        return np.unravel_index(np.argmax(act_values), act_values.shape)
-
-    def replay(self, batch_size):
-        minibatch = random.sample(self.memory, batch_size)
-        for state, action, reward, next_state, done in minibatch:
-            target = reward
-            if not done:
-                target = reward + self.gamma * np.amax(self.model.predict(next_state)[0])
-            target_f = self.model.predict(state)
-            target_f[0][action] = target
-            self.model.fit(state, target_f, epochs=1, verbose=0)
-        if self.epsilon > self.epsilon_min:
-            self.epsilon *= self.epsilon_decay
-
-# Entraînement
-env = DjambiEnv()
-state_size = (BOARD_SIZE*2-1, BOARD_SIZE*2-1, 7)
-
-# Définition de l'espace d'action
-action_space = spaces.MultiDiscrete([
-    len(env.board.pieces),  # Nombre de pièces
-    BOARD_SIZE * 2 - 1,     # Plage de q
-    BOARD_SIZE * 2 - 1,     # Plage de r
-    BOARD_SIZE * 2,         # Plage de q pour la pièce tuée (inclut -1 pour "pas de pièce tuée")
-    BOARD_SIZE * 2          # Plage de r pour la pièce tuée (inclut -1 pour "pas de pièce tuée")
-])
-
-agent = DQNAgent(state_size, action_space)
-
-episodes = 1000
-for e in range(episodes):
-    state = env.reset()
-    for time in range(500):  # max 500 moves per game
-        action = agent.act(state)
-        next_state, reward, done, info = env.step(action)
+        # Initialisation du plateau
+        self.board = np.zeros((self.board_size, self.board_size), dtype=np.int8)
         
-        if info["illegal_move"]:
-            # Si le mouvement était illégal, annulez-le et faites rejouer le même joueur
-            env.undo_last_move(info["previous_state"], info["previous_player_index"])
-            continue
+        # Placement initial des pièces pour chaque joueur
+        # Joueur 1 (1) : coins supérieurs
+        self.board[0, 0] = 1
+        self.board[0, self.board_size-1] = 1
         
-        agent.remember(state, action, reward, next_state, done)
-        state = next_state
-        if done:
-            print(f"episode: {e}/{episodes}, score: {time}")
-            break
-    if len(agent.memory) > 32:
-        agent.replay(32)
+        # Joueur 2 (2) : coins inférieurs
+        self.board[self.board_size-1, 0] = 2
+        self.board[self.board_size-1, self.board_size-1] = 2
+        
+        # Joueur 3 (3) : milieu
+        self.board[self.board_size//2, 0] = 3
+        self.board[self.board_size//2, self.board_size-1] = 3
+        
+        # État des joueurs (1 = vivant, 0 = éliminé)
+        self.player_status = np.ones(self.num_players, dtype=np.int8)
+        
+        # Joueur actuel (commence aléatoirement)
+        self.current_player = random.randint(0, self.num_players-1)
+        
+        return self._get_observation(), self._get_info()
+    
+    def _get_observation(self) -> Dict:
+        """
+        Retourne l'observation actuelle.
+        """
+        return {
+            "board": self.board.copy(),
+            "player_status": self.player_status.copy(),
+            "current_player": self.current_player
+        }
+    
+    def _get_info(self) -> Dict:
+        """
+        Retourne les informations supplémentaires.
+        """
+        return {
+            "current_player": self.current_player,
+            "player_status": self.player_status.copy()
+        }
+    
+    def _is_valid_move(self, piece_pos: Tuple[int, int], move_pos: Tuple[int, int]) -> bool:
+        """
+        Vérifie si un mouvement est valide.
+        """
+        piece_x, piece_y = piece_pos
+        move_x, move_y = move_pos
+        
+        # Vérifie les limites du plateau
+        if not (0 <= move_x < self.board_size and 0 <= move_y < self.board_size):
+            return False
+        
+        # Vérifie si la case de destination est vide
+        if self.board[move_x, move_y] != 0:
+            return False
+        
+        # Vérifie si le mouvement est en diagonale
+        dx = abs(move_x - piece_x)
+        dy = abs(move_y - piece_y)
+        if dx != dy or dx == 0:
+            return False
+        
+        return True
+    
+    def _check_elimination(self) -> Optional[int]:
+        """
+        Vérifie si un joueur a été éliminé.
+        Retourne l'index du joueur éliminé ou None.
+        """
+        for player in range(self.num_players):
+            if self.player_status[player] == 1:  # Si le joueur est encore en vie
+                player_pieces = np.where(self.board == player + 1)
+                if len(player_pieces[0]) == 0:  # Plus de pièces
+                    return player
+        return None
+    
+    def step(self, action: np.ndarray) -> Tuple[Dict, float, bool, bool, Dict]:
+        """
+        Exécute une action et retourne (observation, reward, terminated, truncated, info)
+        """
+        piece_x, piece_y, move_x, move_y = action
+        
+        # Vérifie si l'action est valide
+        if not self._is_valid_move((piece_x, piece_y), (move_x, move_y)):
+            return self._get_observation(), -0.1, False, False, self._get_info()
+        
+        # Exécute le mouvement
+        player = self.board[piece_x, piece_y]
+        self.board[piece_x, piece_y] = 0
+        self.board[move_x, move_y] = player
+        
+        # Vérifie les éliminations
+        eliminated_player = self._check_elimination()
+        
+        # Calcule la récompense
+        reward = 0.0
+        terminated = False
+        
+        if eliminated_player is not None:
+            self.player_status[eliminated_player] = 0
+            if eliminated_player == self.current_player:
+                reward = -1.0  # Le joueur actuel a été éliminé
+            else:
+                reward = 1.0   # Le joueur actuel a éliminé un autre joueur
+            terminated = True
+        
+        # Passe au joueur suivant
+        self.current_player = (self.current_player + 1) % self.num_players
+        while self.player_status[self.current_player] == 0:
+            self.current_player = (self.current_player + 1) % self.num_players
+        
+        return self._get_observation(), reward, terminated, False, self._get_info()
+    
+    def render(self):
+        """
+        Affiche l'état actuel du plateau.
+        """
+        print("\nPlateau actuel:")
+        print(self.board)
+        print(f"Joueur actuel: {self.current_player + 1}")
+        print(f"Statut des joueurs: {self.player_status}")
