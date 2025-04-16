@@ -6,14 +6,16 @@ import random
 import sys
 import os
 
-# Ajouter le chemin du backend au PYTHONPATH
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend', 'src'))
+# Add the backend directory to Python path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from board import Board
-from constants import BOARD_SIZE, COLORS, START_POSITIONS, NB_PLAYER_MODE, NAMES
-from pieces import create_piece, hex_to_pixel, is_within_board
-from player import Player
-from minmax_player import MinMaxPlayer
+from backend.src import (
+    Board,
+    BOARD_SIZE, COLORS, START_POSITIONS, NB_PLAYER_MODE, NAMES,
+    create_piece, hex_to_pixel, is_within_board,
+    Player,
+    MinMaxPlayer
+)
 
 class DjambiEnv(gym.Env):
     """

@@ -1,12 +1,12 @@
-from constants import *
+from .constants import *
 import math
 import pygame
 import logging
-from pieces import *
-from player import Player
-from minmax_player import MinMaxPlayer
-from animation import animate_player_elimination, draw_player_turn
-from pieces import hex_to_pixel, is_within_board
+from .pieces import *
+from .player import Player
+from .minmax_player import MinMaxPlayer
+from .animation import animate_player_elimination, draw_player_turn
+from .pieces import hex_to_pixel, is_within_board
 
 
 

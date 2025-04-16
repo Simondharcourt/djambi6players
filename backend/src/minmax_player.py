@@ -1,7 +1,7 @@
 import random
 import copy
 import logging
-from player import Player
+from .player import Player
 
 class MinMaxPlayer(Player):
     def __init__(self, color, pieces, depth=1):

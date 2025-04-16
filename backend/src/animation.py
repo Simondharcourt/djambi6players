@@ -1,7 +1,5 @@
-
-
 import pygame
-from constants import *
+from .constants import *
 
 def draw_player_turn(screen, players, current_player_index, next_player_index=None, t=None):
     """Affiche l'ordre des joueurs avec des jetons colorés et une flèche animée pour le joueur actuel."""

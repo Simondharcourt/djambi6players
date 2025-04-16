@@ -1,0 +1,14 @@
+Metadata-Version: 2.2
+Name: djambi6players
+Version: 0.1.0
+Requires-Python: >=3.8
+Requires-Dist: numpy
+Requires-Dist: gymnasium
+Requires-Dist: torch>=2.0.0
+Requires-Dist: matplotlib>=3.7.0
+Requires-Dist: tqdm>=4.65.0
+Provides-Extra: tensorboard
+Requires-Dist: tensorboard>=2.13.0; extra == "tensorboard"
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
