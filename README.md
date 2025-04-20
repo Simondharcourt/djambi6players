@@ -11,7 +11,7 @@ curl -sSL https://install.python-poetry.org | python3 -
 
 2. Clone this repository and install dependencies:
 ```bash
-git clone https://github.com/yourusername/djambi6players.git
+git clone https://github.com/simondharcourt/djambi6players.git
 cd djambi6players
 poetry install
 ```

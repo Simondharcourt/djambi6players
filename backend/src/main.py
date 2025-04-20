@@ -1,9 +1,9 @@
 import pygame
 import sys
 import logging
-from constants import *
-from board import Board
-from animation import draw_player_turn, draw_legend, draw_button
+from .constants import *
+from .board import Board
+from .animation import draw_player_turn, draw_legend, draw_button
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 

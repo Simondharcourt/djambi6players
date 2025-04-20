@@ -1,12 +1,11 @@
 import gymnasium as gym
 import numpy as np
-from djambi_env import DjambiEnv
-from dqn_model import DQNAgent
+from .djambi_env import DjambiEnv
+from .dqn_model import DQNAgent
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import os
 import random
-import pygame
 
 def train(env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: str = "models"):
     """
@@ -31,11 +30,6 @@ def train(env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: 
         done = False
         
         while not done:
-            # Vérifier si l'entraînement est en pause
-            while env.paused:
-                env.render()
-                pygame.time.delay(100)  # Réduire la charge CPU pendant la pause
-            
             # Sélectionner une action
             if random.random() < agent.eps:
                 # Exploration: choisir une action valide aléatoire
