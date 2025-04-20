@@ -24,11 +24,6 @@ sys.path.append(project_root)
 
 from backend.src import (
     Board,
-    BOARD_SIZE,
-    COLORS,
-    START_POSITIONS,
-    NB_PLAYER_MODE,
-    NAMES,
     create_piece,
     Player,
     MinMaxPlayer,
@@ -57,7 +52,7 @@ class DjambiEnv(gym.Env):
             self.font = pygame.font.Font(None, FONT_SIZE)
 
         # Initialisation du plateau
-        self.board = Board(current_player_index=0)
+        self.board = Board(3, current_player_index=0)
         self.board.rl = (
             render_mode != "human"
         )  # Set rl to False when rendering is enabled
@@ -68,7 +63,7 @@ class DjambiEnv(gym.Env):
                 "board": spaces.Box(
                     low=0,
                     high=3,
-                    shape=(BOARD_SIZE * 2 - 1, BOARD_SIZE * 2 - 1),
+                    shape=(self.board.board_size * 2 - 1, self.board.board_size * 2 - 1),
                     dtype=np.int8,
                 ),
                 "player_status": spaces.Box(low=0, high=1, shape=(3,), dtype=np.int8),
@@ -79,10 +74,10 @@ class DjambiEnv(gym.Env):
         # Action : (piece_q, piece_r, move_q, move_r)
         self.action_space = spaces.MultiDiscrete(
             [
-                BOARD_SIZE * 2 - 1,  # piece_q
-                BOARD_SIZE * 2 - 1,  # piece_r
-                BOARD_SIZE * 2 - 1,  # move_q
-                BOARD_SIZE * 2 - 1,  # move_r
+                self.board.board_size * 2 - 1,  # piece_q
+                self.board.board_size * 2 - 1,  # piece_r
+                self.board.board_size * 2 - 1,  # move_q
+                self.board.board_size * 2 - 1,  # move_r
             ]
         )
 
@@ -105,12 +100,12 @@ class DjambiEnv(gym.Env):
             possible_moves = self.board.get_possible_moves(piece)
 
             # Convertir les coordonnées hexagonales en coordonnées de l'espace d'action
-            piece_q = piece.q + (BOARD_SIZE - 1)
-            piece_r = piece.r + (BOARD_SIZE - 1)
+            piece_q = piece.q + (self.board.board_size - 1)
+            piece_r = piece.r + (self.board.board_size - 1)
 
             for move_q, move_r in possible_moves:
-                move_q = move_q + (BOARD_SIZE - 1)
-                move_r = move_r + (BOARD_SIZE - 1)
+                move_q = move_q + (self.board.board_size - 1)
+                move_r = move_r + (self.board.board_size - 1)
 
                 # Créer l'action
                 action = np.array([piece_q, piece_r, move_q, move_r])
@@ -136,7 +131,7 @@ class DjambiEnv(gym.Env):
         super().reset(seed=seed)
 
         # Réinitialiser le plateau
-        self.board = Board(current_player_index=0)
+        self.board = Board(3, current_player_index=0)
         self.board.rl = (
             self.render_mode != "human"
         )  # Use self.render_mode instead of render_mode
@@ -163,13 +158,13 @@ class DjambiEnv(gym.Env):
         Retourne l'observation actuelle.
         """
         # Créer une représentation du plateau
-        board_state = np.zeros((BOARD_SIZE * 2 - 1, BOARD_SIZE * 2 - 1), dtype=np.int8)
+        board_state = np.zeros((self.board.board_size * 2 - 1, self.board.board_size * 2 - 1), dtype=np.int8)
         for piece in self.board.pieces:
             if not piece.is_dead:
-                q, r = piece.q + BOARD_SIZE - 1, piece.r + BOARD_SIZE - 1
+                q, r = piece.q + self.board.board_size - 1, piece.r + self.board.board_size - 1
                 # Utiliser l'index de la couleur dans la liste des couleurs
-                color_name = NAMES[piece.color]
-                color_index = list(NAMES.keys()).index(piece.color) + 1
+                color_name = self.board.names[piece.color]
+                color_index = list(self.board.names.keys()).index(piece.color) + 1
                 board_state[q, r] = color_index
 
         # État des joueurs
@@ -203,10 +198,10 @@ class DjambiEnv(gym.Env):
         Vérifie si un mouvement est valide.
         """
         # Convertir les coordonnées
-        piece_q = piece_q - (BOARD_SIZE - 1)
-        piece_r = piece_r - (BOARD_SIZE - 1)
-        move_q = move_q - (BOARD_SIZE - 1)
-        move_r = move_r - (BOARD_SIZE - 1)
+        piece_q = piece_q - (self.board.board_size - 1)
+        piece_r = piece_r - (self.board.board_size - 1)
+        move_q = move_q - (self.board.board_size - 1)
+        move_r = move_r - (self.board.board_size - 1)
 
         # Vérifier si la pièce existe et appartient au joueur actuel
         piece = self.board.get_piece_at(piece_q, piece_r)
@@ -243,10 +238,10 @@ class DjambiEnv(gym.Env):
             return self._get_observation(), -0.1, False, False, self._get_info()
 
         # Convertir les coordonnées
-        piece_q = piece_q - (BOARD_SIZE - 1)
-        piece_r = piece_r - (BOARD_SIZE - 1)
-        move_q = move_q - (BOARD_SIZE - 1)
-        move_r = move_r - (BOARD_SIZE - 1)
+        piece_q = piece_q - (self.board.board_size - 1)
+        piece_r = piece_r - (self.board.board_size - 1)
+        move_q = move_q - (self.board.board_size - 1)
+        move_r = move_r - (self.board.board_size - 1)
 
         # Exécuter le mouvement
         piece = self.board.get_piece_at(piece_q, piece_r)

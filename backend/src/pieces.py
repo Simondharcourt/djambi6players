@@ -28,7 +28,16 @@ class Piece:
         self.piece_class = piece_class  # Classe de la pièce (e.g., 'assassin', 'chief')
         self.svg_path = svg_path  # Ajout de cet attribut
         self.class_image = None  # Ne pas stocker l'image ici
-        self.name = NAMES[color]
+        names = {
+            (128, 0, 128): "Violet",
+            (0, 0, 255): "Bleu",
+            (255, 0, 0): "Rouge",
+            (255, 105, 180): "Rose",
+            (255, 255, 0): "Jaune",
+            (0, 255, 0): "Vert",
+            (100, 100, 100): "Mort",
+        }
+        self.name = names[color]
         self.on_central_cell = (
             False  # Nouvel attribut pour suivre si le chef est sur la case centrale
         )
@@ -41,10 +50,8 @@ class Piece:
         self.is_threatened_by = []
         self.is_protected_by = []
         self.std_value = std_value
-
         self.possible_moves = []
         self.best_moves = {}
-
         self.threat_score = 0
 
     def remove_threat_and_protections_after_move(self):
@@ -178,15 +185,15 @@ class Piece:
 
         possible_moves = []
         # Pour chaque direction, explorer les cases jusqu'à rencontrer un obstacle ou le bord du plateau
-        for dq, dr in ALL_DIRECTIONS:
+        for dq, dr in board.directions["all"]:
             step = 1
-            if (dq, dr) in DIAG_DIRECTIONS:
+            if (dq, dr) in board.directions["diagonal"]:
                 v1, v2 = board.find_adjacent_vectors(dq, dr)
             new_q, new_r = self.q, self.r
             while True:
-                if ADVANCED_RULES:
+                if board.advanced_rules:
                     if (
-                        (dq, dr) in DIAG_DIRECTIONS
+                        (dq, dr) in board.directions["diagonal"]
                         and board.is_occupied(new_q + v1[0], new_r + v1[1])
                         and board.is_occupied(new_q + v2[0], new_r + v2[1])
                     ):
@@ -220,7 +227,7 @@ class Piece:
             return True
         visited.add((self.q, self.r))
 
-        for dq, dr in ADJACENT_DIRECTIONS:
+        for dq, dr in board.directions["adjacent"]:
             new_q = self.q + dq
             new_r = self.r + dr
 
@@ -264,20 +271,19 @@ class MilitantPiece(Piece):
         if self.is_dead:
             return []  # ne peut se déplacer.
         possible_moves = []
-        directions = ADJACENT_DIRECTIONS + DIAG_DIRECTIONS
         max_steps = {"adjacent": 2, "diagonal": 1}
 
-        for dq, dr in directions:
-            is_diagonal = (dq, dr) in DIAG_DIRECTIONS
+        for dq, dr in board.directions["all"]:
+            is_diagonal = (dq, dr) in board.directions["diagonal"]
             for step in range(
                 1, max_steps["diagonal" if is_diagonal else "adjacent"] + 1
             ):
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
 
-                if (dq, dr) in DIAG_DIRECTIONS:
+                if is_diagonal:
                     v1, v2 = board.find_adjacent_vectors(dq, dr)
-                    if ADVANCED_RULES:
+                    if board.advanced_rules:
                         if board.is_occupied(
                             self.q + v1[0], self.r + v1[1]
                         ) and board.is_occupied(self.q + v2[0], self.r + v2[1]):
@@ -367,15 +373,17 @@ class AssassinPiece(Piece):
         if self.is_dead:
             return []  # ne peut se dplacer.
         possible_moves = []
-        for dq, dr in ALL_DIRECTIONS:
+        for dq, dr in board.directions["all"]:
             step = 1
             new_q, new_r = self.q, self.r
-            if (dq, dr) in DIAG_DIRECTIONS:
+            if (dq, dr) in board.directions["diagonal"]:
+                print(dq, dr)
                 v1, v2 = board.find_adjacent_vectors(dq, dr)
+                print(v1, v2)
             while True:
-                if ADVANCED_RULES:
+                if board.advanced_rules:
                     if (
-                        (dq, dr) in DIAG_DIRECTIONS
+                        (dq, dr) in board.directions["diagonal"]
                         and board.is_occupied(new_q + v1[0], new_r + v1[1])
                         and board.is_occupied(new_q + v2[0], new_r + v2[1])
                         and board.get_piece_at(new_q + v1[0], new_r + v1[1]).color
@@ -405,7 +413,7 @@ class AssassinPiece(Piece):
                             (new_q, new_r)
                         )  # L'assassin peut se déplacer sur une pièce ennemie
                         break
-                    elif not ADVANCED_RULES:
+                    elif not board.advanced_rules:
                         break
                 elif not (new_q == 0 and new_r == 0) or (
                     board.is_occupied(0, 0)
@@ -479,15 +487,15 @@ class ChiefPiece(Piece):
                 []
             )  # ne peut se déplacer. # Le chef ne bouge plus s'il est sur la case centrale
         possible_moves = []
-        for dq, dr in ALL_DIRECTIONS:
+        for dq, dr in board.directions["all"]:
             step = 1
             new_q, new_r = self.q, self.r
-            if (dq, dr) in DIAG_DIRECTIONS:
+            if (dq, dr) in board.directions["diagonal"]:
                 v1, v2 = board.find_adjacent_vectors(dq, dr)
             while True:
-                if ADVANCED_RULES:
+                if board.advanced_rules:
                     if (
-                        (dq, dr) in DIAG_DIRECTIONS
+                        (dq, dr) in board.directions["diagonal"]
                         and board.is_occupied(new_q + v1[0], new_r + v1[1])
                         and board.is_occupied(new_q + v2[0], new_r + v2[1])
                     ):
@@ -619,15 +627,15 @@ class DiplomatPiece(Piece):
         if self.is_dead:
             return []  # ne peut se déplacer.
         possible_moves = []
-        for dq, dr in ALL_DIRECTIONS:
+        for dq, dr in board.directions["all"]:
             step = 1
             new_q, new_r = self.q, self.r
-            if (dq, dr) in DIAG_DIRECTIONS:
+            if (dq, dr) in board.directions["diagonal"]:
                 v1, v2 = board.find_adjacent_vectors(dq, dr)
             while True:
-                if ADVANCED_RULES:
+                if board.advanced_rules:
                     if (
-                        (dq, dr) in DIAG_DIRECTIONS
+                        (dq, dr) in board.directions["diagonal"]
                         and board.is_occupied(new_q + v1[0], new_r + v1[1])
                         and board.is_occupied(new_q + v2[0], new_r + v2[1])
                     ):
@@ -641,7 +649,7 @@ class DiplomatPiece(Piece):
                 piece_at_position = board.get_piece_at(new_q, new_r)
                 if piece_at_position:
                     if not piece_at_position.is_dead and (
-                        ADVANCED_RULES or piece_at_position.color != self.color
+                        board.advanced_rules or piece_at_position.color != self.color
                     ):  # toutes les pièces sont accessibles
                         possible_moves.append((new_q, new_r))
                     break  # Arrêter dans cette direction aprs avoir rencontré une pièce
@@ -720,15 +728,15 @@ class NecromobilePiece(Piece):
         if self.is_dead:
             return []  # ne peut se dplacer.
         possible_moves = []
-        for dq, dr in ALL_DIRECTIONS:
+        for dq, dr in board.directions["all"]:
             step = 1
             new_q, new_r = self.q, self.r
-            if (dq, dr) in DIAG_DIRECTIONS:
+            if (dq, dr) in board.directions["diagonal"]:
                 v1, v2 = board.find_adjacent_vectors(dq, dr)
             while True:
-                if ADVANCED_RULES:
+                if board.advanced_rules:
                     if (
-                        (dq, dr) in DIAG_DIRECTIONS
+                        (dq, dr) in board.directions["diagonal"]
                         and board.is_occupied(new_q + v1[0], new_r + v1[1])
                         and board.is_occupied(new_q + v2[0], new_r + v2[1])
                     ):
@@ -823,8 +831,8 @@ class ReporterPiece(Piece):
         )
 
         # Tuer les ennemis adjacents après le déplacement
-        if ADVANCED_RULES:
-            for dq, dr in ADJACENT_DIRECTIONS:
+        if board.advanced_rules:
+            for dq, dr in board.directions["adjacent"]:
                 adjacent_q = self.q + dq
                 adjacent_r = self.r + dr
                 piece = board.get_piece_at(adjacent_q, adjacent_r)
@@ -838,7 +846,7 @@ class ReporterPiece(Piece):
         else:
             # implement only one kill from the reporter.
             adjacent_enemies = []
-            for dq, dr in ADJACENT_DIRECTIONS:
+            for dq, dr in board.directions["adjacent"]:
                 adjacent_q = self.q + dq
                 adjacent_r = self.r + dr
                 piece = board.get_piece_at(adjacent_q, adjacent_r)

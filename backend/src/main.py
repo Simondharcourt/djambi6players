@@ -10,13 +10,27 @@ logging.basicConfig(
 )
 
 
+# Ajout de la fonction pour traiter les arguments
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Choisissez les paramètres du jeu.")
+    parser.add_argument(
+        "--nb_player_mode",
+        type=int,
+        choices=[3, 4, 6],
+        default=3,
+        help="Nombre de joueurs (3, 4 ou 6)",
+    )
+    return parser.parse_args()
+
 def main():
+    # Récupération des arguments
+    args = parse_arguments()
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption("Djambi")
     clock = pygame.time.Clock()
     current_player_index = 0
-    board = Board(current_player_index)
+    board = Board(args.nb_player_mode, current_player_index)
 
     # Initialiser la police pour le texte
     pygame.font.init()

@@ -2,8 +2,8 @@ import asyncio
 import json
 import websockets
 import os
-from board import Board, COLORS
-from database import Database
+from .board import Board
+from .database import Database
 import logging
 
 logging.basicConfig(
@@ -13,12 +13,12 @@ logging.basicConfig(
 
 class DjambiServer:
     def __init__(self):
-        self.board = Board(0)  # Initialiser le plateau de jeu
+        self.board = Board(6, 0)  # Initialiser le plateau de jeu
         self.board.rl = True
         self.clients = {}  # Dictionnaire pour stocker les clients avec leur couleur
         self.current_player_index = 0
         self.lock = asyncio.Lock()
-        self.available_colors = list(COLORS.keys())
+        self.available_colors = list(self.board.colors.keys())
         self.waiting_clients = []  # Nouvelle liste pour les clients en attente
         self.db = Database()  # Initialisation de la base de données
         self.authenticated_users = {}  # websocket -> username
@@ -59,13 +59,13 @@ class DjambiServer:
         else:  # nb_players == 6
             self.waiting_clients.remove(websocket)
             colors = [self.available_colors.pop(0)]
-            player_index = list(COLORS.keys()).index(colors[0])
+            player_index = list(self.board.colors.keys()).index(colors[0])
 
         # Enregistrer le client
         self.clients[websocket] = colors
 
         # Préparer la réponse pour le client
-        color_indices = [list(COLORS.keys()).index(color) for color in colors]
+        color_indices = [list(self.board.colors.keys()).index(color) for color in colors]
 
         # Envoyer l'état initial
         await self.send_board_state(websocket)
@@ -130,7 +130,7 @@ class DjambiServer:
         self.board = Board(0)
         self.board.rl = True
         self.current_player_index = 0
-        self.available_colors = list(COLORS.keys())
+        self.available_colors = list(self.board.colors.keys())
 
     async def send_board_state(self, websocket):
         logging.info(f"Sending state to specific client: {websocket.remote_address}")

@@ -3,23 +3,36 @@ import math
 import pygame
 import logging
 from .pieces import *
-from .player import Player
 from .minmax_player import MinMaxPlayer
 from .animation import animate_player_elimination, draw_player_turn
-
+from .utils import get_directions, get_colors, get_start_positions
 
 class Board:
-    def __init__(self, current_player_index=0, one_player_mode=False):
+    def __init__(self, nb_players, current_player_index=0, one_player_mode=False):
         self.hexagons = []
         self.pieces = []
+        self.nb_players = nb_players
         self.current_player_index = current_player_index
         self.one_player_mode = one_player_mode
         logging.debug("Initialisation du plateau")
 
+        if self.nb_players in [3, 4]:
+            self.board_size = 5
+            self.advanced_rules = False
+        elif self.nb_players == 6:
+            self.board_size = 7
+            self.advanced_rules = True
+        else:
+            raise ValueError("Nombre de joueurs invalide. Veuillez choisir 3, 4 ou 6.")
+
+        self.directions = get_directions(self.nb_players)
+        self.colors, self.color_reverse, self.names = get_colors(self.nb_players)
+        self.start_positions = get_start_positions(self.nb_players)
+
         # Initialisation des hexagones du plateau
-        for q in range(-BOARD_SIZE + 1, BOARD_SIZE):
-            for r in range(-BOARD_SIZE + 1, BOARD_SIZE):
-                if -q - r in range(-BOARD_SIZE + 1, BOARD_SIZE) or NB_PLAYER_MODE == 4:
+        for q in range(-self.board_size + 1, self.board_size):
+            for r in range(-self.board_size + 1, self.board_size):
+                if -q - r in range(-self.board_size + 1, self.board_size) or self.nb_players == 4:
                     self.hexagons.append((q, r))
 
         # Ajouter des pièces aux positions de départ
@@ -57,17 +70,17 @@ class Board:
 
     def is_within_board(self, q, r):
         """Vérifie si les coordonnées q, r sont dans les limites du plateau."""
-        if NB_PLAYER_MODE in [3, 6]:
+        if self.nb_players in [3, 6]:
             s = -q - r  # Coordonnée s dans un système hexagonal
-            return abs(q) < BOARD_SIZE and abs(r) < BOARD_SIZE and abs(s) < BOARD_SIZE
-        elif NB_PLAYER_MODE == 4:
-            return abs(q) < BOARD_SIZE and abs(r) < BOARD_SIZE
+            return abs(q) < self.board_size and abs(r) < self.board_size and abs(s) < self.board_size
+        elif self.nb_players == 4:
+            return abs(q) < self.board_size and abs(r) < self.board_size
 
     def hex_to_pixel(self, q, r):
-        if NB_PLAYER_MODE in [3, 6]:
+        if self.nb_players in [3, 6]:
             x = HEX_RADIUS * 3 / 2 * q
             y = HEX_RADIUS * math.sqrt(3) * (r + q / 2)
-        elif NB_PLAYER_MODE == 4:
+        elif self.nb_players == 4:
             x = math.sqrt(3) * HEX_RADIUS * q  # Ajustement pour le mode 4 joueurs
             y = math.sqrt(3) * HEX_RADIUS * r  # Ajustement pour le mode 4 joueurs
         # Décalage vertical pour centrer le plateau plus haut
@@ -78,8 +91,8 @@ class Board:
         return pixel_coords
 
     def find_adjacent_vectors(self, dq, dr):
-        for v1 in ADJACENT_DIRECTIONS:
-            for v2 in ADJACENT_DIRECTIONS:
+        for v1 in self.directions["adjacent"]:
+            for v2 in self.directions["adjacent"]:
                 if v1 != v2:  # Vérifie que v1 et v2 sont différents
                     if (v1[0] + v2[0] == dq) and (v1[1] + v2[1] == dr):
                         return v1, v2  # Retourne les vecteurs trouvés
@@ -88,7 +101,6 @@ class Board:
     def initialize_pieces(self):
         # Position de départ des pièces (exemple arbitraire)
         logging.debug("Initialisation des pièces")
-        start_positions = START_POSITIONS
 
         class_svg_paths = {
             "assassin": ASSET_PATH + "assassin.svg",
@@ -99,13 +111,13 @@ class Board:
             "reporter": ASSET_PATH + "reporter.svg",
         }
         self.players = []
-        for color in COLORS.keys():
+        for color in self.colors.keys():
             pieces = [
-                create_piece(q, r, COLORS[color], cl, class_svg_paths[cl])
-                for q, r, c, cl in start_positions
+                create_piece(q, r, self.colors[color], cl, class_svg_paths[cl])
+                for q, r, c, cl in self.start_positions
                 if c == color
             ]
-            self.players.append(MinMaxPlayer(COLORS[color], pieces))
+            self.players.append(MinMaxPlayer(self.colors[color], pieces))
             self.pieces.extend(pieces)
         self.update_all_scores()
         self.update_all_opportunity_scores()
@@ -182,8 +194,8 @@ class Board:
     def get_unoccupied_cells(self):
         """Renvoie toutes les cases inoccupées qui ne sont pas la case centrale."""
         unoccupied_cells = []
-        for q in range(-BOARD_SIZE + 1, BOARD_SIZE):
-            for r in range(-BOARD_SIZE + 1, BOARD_SIZE):
+        for q in range(-self.board_size + 1, self.board_size):
+            for r in range(-self.board_size + 1, self.board_size):
                 # Vérifier si la case est sur le plateau
                 if self.is_within_board(q, r):
                     # Exclure la case centrale et les cases occupées
@@ -225,7 +237,7 @@ class Board:
         for piece in killed_player.pieces:
             if killer_player:
                 piece.color = killer_player.color
-                piece.name = NAMES[killer_player.color]
+                piece.name = self.names[killer_player.color]
                 piece.load_image()
             else:
                 piece.die()  # Si pas de tueur spécifique, les pièces meurent simplement
@@ -283,14 +295,14 @@ class Board:
     def hex_corners(self, x, y):
         """Retourne les coins de l'hexagone en fonction de sa position pixel."""
         corners = []
-        if NB_PLAYER_MODE in [3, 6]:
+        if self.nb_players in [3, 6]:
             for i in range(6):
                 angle_deg = 60 * i
                 angle_rad = math.radians(angle_deg)
                 corner_x = x + HEX_RADIUS * math.cos(angle_rad)
                 corner_y = y + HEX_RADIUS * math.sin(angle_rad)
                 corners.append((corner_x, corner_y))
-        elif NB_PLAYER_MODE == 4:
+        elif self.nb_players == 4:
             # Créer un carré en utilisant des offsets directs
             half_size = (
                 HEX_RADIUS * math.sqrt(3) / 2
@@ -428,7 +440,7 @@ class Board:
     def pixel_to_hex(self, x, y):
         """Convertit les coordonnées pixel en coordonnées hexagonales."""
 
-        if NB_PLAYER_MODE in [3, 6]:
+        if self.nb_players in [3, 6]:
             x = (x - WINDOW_WIDTH // 2) / (HEX_RADIUS * 3 / 2)
             y = (y - (WINDOW_HEIGHT // 2 - VERTICAL_OFFSET)) / (
                 HEX_RADIUS * math.sqrt(3)
@@ -436,7 +448,7 @@ class Board:
             q = x
             r = y - x / 2
             return round(q), round(r)
-        elif NB_PLAYER_MODE == 4:
+        elif self.nb_players == 4:
             # Ajustement pour le mode 4 joueurs (carrés)
             x = (x - WINDOW_WIDTH // 2) / (
                 HEX_RADIUS * math.sqrt(3)
@@ -531,16 +543,16 @@ class Board:
         """
         # Vérifier si c'est le tour du joueur
         current_player = self.players[self.current_player_index]
-        if tuple(current_player.color) != tuple(COLORS[player_color]):
+        if tuple(current_player.color) != tuple(self.colors[player_color]):
             logging.debug(
-                f"Ce n'est pas le tour du joueur {tuple(COLORS[player_color])} mais du joueur {tuple(current_player.color)}"
+                f"Ce n'est pas le tour du joueur {tuple(self.colors[player_color])} mais du joueur {tuple(current_player.color)}"
             )
             return False
 
         # Sélectionner la pièce
         selected_piece = self.get_piece_at(*selected_pos)
         if not selected_piece or tuple(selected_piece.color) != tuple(
-            COLORS[player_color]
+            self.colors[player_color]
         ):
             logging.debug(f"Pièce invalide sélectionnée à {selected_pos}")
             return False
@@ -577,19 +589,19 @@ class Board:
                 {
                     "q": piece.q,
                     "r": piece.r,
-                    "color": COLORS_REVERSE[piece.color],
+                    "color": self.color_reverse[piece.color],
                     "piece_class": piece.piece_class,
                     "is_dead": piece.is_dead,
                 }
                 for piece in self.pieces
             ],
             "current_player_index": self.current_player_index,  # not adapted to chief in the center
-            "current_player_color": COLORS_REVERSE[
+            "current_player_color": self.color_reverse[
                 self.players[self.current_player_index].color
             ],
             "players": [
                 {
-                    "color": COLORS_REVERSE[player.color],
+                    "color": self.color_reverse[player.color],
                     "name": " ",
                     "score": player.score,
                     "relative_score": player.relative_score,
@@ -599,7 +611,7 @@ class Board:
             "piece_to_place": {
                 "q": self.piece_to_place.q,
                 "r": self.piece_to_place.r,
-                "color": COLORS_REVERSE[self.piece_to_place.color],
+                "color": self.color_reverse[self.piece_to_place.color],
                 "piece_class": self.piece_to_place.piece_class,
                 "is_dead": self.piece_to_place.is_dead,
             }
