@@ -4,7 +4,7 @@ import argparse
 # Ajout de la fonction pour traiter les arguments
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Choisissez les paramètres du jeu.')
-    parser.add_argument('--nb_player_mode', type=int, choices=[3, 4, 6], default=6, 
+    parser.add_argument('--nb_player_mode', type=int, choices=[3, 4, 6], default=3, 
                         help='Nombre de joueurs (3, 4 ou 6)')
     return parser.parse_args()
 

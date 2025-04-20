@@ -12,3 +12,4 @@ venv/
 # Notebook
 /local/labo.ipynb
 todo.md
+djambi_rl.log

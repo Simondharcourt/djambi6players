@@ -11,8 +11,6 @@ from backend.src.constants import WINDOW_WIDTH, WINDOW_HEIGHT, FONT_SIZE
 
 
 
-
-
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -47,6 +45,8 @@ class DjambiEnv(gym.Env):
         logger.info("Initializing Djambi environment")
         
         self.render_mode = render_mode
+        self.paused = False  # État de pause
+        
         if True:
             pygame.init()
             self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -261,9 +261,20 @@ class DjambiEnv(gym.Env):
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.paused = not self.paused
+                        logger.info(f"Training {'paused' if self.paused else 'resumed'}")
             
             self.screen.fill((0, 0, 0))  # BLACK
             self.board.draw(self.screen)
+            
+            # Afficher l'état de pause
+            if self.paused:
+                pause_text = self.font.render("PAUSED - Press SPACE to resume", True, (255, 255, 255))
+                text_rect = pause_text.get_rect(center=(WINDOW_WIDTH/2, 20))
+                self.screen.blit(pause_text, text_rect)
+            
             pygame.display.flip()
             self.clock.tick(60)
         else:
