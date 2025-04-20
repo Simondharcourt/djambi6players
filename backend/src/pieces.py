@@ -191,13 +191,13 @@ class Piece:
                 v1, v2 = find_adjacent_vectors(dq, dr)
             new_q, new_r = self.q, self.r
             while True:
-                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
-                    break
+                if ADVANCED_RULES:
+                    if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
+                        break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
                 if not is_within_board(new_q, new_r) or board.is_occupied(new_q, new_r):
                     break
-                
                 
                 if not (new_q == 0 and new_r == 0 and not isinstance(self, ChiefPiece)):
                     possible_moves.append((new_q, new_r))
@@ -260,8 +260,9 @@ class MilitantPiece(Piece):
                 
                 if (dq, dr) in DIAG_DIRECTIONS:
                     v1, v2 = find_adjacent_vectors(dq, dr)
-                    if board.is_occupied(self.q + v1[0], self.r + v1[1]) and board.is_occupied(self.q + v2[0], self.r + v2[1]):
-                        break
+                    if ADVANCED_RULES:
+                        if board.is_occupied(self.q + v1[0], self.r + v1[1]) and board.is_occupied(self.q + v2[0], self.r + v2[1]):
+                            break
                 
                 if not is_within_board(new_q, new_r):
                     break
@@ -317,8 +318,8 @@ class AssassinPiece(Piece):
             if (dq, dr) in DIAG_DIRECTIONS:
                 v1, v2 = find_adjacent_vectors(dq, dr)
             while True:
-                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
-                    if not ADVANCED_RULES:
+                if ADVANCED_RULES:
+                    if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]) and board.get_piece_at(new_q + v1[0], new_r + v1[1]).color != self.color and board.get_piece_at(new_q + v2[0], new_r + v2[1]).color != self.color:
                         break
                     piece1 = board.get_piece_at(new_q + v1[0], new_r + v1[1])
                     piece2 = board.get_piece_at(new_q + v2[0], new_r + v2[1])
@@ -382,8 +383,9 @@ class ChiefPiece(Piece):
             if (dq, dr) in DIAG_DIRECTIONS:
                 v1, v2 = find_adjacent_vectors(dq, dr)
             while True:
-                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
-                    break
+                if ADVANCED_RULES:
+                    if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
+                        break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
                 if not is_within_board(new_q, new_r):
@@ -484,13 +486,11 @@ class DiplomatPiece(Piece):
             if (dq, dr) in DIAG_DIRECTIONS:
                 v1, v2 = find_adjacent_vectors(dq, dr)
             while True:
-                
-                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
-                    break
+                if ADVANCED_RULES:
+                    if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
+                        break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
-
-
 
                 if not is_within_board(new_q, new_r):
                     break
@@ -551,8 +551,9 @@ class NecromobilePiece(Piece):
             if (dq, dr) in DIAG_DIRECTIONS:
                 v1, v2 = find_adjacent_vectors(dq, dr)
             while True:
-                if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
-                    break
+                if ADVANCED_RULES:
+                    if (dq, dr) in DIAG_DIRECTIONS and board.is_occupied(new_q + v1[0], new_r + v1[1]) and board.is_occupied(new_q + v2[0], new_r + v2[1]):
+                        break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
                 if not is_within_board(new_q, new_r):
