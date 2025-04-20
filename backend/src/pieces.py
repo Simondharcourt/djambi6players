@@ -374,6 +374,8 @@ class AssassinPiece(Piece):
             return []  # ne peut se dplacer.
         possible_moves = []
         for dq, dr in board.directions["all"]:
+            print(dq, dr)
+            print(board.directions["diagonal"])
             step = 1
             new_q, new_r = self.q, self.r
             if (dq, dr) in board.directions["diagonal"]:
@@ -386,18 +388,13 @@ class AssassinPiece(Piece):
                         (dq, dr) in board.directions["diagonal"]
                         and board.is_occupied(new_q + v1[0], new_r + v1[1])
                         and board.is_occupied(new_q + v2[0], new_r + v2[1])
-                        and board.get_piece_at(new_q + v1[0], new_r + v1[1]).color
-                        != self.color
-                        and board.get_piece_at(new_q + v2[0], new_r + v2[1]).color
-                        != self.color
                     ):
-                        break
-                    piece1 = board.get_piece_at(new_q + v1[0], new_r + v1[1])
-                    piece2 = board.get_piece_at(new_q + v2[0], new_r + v2[1])
-                    if (piece1.color != self.color or piece1.is_dead) and (
-                        piece2.color != self.color or piece2.is_dead
-                    ):
-                        break
+                        piece1 = board.get_piece_at(new_q + v1[0], new_r + v1[1])
+                        piece2 = board.get_piece_at(new_q + v2[0], new_r + v2[1])
+                        if (piece1.color != self.color or piece1.is_dead) and (
+                            piece2.color != self.color or piece2.is_dead
+                        ):
+                            break
                 new_q = self.q + dq * step
                 new_r = self.r + dr * step
 
