@@ -234,7 +234,7 @@ class DjambiEnv(gym.Env):
         # Vérifie si l'action est valide
         if not self._is_valid_move(piece_q, piece_r, move_q, move_r):
             logger.debug("Invalid move attempted")
-            return self._get_observation(), -0.1, False, False, self._get_info()
+            return self._get_observation(), -10.0, False, False, self._get_info()
 
         current_player = self.board.players[self.board.current_player_index]
         score_initial = current_player.compute_relative_score(self.board)
@@ -251,7 +251,7 @@ class DjambiEnv(gym.Env):
 
         if not success:
             logger.debug("Move execution failed")
-            return self._get_observation(), -0.1, False, False, self._get_info()
+            return self._get_observation(), -10.0, False, False, self._get_info()
 
         logger.debug(
             f"Move executed successfully: {piece.__class__.__name__} {current_player.name} moved from ({piece_q}, {piece_r}) to ({move_q}, {move_r})"
@@ -280,10 +280,10 @@ class DjambiEnv(gym.Env):
                 placement_success = self.board.place_dead_piece(placement_q, placement_r)
                 if not placement_success:
                     logger.debug("Failed to place dead piece")
-                    return self._get_observation(), -0.1, False, False, self._get_info()
+                    return self._get_observation(), -10.0, False, False, self._get_info()
             else:
                 logger.debug("No available cells for dead piece placement")
-                return self._get_observation(), -0.1, False, False, self._get_info()
+                return self._get_observation(), -10.0, False, False, self._get_info()
 
         # Le next_player() est déjà appelé dans board.move_piece() et board.place_dead_piece()
         logger.debug(f"Next player: {self.board.players[self.board.current_player_index].name}")
