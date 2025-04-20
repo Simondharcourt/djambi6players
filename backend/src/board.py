@@ -12,6 +12,7 @@ class Board:
         self.hexagons = []
         self.pieces = []
         self.nb_players = nb_players
+        self.eliminated_players = []
         self.current_player_index = current_player_index
         self.one_player_mode = one_player_mode
         logging.debug("Initialisation du plateau")
@@ -233,6 +234,7 @@ class Board:
             )
             return
 
+        self.eliminated_players.append(killed_player)
         # Changer la couleur de toutes les pièces du joueur tué
         for piece in killed_player.pieces:
             if killer_player:

@@ -258,17 +258,11 @@ class DjambiEnv(gym.Env):
         reward = 0.0
         terminated = False
 
-        # Vérifier si un joueur a été éliminé
-        for i, player in enumerate(self.board.players):
-            if not any(not p.is_dead for p in player.pieces):
-                if i == self.board.current_player_index:
-                    reward = -1.0  # Le joueur actuel a été éliminé
-                    logger.info(f"Player {i + 1} (current player) has been eliminated")
-                else:
-                    reward = 1.0  # Le joueur actuel a éliminé un autre joueur
-                    logger.info(f"Player {i + 1} has been eliminated by current player")
-                terminated = True
-                break
+        # Vérifier si le joueur actuel a éliminé quelqu'un
+        if self.board.eliminated_players:
+            reward = 1.0  # Le joueur actuel a éliminé un autre joueur
+            logger.info(f"Current player has eliminated another player")
+            terminated = True
 
         # Si une pièce a été tuée et doit être placée
         if self.board.piece_to_place is not None:

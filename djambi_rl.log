@@ -6556,3 +6556,485 @@
 2025-04-20 18:22:22,546 - INFO - Move executed successfully: MilitantPiece moved to (-4, 2)
 2025-04-20 18:22:22,546 - INFO - Next player: 2
 2025-04-20 18:22:22,547 - INFO - Training paused
+2025-04-20 22:51:59,854 - INFO - Initializing Djambi environment
+2025-04-20 22:52:00,720 - INFO - Resetting environment
+2025-04-20 22:52:00,780 - INFO - Game started with player 2
+2025-04-20 22:52:01,584 - INFO - Resetting environment
+2025-04-20 22:52:01,651 - INFO - Game started with player 3
+2025-04-20 22:52:01,656 - INFO - Player 3 attempting move: piece at (2, 2) to (4, 2)
+2025-04-20 22:52:01,923 - INFO - Move executed successfully: MilitantPiece moved to (0, -2)
+2025-04-20 22:52:01,924 - INFO - Next player: 1
+2025-04-20 22:52:01,930 - INFO - Player 1 attempting move: piece at (5, 6) to (5, 5)
+2025-04-20 22:52:02,199 - INFO - Move executed successfully: MilitantPiece moved to (1, 1)
+2025-04-20 22:52:02,200 - INFO - Next player: 2
+2025-04-20 22:52:02,203 - INFO - Player 2 attempting move: piece at (8, 2) to (8, 4)
+2025-04-20 22:52:02,478 - INFO - Move executed successfully: MilitantPiece moved to (4, 0)
+2025-04-20 22:52:02,479 - INFO - Next player: 3
+2025-04-20 22:52:02,485 - INFO - Player 3 attempting move: piece at (2, 3) to (3, 3)
+2025-04-20 22:52:02,759 - INFO - Move executed successfully: MilitantPiece moved to (-1, -1)
+2025-04-20 22:52:02,760 - INFO - Next player: 1
+2025-04-20 22:52:02,762 - INFO - Player 1 attempting move: piece at (3, 7) to (2, 7)
+2025-04-20 22:52:03,031 - INFO - Move executed successfully: MilitantPiece moved to (-2, 3)
+2025-04-20 22:52:03,031 - INFO - Next player: 2
+2025-04-20 22:52:03,034 - INFO - Player 2 attempting move: piece at (6, 2) to (6, 5)
+2025-04-20 22:52:03,301 - INFO - Move executed successfully: NecromobilePiece moved to (2, 1)
+2025-04-20 22:52:03,301 - INFO - Next player: 3
+2025-04-20 22:52:03,304 - INFO - Player 3 attempting move: piece at (1, 4) to (4, 1)
+2025-04-20 22:52:03,575 - INFO - Move executed successfully: DiplomatPiece moved to (0, -3)
+2025-04-20 22:52:03,576 - INFO - Next player: 1
+2025-04-20 22:52:03,579 - INFO - Player 1 attempting move: piece at (4, 6) to (3, 6)
+2025-04-20 22:52:03,853 - INFO - Move executed successfully: NecromobilePiece moved to (-1, 2)
+2025-04-20 22:52:03,853 - INFO - Next player: 2
+2025-04-20 22:52:03,856 - INFO - Player 2 attempting move: piece at (6, 5) to (5, 6)
+2025-04-20 22:52:04,132 - INFO - Move executed successfully: NecromobilePiece moved to (1, 2)
+2025-04-20 22:52:04,132 - INFO - Next player: 3
+2025-04-20 22:52:04,137 - INFO - Player 3 attempting move: piece at (2, 4) to (3, 4)
+2025-04-20 22:52:04,411 - INFO - Move executed successfully: NecromobilePiece moved to (-1, 0)
+2025-04-20 22:52:04,411 - INFO - Next player: 1
+2025-04-20 22:52:04,414 - INFO - Player 1 attempting move: piece at (2, 7) to (3, 7)
+2025-04-20 22:52:04,689 - INFO - Move executed successfully: MilitantPiece moved to (-1, 3)
+2025-04-20 22:52:04,689 - INFO - Next player: 2
+2025-04-20 22:52:04,692 - INFO - Player 2 attempting move: piece at (5, 6) to (7, 4)
+2025-04-20 22:52:04,968 - INFO - Move executed successfully: NecromobilePiece moved to (3, 0)
+2025-04-20 22:52:04,968 - INFO - Next player: 3
+2025-04-20 22:52:04,971 - INFO - Player 3 attempting move: piece at (0, 6) to (2, 6)
+2025-04-20 22:52:05,246 - INFO - Move executed successfully: MilitantPiece moved to (-2, 2)
+2025-04-20 22:52:05,246 - INFO - Next player: 1
+2025-04-20 22:52:05,249 - INFO - Player 1 attempting move: piece at (3, 6) to (2, 7)
+2025-04-20 22:52:05,513 - INFO - Move executed successfully: NecromobilePiece moved to (-2, 3)
+2025-04-20 22:52:05,514 - INFO - Next player: 2
+2025-04-20 22:52:05,517 - INFO - Player 2 attempting move: piece at (6, 0) to (4, 0)
+2025-04-20 22:52:05,793 - INFO - Move executed successfully: MilitantPiece moved to (0, -4)
+2025-04-20 22:52:05,793 - INFO - Next player: 3
+2025-04-20 22:52:05,796 - INFO - Player 3 attempting move: piece at (3, 4) to (5, 2)
+2025-04-20 22:52:06,069 - INFO - Move executed successfully: NecromobilePiece moved to (1, -2)
+2025-04-20 22:52:06,069 - INFO - Next player: 1
+2025-04-20 22:52:06,071 - INFO - Player 1 attempting move: piece at (6, 6) to (6, 5)
+2025-04-20 22:52:06,348 - INFO - Move executed successfully: MilitantPiece moved to (2, 1)
+2025-04-20 22:52:06,349 - INFO - Next player: 2
+2025-04-20 22:52:06,352 - INFO - Player 2 attempting move: piece at (7, 4) to (8, 3)
+2025-04-20 22:52:06,626 - INFO - Move executed successfully: NecromobilePiece moved to (4, -1)
+2025-04-20 22:52:06,627 - INFO - Next player: 3
+2025-04-20 22:52:06,629 - INFO - Player 3 attempting move: piece at (2, 6) to (4, 6)
+2025-04-20 22:52:06,899 - INFO - Move executed successfully: MilitantPiece moved to (0, 2)
+2025-04-20 22:52:06,899 - INFO - Next player: 1
+2025-04-20 22:52:06,902 - INFO - Player 1 attempting move: piece at (5, 5) to (6, 4)
+2025-04-20 22:52:07,175 - INFO - Move executed successfully: MilitantPiece moved to (2, 0)
+2025-04-20 22:52:07,176 - INFO - Next player: 2
+2025-04-20 22:52:07,178 - INFO - Player 2 attempting move: piece at (4, 0) to (3, 1)
+2025-04-20 22:52:07,452 - INFO - Move executed successfully: MilitantPiece moved to (-1, -3)
+2025-04-20 22:52:07,452 - INFO - Next player: 3
+2025-04-20 22:52:07,455 - INFO - Player 3 attempting move: piece at (4, 6) to (4, 5)
+2025-04-20 22:52:07,730 - INFO - Move executed successfully: MilitantPiece moved to (0, 1)
+2025-04-20 22:52:07,730 - INFO - Next player: 1
+2025-04-20 22:52:07,733 - INFO - Player 1 attempting move: piece at (6, 5) to (7, 4)
+2025-04-20 22:52:08,003 - INFO - Move executed successfully: MilitantPiece moved to (3, 0)
+2025-04-20 22:52:08,003 - INFO - Next player: 2
+2025-04-20 22:52:08,006 - INFO - Player 2 attempting move: piece at (7, 2) to (6, 2)
+2025-04-20 22:52:08,278 - INFO - Move executed successfully: MilitantPiece moved to (2, -2)
+2025-04-20 22:52:08,278 - INFO - Next player: 3
+2025-04-20 22:52:08,281 - INFO - Player 3 attempting move: piece at (3, 3) to (5, 3)
+2025-04-20 22:52:08,553 - INFO - Move executed successfully: MilitantPiece moved to (1, -1)
+2025-04-20 22:52:08,553 - INFO - Next player: 1
+2025-04-20 22:52:08,556 - INFO - Player 1 attempting move: piece at (2, 7) to (1, 8)
+2025-04-20 22:52:08,829 - INFO - Move executed successfully: NecromobilePiece moved to (-3, 4)
+2025-04-20 22:52:08,829 - INFO - Next player: 2
+2025-04-20 22:52:08,831 - INFO - Player 2 attempting move: piece at (6, 1) to (5, 2)
+2025-04-20 22:52:09,135 - INFO - Move executed successfully: MilitantPiece moved to (1, -2)
+2025-04-20 22:52:09,135 - INFO - Next player: 3
+2025-04-20 22:52:09,138 - INFO - Player 3 attempting move: piece at (4, 5) to (3, 5)
+2025-04-20 22:52:09,448 - INFO - Move executed successfully: MilitantPiece moved to (-1, 1)
+2025-04-20 22:52:09,448 - INFO - Next player: 1
+2025-04-20 22:52:09,451 - INFO - Player 1 attempting move: piece at (4, 7) to (4, 3)
+2025-04-20 22:52:09,731 - INFO - Move executed successfully: DiplomatPiece moved to (0, -1)
+2025-04-20 22:52:09,731 - INFO - Next player: 2
+2025-04-20 22:52:09,734 - INFO - Player 2 attempting move: piece at (6, 2) to (6, 3)
+2025-04-20 22:52:10,017 - INFO - Move executed successfully: MilitantPiece moved to (2, -1)
+2025-04-20 22:52:10,017 - INFO - Next player: 3
+2025-04-20 22:52:10,020 - INFO - Player 3 attempting move: piece at (3, 5) to (3, 4)
+2025-04-20 22:52:10,327 - INFO - Move executed successfully: MilitantPiece moved to (-1, 0)
+2025-04-20 22:52:10,327 - INFO - Next player: 1
+2025-04-20 22:52:10,330 - INFO - Player 1 attempting move: piece at (7, 4) to (7, 2)
+2025-04-20 22:52:10,613 - INFO - Move executed successfully: MilitantPiece moved to (3, -2)
+2025-04-20 22:52:10,613 - INFO - Next player: 2
+2025-04-20 22:52:10,616 - INFO - Player 2 attempting move: piece at (7, 0) to (6, 0)
+2025-04-20 22:52:10,911 - INFO - Move executed successfully: ReporterPiece moved to (2, -4)
+2025-04-20 22:52:10,911 - INFO - Next player: 3
+2025-04-20 22:52:10,914 - INFO - Player 3 attempting move: piece at (0, 5) to (1, 4)
+2025-04-20 22:52:11,224 - INFO - Move executed successfully: ReporterPiece moved to (-3, 0)
+2025-04-20 22:52:11,224 - INFO - Next player: 1
+2025-04-20 22:52:11,227 - INFO - Player 1 attempting move: piece at (5, 7) to (5, 4)
+2025-04-20 22:52:11,515 - INFO - Move executed successfully: ReporterPiece moved to (1, 0)
+2025-04-20 22:52:11,515 - INFO - Next player: 2
+2025-04-20 22:52:11,518 - INFO - Player 2 attempting move: piece at (6, 0) to (4, 0)
+2025-04-20 22:52:11,793 - INFO - Move executed successfully: ReporterPiece moved to (0, -4)
+2025-04-20 22:52:11,793 - INFO - Next player: 3
+2025-04-20 22:52:11,796 - INFO - Player 3 attempting move: piece at (3, 4) to (3, 3)
+2025-04-20 22:52:12,073 - INFO - Move executed successfully: MilitantPiece moved to (-1, -1)
+2025-04-20 22:52:12,073 - INFO - Next player: 1
+2025-04-20 22:52:12,076 - INFO - Player 1 attempting move: piece at (1, 8) to (1, 7)
+2025-04-20 22:52:12,360 - INFO - Move executed successfully: NecromobilePiece moved to (-3, 3)
+2025-04-20 22:52:12,360 - INFO - Next player: 2
+2025-04-20 22:52:12,363 - INFO - Player 2 attempting move: piece at (4, 0) to (7, 0)
+2025-04-20 22:52:12,641 - INFO - Move executed successfully: ReporterPiece moved to (3, -4)
+2025-04-20 22:52:12,641 - INFO - Next player: 3
+2025-04-20 22:52:12,644 - INFO - Player 3 attempting move: piece at (0, 4) to (0, 6)
+2025-04-20 22:52:12,930 - INFO - Move executed successfully: ChiefPiece moved to (-4, 2)
+2025-04-20 22:52:12,930 - INFO - Next player: 1
+2025-04-20 22:52:12,933 - INFO - Player 1 attempting move: piece at (4, 8) to (4, 4)
+2025-04-20 22:52:13,210 - INFO - Move executed successfully: ChiefPiece moved to (0, 0)
+2025-04-20 22:52:13,210 - INFO - Next player: 1
+2025-04-20 22:52:13,213 - INFO - Player 1 attempting move: piece at (8, 3) to (7, 3)
+2025-04-20 22:52:13,507 - INFO - Move executed successfully: NecromobilePiece moved to (3, -1)
+2025-04-20 22:52:13,507 - INFO - Next player: 2
+2025-04-20 22:52:13,510 - INFO - Player 2 attempting move: piece at (4, 3) to (5, 2)
+2025-04-20 22:52:13,795 - INFO - Move executed successfully: DiplomatPiece moved to (1, -2)
+2025-04-20 22:52:13,795 - INFO - Next player: 3
+2025-04-20 22:52:13,798 - INFO - Player 3 attempting move: piece at (1, 4) to (2, 3)
+2025-04-20 22:52:14,073 - INFO - Move executed successfully: ReporterPiece moved to (-2, -1)
+2025-04-20 22:52:14,073 - INFO - Next player: 4
+2025-04-20 22:52:14,076 - INFO - Player 4 attempting move: piece at (5, 4) to (5, 5)
+2025-04-20 22:52:14,348 - INFO - Move executed successfully: ReporterPiece moved to (1, 1)
+2025-04-20 22:52:14,348 - INFO - Next player: 1
+2025-04-20 22:52:14,352 - INFO - Player 1 attempting move: piece at (7, 1) to (5, 1)
+2025-04-20 22:52:14,628 - INFO - Move executed successfully: DiplomatPiece moved to (1, -3)
+2025-04-20 22:52:14,628 - INFO - Next player: 2
+2025-04-20 22:52:14,631 - INFO - Player 2 attempting move: piece at (5, 2) to (2, 5)
+2025-04-20 22:52:14,937 - INFO - Move executed successfully: DiplomatPiece moved to (-2, 1)
+2025-04-20 22:52:14,937 - INFO - Next player: 3
+2025-04-20 22:52:14,940 - INFO - Player 3 attempting move: piece at (1, 3) to (0, 4)
+2025-04-20 22:52:15,244 - INFO - Move executed successfully: AssassinPiece moved to (-4, 0)
+2025-04-20 22:52:15,244 - INFO - Next player: 4
+2025-04-20 22:52:15,247 - INFO - Player 4 attempting move: piece at (1, 7) to (1, 6)
+2025-04-20 22:52:15,529 - INFO - Move executed successfully: NecromobilePiece moved to (-3, 2)
+2025-04-20 22:52:15,529 - INFO - Next player: 1
+2025-04-20 22:52:15,532 - INFO - Player 1 attempting move: piece at (6, 3) to (6, 1)
+2025-04-20 22:52:15,826 - INFO - Move executed successfully: MilitantPiece moved to (2, -3)
+2025-04-20 22:52:15,826 - INFO - Next player: 2
+2025-04-20 22:52:15,829 - INFO - Player 2 attempting move: piece at (4, 4) to (4, 2)
+2025-04-20 22:52:16,104 - INFO - Move executed successfully: ChiefPiece moved to (0, -2)
+2025-04-20 22:52:16,104 - INFO - Next player: 3
+2025-04-20 22:52:16,107 - INFO - Player 3 attempting move: piece at (0, 4) to (5, 4)
+2025-04-20 22:52:16,380 - INFO - Move executed successfully: AssassinPiece moved to (1, 0)
+2025-04-20 22:52:16,380 - INFO - Next player: 4
+2025-04-20 22:52:16,382 - INFO - Player 4 attempting move: piece at (1, 6) to (0, 7)
+2025-04-20 22:52:16,645 - INFO - Move executed successfully: NecromobilePiece moved to (-4, 3)
+2025-04-20 22:52:16,646 - INFO - Next player: 1
+2025-04-20 22:52:16,648 - INFO - Player 1 attempting move: piece at (6, 1) to (6, 0)
+2025-04-20 22:52:16,912 - INFO - Move executed successfully: MilitantPiece moved to (2, -4)
+2025-04-20 22:52:16,912 - INFO - Next player: 2
+2025-04-20 22:52:16,915 - INFO - Player 2 attempting move: piece at (5, 5) to (5, 6)
+2025-04-20 22:52:17,224 - INFO - Move executed successfully: ReporterPiece moved to (1, 2)
+2025-04-20 22:52:17,224 - INFO - Next player: 3
+2025-04-20 22:52:17,228 - INFO - Player 3 attempting move: piece at (1, 5) to (1, 6)
+2025-04-20 22:52:17,518 - INFO - Move executed successfully: MilitantPiece moved to (-3, 2)
+2025-04-20 22:52:17,518 - INFO - Next player: 4
+2025-04-20 22:52:17,521 - INFO - Player 4 attempting move: piece at (4, 2) to (4, 3)
+2025-04-20 22:52:17,792 - INFO - Move executed successfully: ChiefPiece moved to (0, -1)
+2025-04-20 22:52:17,792 - INFO - Next player: 1
+2025-04-20 22:52:17,795 - INFO - Player 1 attempting move: piece at (6, 0) to (5, 0)
+2025-04-20 22:52:18,062 - INFO - Move executed successfully: MilitantPiece moved to (1, -4)
+2025-04-20 22:52:18,062 - INFO - Next player: 2
+2025-04-20 22:52:18,065 - INFO - Player 2 attempting move: piece at (5, 4) to (1, 8)
+2025-04-20 22:52:18,364 - INFO - Move executed successfully: AssassinPiece moved to (-3, 4)
+2025-04-20 22:52:18,364 - INFO - Next player: 3
+2025-04-20 22:52:18,367 - INFO - Player 3 attempting move: piece at (5, 6) to (7, 4)
+2025-04-20 22:52:18,661 - INFO - Move executed successfully: ReporterPiece moved to (3, 0)
+2025-04-20 22:52:18,661 - INFO - Next player: 1
+2025-04-20 22:52:18,664 - INFO - Player 1 attempting move: piece at (8, 1) to (6, 1)
+2025-04-20 22:52:18,974 - INFO - Move executed successfully: AssassinPiece moved to (2, -3)
+2025-04-20 22:52:18,974 - INFO - Next player: 2
+2025-04-20 22:52:18,977 - INFO - Player 2 attempting move: piece at (3, 3) to (3, 5)
+2025-04-20 22:52:19,259 - INFO - Move executed successfully: MilitantPiece moved to (-1, 1)
+2025-04-20 22:52:19,259 - INFO - Next player: 3
+2025-04-20 22:52:19,262 - INFO - Player 3 attempting move: piece at (7, 2) to (8, 2)
+2025-04-20 22:52:19,544 - INFO - Move executed successfully: MilitantPiece moved to (4, -2)
+2025-04-20 22:52:19,544 - INFO - Next player: 1
+2025-04-20 22:52:19,546 - INFO - Player 1 attempting move: piece at (6, 1) to (6, 0)
+2025-04-20 22:52:19,844 - INFO - Move executed successfully: AssassinPiece moved to (2, -4)
+2025-04-20 22:52:19,844 - INFO - Next player: 2
+2025-04-20 22:52:19,936 - INFO - Player 2 attempting move: piece at (0, 6) to (2, 4)
+2025-04-20 22:52:20,194 - INFO - Move executed successfully: ChiefPiece moved to (-2, 0)
+2025-04-20 22:52:20,194 - INFO - Next player: 3
+2025-04-20 22:52:20,240 - INFO - Player 3 attempting move: piece at (2, 5) to (3, 5)
+2025-04-20 22:52:20,514 - INFO - Move executed successfully: DiplomatPiece moved to (-1, 1)
+2025-04-20 22:52:20,514 - INFO - Next player: 1
+2025-04-20 22:52:20,561 - INFO - Player 1 attempting move: piece at (5, 1) to (5, 2)
+2025-04-20 22:52:20,817 - INFO - Move executed successfully: DiplomatPiece moved to (1, -2)
+2025-04-20 22:52:20,817 - INFO - Next player: 2
+2025-04-20 22:52:20,863 - INFO - Player 2 attempting move: piece at (8, 1) to (8, 2)
+2025-04-20 22:52:21,119 - INFO - Move executed successfully: MilitantPiece moved to (4, -2)
+2025-04-20 22:52:21,119 - INFO - Next player: 3
+2025-04-20 22:52:21,164 - INFO - Player 3 attempting move: piece at (2, 8) to (1, 8)
+2025-04-20 22:52:21,414 - INFO - Move executed successfully: MilitantPiece moved to (-3, 4)
+2025-04-20 22:52:21,414 - INFO - Next player: 1
+2025-04-20 22:52:21,459 - INFO - Player 1 attempting move: piece at (5, 2) to (8, 2)
+2025-04-20 22:52:21,715 - INFO - Move executed successfully: DiplomatPiece moved to (4, -2)
+2025-04-20 22:52:21,715 - INFO - Next player: 2
+2025-04-20 22:52:21,760 - INFO - Player 2 attempting move: piece at (2, 4) to (4, 2)
+2025-04-20 22:52:22,004 - INFO - Move executed successfully: ChiefPiece moved to (0, -2)
+2025-04-20 22:52:22,004 - INFO - Next player: 3
+2025-04-20 22:52:22,048 - INFO - Player 3 attempting move: piece at (0, 7) to (0, 6)
+2025-04-20 22:52:22,295 - INFO - Move executed successfully: NecromobilePiece moved to (-4, 2)
+2025-04-20 22:52:22,295 - INFO - Next player: 1
+2025-04-20 22:52:22,338 - INFO - Player 1 attempting move: piece at (7, 0) to (7, 1)
+2025-04-20 22:52:22,597 - INFO - Move executed successfully: ReporterPiece moved to (3, -3)
+2025-04-20 22:52:22,597 - INFO - Next player: 2
+2025-04-20 22:52:22,640 - INFO - Player 2 attempting move: piece at (4, 2) to (6, 0)
+2025-04-20 22:52:22,883 - INFO - Move executed successfully: ChiefPiece moved to (2, -4)
+2025-04-20 22:52:22,883 - INFO - Next player: 3
+2025-04-20 22:52:22,927 - INFO - Player 3 attempting move: piece at (3, 8) to (6, 5)
+2025-04-20 22:52:23,173 - INFO - Move executed successfully: AssassinPiece moved to (2, 1)
+2025-04-20 22:52:23,173 - INFO - Next player: 1
+2025-04-20 22:52:23,216 - INFO - Player 1 attempting move: piece at (3, 1) to (4, 0)
+2025-04-20 22:52:23,464 - INFO - Move executed successfully: MilitantPiece moved to (0, -4)
+2025-04-20 22:52:23,464 - INFO - Next player: 2
+2025-04-20 22:52:23,506 - INFO - Player 2 attempting move: piece at (2, 3) to (2, 4)
+2025-04-20 22:52:23,754 - INFO - Move executed successfully: ReporterPiece moved to (-2, 0)
+2025-04-20 22:52:23,754 - INFO - Next player: 3
+2025-04-20 22:52:23,797 - INFO - Player 3 attempting move: piece at (3, 7) to (2, 8)
+2025-04-20 22:52:24,047 - INFO - Move executed successfully: MilitantPiece moved to (-2, 4)
+2025-04-20 22:52:24,048 - INFO - Next player: 1
+2025-04-20 22:52:24,091 - INFO - Player 1 attempting move: piece at (7, 1) to (6, 2)
+2025-04-20 22:52:24,349 - INFO - Move executed successfully: ReporterPiece moved to (2, -2)
+2025-04-20 22:52:24,349 - INFO - Next player: 2
+2025-04-20 22:52:24,394 - INFO - Player 2 attempting move: piece at (1, 6) to (2, 6)
+2025-04-20 22:52:24,640 - INFO - Move executed successfully: MilitantPiece moved to (-2, 2)
+2025-04-20 22:52:24,640 - INFO - Next player: 3
+2025-04-20 22:52:24,685 - INFO - Player 3 attempting move: piece at (6, 5) to (5, 6)
+2025-04-20 22:52:24,928 - INFO - Move executed successfully: AssassinPiece moved to (1, 2)
+2025-04-20 22:52:24,928 - INFO - Next player: 1
+2025-04-20 22:52:24,970 - INFO - Player 1 attempting move: piece at (6, 2) to (4, 2)
+2025-04-20 22:52:26,561 - INFO - Move executed successfully: ReporterPiece moved to (0, -2)
+2025-04-20 22:52:26,561 - INFO - Next player: 2
+2025-04-20 22:52:26,629 - INFO - Player 2 attempting move: piece at (2, 6) to (2, 7)
+2025-04-20 22:52:26,881 - INFO - Move executed successfully: MilitantPiece moved to (-2, 3)
+2025-04-20 22:52:26,881 - INFO - Next player: 1
+2025-04-20 22:52:26,926 - INFO - Player 1 attempting move: piece at (1, 8) to (0, 8)
+2025-04-20 22:52:27,166 - INFO - Move executed successfully: MilitantPiece moved to (-4, 4)
+2025-04-20 22:52:27,167 - INFO - Next player: 2
+2025-04-20 22:52:27,210 - INFO - Player 2 attempting move: piece at (2, 4) to (1, 5)
+2025-04-20 22:52:27,450 - INFO - Move executed successfully: ReporterPiece moved to (-3, 1)
+2025-04-20 22:52:27,450 - INFO - Next player: 1
+2025-04-20 22:52:27,493 - INFO - Player 1 attempting move: piece at (4, 2) to (6, 2)
+2025-04-20 22:52:27,733 - INFO - Move executed successfully: ReporterPiece moved to (2, -2)
+2025-04-20 22:52:27,733 - INFO - Next player: 2
+2025-04-20 22:52:27,778 - INFO - Player 2 attempting move: piece at (1, 5) to (4, 2)
+2025-04-20 22:52:28,017 - INFO - Move executed successfully: ReporterPiece moved to (0, -2)
+2025-04-20 22:52:28,017 - INFO - Next player: 1
+2025-04-20 22:52:28,061 - INFO - Player 1 attempting move: piece at (2, 8) to (4, 8)
+2025-04-20 22:52:28,301 - INFO - Move executed successfully: MilitantPiece moved to (0, 4)
+2025-04-20 22:52:28,301 - INFO - Next player: 2
+2025-04-20 22:52:28,345 - INFO - Player 2 attempting move: piece at (4, 2) to (1, 5)
+2025-04-20 22:52:28,585 - INFO - Move executed successfully: ReporterPiece moved to (-3, 1)
+2025-04-20 22:52:28,585 - INFO - Next player: 1
+2025-04-20 22:52:28,628 - INFO - Player 1 attempting move: piece at (0, 8) to (1, 7)
+2025-04-20 22:52:28,868 - INFO - Move executed successfully: MilitantPiece moved to (-3, 3)
+2025-04-20 22:52:28,868 - INFO - Next player: 2
+2025-04-20 22:52:28,912 - INFO - Player 2 attempting move: piece at (1, 5) to (0, 5)
+2025-04-20 22:52:29,153 - INFO - Move executed successfully: ReporterPiece moved to (-4, 1)
+2025-04-20 22:52:29,153 - INFO - Next player: 1
+2025-04-20 22:52:29,198 - INFO - Training paused
+2025-04-20 23:01:42,987 - INFO - Training resumed
+2025-04-20 23:01:43,096 - INFO - Player 1 attempting move: piece at (3, 5) to (3, 7)
+2025-04-20 23:01:43,406 - INFO - Move executed successfully: DiplomatPiece moved to (-1, 3)
+2025-04-20 23:01:43,406 - INFO - Next player: 2
+2025-04-20 23:01:43,530 - INFO - Player 2 attempting move: piece at (6, 0) to (3, 3)
+2025-04-20 23:01:43,771 - INFO - Move executed successfully: ChiefPiece moved to (-1, -1)
+2025-04-20 23:01:43,771 - INFO - Next player: 1
+2025-04-20 23:01:43,817 - INFO - Player 1 attempting move: piece at (3, 7) to (5, 7)
+2025-04-20 23:01:44,059 - INFO - Move executed successfully: DiplomatPiece moved to (1, 3)
+2025-04-20 23:01:44,059 - INFO - Next player: 2
+2025-04-20 23:01:44,105 - INFO - Player 2 attempting move: piece at (3, 3) to (4, 2)
+2025-04-20 23:01:44,345 - INFO - Move executed successfully: ChiefPiece moved to (0, -2)
+2025-04-20 23:01:44,345 - INFO - Next player: 1
+2025-04-20 23:01:44,389 - INFO - Player 1 attempting move: piece at (8, 0) to (6, 0)
+2025-04-20 23:01:44,630 - INFO - Move executed successfully: ChiefPiece moved to (2, -4)
+2025-04-20 23:01:44,630 - INFO - Next player: 2
+2025-04-20 23:01:44,672 - INFO - Player 2 attempting move: piece at (2, 7) to (3, 7)
+2025-04-20 23:01:44,912 - INFO - Move executed successfully: MilitantPiece moved to (-1, 3)
+2025-04-20 23:01:44,912 - INFO - Next player: 1
+2025-04-20 23:01:44,913 - INFO - Training paused
+2025-04-20 23:03:26,883 - INFO - Initializing Djambi environment
+2025-04-20 23:03:27,773 - INFO - Resetting environment
+2025-04-20 23:03:27,832 - INFO - Game started with player 3
+2025-04-20 23:03:28,602 - INFO - Resetting environment
+2025-04-20 23:03:28,667 - INFO - Game started with player 3
+2025-04-20 23:03:28,672 - INFO - Player 3 attempting move: piece at (2, 2) to (4, 2)
+2025-04-20 23:03:28,951 - INFO - Move executed successfully: MilitantPiece moved to (0, -2)
+2025-04-20 23:03:28,952 - INFO - Next player: 1
+2025-04-20 23:03:28,958 - INFO - Player 1 attempting move: piece at (5, 6) to (5, 4)
+2025-04-20 23:03:29,227 - INFO - Move executed successfully: MilitantPiece moved to (1, 0)
+2025-04-20 23:03:29,227 - INFO - Next player: 2
+2025-04-20 23:03:29,230 - INFO - Player 2 attempting move: piece at (6, 2) to (6, 4)
+2025-04-20 23:03:29,507 - INFO - Move executed successfully: NecromobilePiece moved to (2, 0)
+2025-04-20 23:03:29,507 - INFO - Next player: 3
+2025-04-20 23:03:29,514 - INFO - Player 3 attempting move: piece at (4, 2) to (3, 3)
+2025-04-20 23:03:29,785 - INFO - Move executed successfully: MilitantPiece moved to (-1, -1)
+2025-04-20 23:03:29,785 - INFO - Next player: 1
+2025-04-20 23:03:29,788 - INFO - Player 1 attempting move: piece at (4, 6) to (4, 2)
+2025-04-20 23:03:30,057 - INFO - Move executed successfully: NecromobilePiece moved to (0, -2)
+2025-04-20 23:03:30,057 - INFO - Next player: 2
+2025-04-20 23:03:30,060 - INFO - Player 2 attempting move: piece at (8, 2) to (8, 3)
+2025-04-20 23:03:30,331 - INFO - Move executed successfully: MilitantPiece moved to (4, -1)
+2025-04-20 23:03:30,331 - INFO - Next player: 3
+2025-04-20 23:03:30,334 - INFO - Player 3 attempting move: piece at (3, 3) to (5, 3)
+2025-04-20 23:03:30,602 - INFO - Move executed successfully: MilitantPiece moved to (1, -1)
+2025-04-20 23:03:30,603 - INFO - Next player: 1
+2025-04-20 23:03:30,605 - INFO - Player 1 attempting move: piece at (4, 2) to (3, 3)
+2025-04-20 23:03:30,877 - INFO - Move executed successfully: NecromobilePiece moved to (-1, -1)
+2025-04-20 23:03:30,877 - INFO - Next player: 2
+2025-04-20 23:03:30,880 - INFO - Player 2 attempting move: piece at (6, 4) to (8, 2)
+2025-04-20 23:03:31,154 - INFO - Move executed successfully: NecromobilePiece moved to (4, -2)
+2025-04-20 23:03:31,155 - INFO - Next player: 3
+2025-04-20 23:03:31,157 - INFO - Player 3 attempting move: piece at (5, 3) to (5, 2)
+2025-04-20 23:03:31,430 - INFO - Move executed successfully: MilitantPiece moved to (1, -2)
+2025-04-20 23:03:31,430 - INFO - Next player: 1
+2025-04-20 23:03:31,433 - INFO - Player 1 attempting move: piece at (4, 7) to (5, 6)
+2025-04-20 23:03:31,704 - INFO - Move executed successfully: DiplomatPiece moved to (1, 2)
+2025-04-20 23:03:31,705 - INFO - Next player: 2
+2025-04-20 23:03:31,707 - INFO - Player 2 attempting move: piece at (7, 2) to (5, 2)
+2025-04-20 23:03:31,977 - INFO - Move executed successfully: MilitantPiece moved to (1, -2)
+2025-04-20 23:03:31,978 - INFO - Next player: 3
+2025-04-20 23:03:31,980 - INFO - Player 3 attempting move: piece at (0, 6) to (0, 8)
+2025-04-20 23:03:32,255 - INFO - Move executed successfully: MilitantPiece moved to (-4, 4)
+2025-04-20 23:03:32,255 - INFO - Next player: 1
+2025-04-20 23:03:32,258 - INFO - Player 1 attempting move: piece at (4, 8) to (4, 7)
+2025-04-20 23:03:32,532 - INFO - Move executed successfully: ChiefPiece moved to (0, 3)
+2025-04-20 23:03:32,532 - INFO - Next player: 2
+2025-04-20 23:03:32,536 - INFO - Player 2 attempting move: piece at (5, 2) to (5, 4)
+2025-04-20 23:03:32,804 - INFO - Move executed successfully: MilitantPiece moved to (1, 0)
+2025-04-20 23:03:32,805 - INFO - Next player: 3
+2025-04-20 23:03:32,807 - INFO - Player 3 attempting move: piece at (1, 5) to (1, 6)
+2025-04-20 23:03:33,075 - INFO - Move executed successfully: MilitantPiece moved to (-3, 2)
+2025-04-20 23:03:33,075 - INFO - Next player: 1
+2025-04-20 23:03:33,077 - INFO - Player 1 attempting move: piece at (4, 7) to (4, 0)
+2025-04-20 23:03:33,348 - INFO - Move executed successfully: ChiefPiece moved to (0, -4)
+2025-04-20 23:03:33,348 - INFO - Next player: 2
+2025-04-20 23:03:33,351 - INFO - Player 2 attempting move: piece at (5, 4) to (7, 4)
+2025-04-20 23:03:33,628 - INFO - Move executed successfully: MilitantPiece moved to (3, 0)
+2025-04-20 23:03:33,628 - INFO - Next player: 3
+2025-04-20 23:03:33,631 - INFO - Player 3 attempting move: piece at (1, 6) to (1, 5)
+2025-04-20 23:03:33,904 - INFO - Move executed successfully: MilitantPiece moved to (-3, 1)
+2025-04-20 23:03:33,904 - INFO - Next player: 1
+2025-04-20 23:03:33,907 - INFO - Player 1 attempting move: piece at (4, 0) to (4, 6)
+2025-04-20 23:03:34,179 - INFO - Move executed successfully: ChiefPiece moved to (0, 2)
+2025-04-20 23:03:34,179 - INFO - Next player: 2
+2025-04-20 23:03:34,183 - INFO - Player 2 attempting move: piece at (8, 3) to (6, 3)
+2025-04-20 23:03:34,459 - INFO - Move executed successfully: MilitantPiece moved to (2, -1)
+2025-04-20 23:03:34,459 - INFO - Next player: 3
+2025-04-20 23:03:34,462 - INFO - Player 3 attempting move: piece at (2, 4) to (3, 4)
+2025-04-20 23:03:34,733 - INFO - Move executed successfully: NecromobilePiece moved to (-1, 0)
+2025-04-20 23:03:34,733 - INFO - Next player: 1
+2025-04-20 23:03:34,735 - INFO - Player 1 attempting move: piece at (5, 6) to (5, 4)
+2025-04-20 23:03:35,004 - INFO - Move executed successfully: DiplomatPiece moved to (1, 0)
+2025-04-20 23:03:35,004 - INFO - Next player: 2
+2025-04-20 23:03:35,007 - INFO - Player 2 attempting move: piece at (6, 1) to (4, 1)
+2025-04-20 23:03:35,276 - INFO - Move executed successfully: MilitantPiece moved to (0, -3)
+2025-04-20 23:03:35,276 - INFO - Next player: 3
+2025-04-20 23:03:35,278 - INFO - Player 3 attempting move: piece at (2, 3) to (3, 2)
+2025-04-20 23:03:35,551 - INFO - Move executed successfully: MilitantPiece moved to (-1, -2)
+2025-04-20 23:03:35,551 - INFO - Next player: 1
+2025-04-20 23:03:35,553 - INFO - Player 1 attempting move: piece at (6, 6) to (7, 5)
+2025-04-20 23:03:35,823 - INFO - Move executed successfully: MilitantPiece moved to (3, 1)
+2025-04-20 23:03:35,823 - INFO - Next player: 2
+2025-04-20 23:03:35,826 - INFO - Player 2 attempting move: piece at (8, 2) to (5, 2)
+2025-04-20 23:03:36,096 - INFO - Move executed successfully: NecromobilePiece moved to (1, -2)
+2025-04-20 23:03:36,096 - INFO - Next player: 3
+2025-04-20 23:03:36,099 - INFO - Player 3 attempting move: piece at (0, 8) to (1, 7)
+2025-04-20 23:03:36,370 - INFO - Move executed successfully: MilitantPiece moved to (-3, 3)
+2025-04-20 23:03:36,370 - INFO - Next player: 1
+2025-04-20 23:03:36,373 - INFO - Player 1 attempting move: piece at (3, 3) to (5, 1)
+2025-04-20 23:03:36,646 - INFO - Move executed successfully: NecromobilePiece moved to (1, -3)
+2025-04-20 23:03:36,646 - INFO - Next player: 2
+2025-04-20 23:03:36,648 - INFO - Player 2 attempting move: piece at (7, 1) to (6, 2)
+2025-04-20 23:03:36,925 - INFO - Move executed successfully: DiplomatPiece moved to (2, -2)
+2025-04-20 23:03:36,925 - INFO - Next player: 3
+2025-04-20 23:03:36,928 - INFO - Player 3 attempting move: piece at (1, 3) to (3, 3)
+2025-04-20 23:03:37,205 - INFO - Move executed successfully: AssassinPiece moved to (-1, -1)
+2025-04-20 23:03:37,205 - INFO - Next player: 1
+2025-04-20 23:03:37,208 - INFO - Player 1 attempting move: piece at (2, 8) to (1, 8)
+2025-04-20 23:03:37,479 - INFO - Move executed successfully: MilitantPiece moved to (-3, 4)
+2025-04-20 23:03:37,479 - INFO - Next player: 2
+2025-04-20 23:03:37,483 - INFO - Player 2 attempting move: piece at (8, 1) to (8, 3)
+2025-04-20 23:03:37,748 - INFO - Move executed successfully: AssassinPiece moved to (4, -1)
+2025-04-20 23:03:37,748 - INFO - Next player: 3
+2025-04-20 23:03:37,751 - INFO - Player 3 attempting move: piece at (1, 7) to (2, 6)
+2025-04-20 23:03:38,021 - INFO - Move executed successfully: MilitantPiece moved to (-2, 2)
+2025-04-20 23:03:38,021 - INFO - Next player: 1
+2025-04-20 23:03:38,024 - INFO - Player 1 attempting move: piece at (4, 6) to (8, 2)
+2025-04-20 23:03:38,301 - INFO - Move executed successfully: ChiefPiece moved to (4, -2)
+2025-04-20 23:03:38,301 - INFO - Next player: 2
+2025-04-20 23:03:38,304 - INFO - Player 2 attempting move: piece at (6, 3) to (7, 2)
+2025-04-20 23:03:38,577 - INFO - Move executed successfully: MilitantPiece moved to (3, -2)
+2025-04-20 23:03:38,577 - INFO - Next player: 3
+2025-04-20 23:03:38,579 - INFO - Player 3 attempting move: piece at (2, 6) to (2, 7)
+2025-04-20 23:03:38,852 - INFO - Move executed successfully: MilitantPiece moved to (-2, 3)
+2025-04-20 23:03:38,852 - INFO - Next player: 1
+2025-04-20 23:03:38,855 - INFO - Player 1 attempting move: piece at (5, 4) to (7, 2)
+2025-04-20 23:03:39,128 - INFO - Move executed successfully: DiplomatPiece moved to (3, -2)
+2025-04-20 23:03:39,128 - INFO - Next player: 2
+2025-04-20 23:03:39,131 - INFO - Player 2 attempting move: piece at (5, 2) to (5, 3)
+2025-04-20 23:03:39,401 - INFO - Move executed successfully: NecromobilePiece moved to (1, -1)
+2025-04-20 23:03:39,401 - INFO - Next player: 3
+2025-04-20 23:03:39,404 - INFO - Player 3 attempting move: piece at (1, 4) to (2, 3)
+2025-04-20 23:03:39,678 - INFO - Move executed successfully: DiplomatPiece moved to (-2, -1)
+2025-04-20 23:03:39,678 - INFO - Next player: 1
+2025-04-20 23:03:39,681 - INFO - Player 1 attempting move: piece at (5, 7) to (4, 8)
+2025-04-20 23:03:39,949 - INFO - Move executed successfully: ReporterPiece moved to (0, 4)
+2025-04-20 23:03:39,949 - INFO - Next player: 2
+2025-04-20 23:03:39,952 - INFO - Player 2 attempting move: piece at (4, 1) to (5, 1)
+2025-04-20 23:03:40,224 - INFO - Move executed successfully: MilitantPiece moved to (1, -3)
+2025-04-20 23:03:40,225 - INFO - Next player: 3
+2025-04-20 23:03:40,227 - INFO - Player 3 attempting move: piece at (1, 5) to (2, 4)
+2025-04-20 23:03:40,496 - INFO - Move executed successfully: MilitantPiece moved to (-2, 0)
+2025-04-20 23:03:40,496 - INFO - Next player: 1
+2025-04-20 23:03:40,499 - INFO - Player 1 attempting move: piece at (7, 2) to (7, 3)
+2025-04-20 23:03:40,764 - INFO - Move executed successfully: DiplomatPiece moved to (3, -1)
+2025-04-20 23:03:40,764 - INFO - Next player: 2
+2025-04-20 23:03:40,767 - INFO - Player 2 attempting move: piece at (6, 2) to (4, 2)
+2025-04-20 23:03:41,032 - INFO - Move executed successfully: DiplomatPiece moved to (0, -2)
+2025-04-20 23:03:41,032 - INFO - Next player: 3
+2025-04-20 23:03:41,035 - INFO - Player 3 attempting move: piece at (3, 4) to (2, 5)
+2025-04-20 23:03:41,304 - INFO - Move executed successfully: NecromobilePiece moved to (-2, 1)
+2025-04-20 23:03:41,304 - INFO - Next player: 1
+2025-04-20 23:03:41,307 - INFO - Player 1 attempting move: piece at (1, 8) to (0, 8)
+2025-04-20 23:03:41,578 - INFO - Move executed successfully: MilitantPiece moved to (-4, 4)
+2025-04-20 23:03:41,578 - INFO - Next player: 2
+2025-04-20 23:03:41,581 - INFO - Player 2 attempting move: piece at (5, 3) to (5, 2)
+2025-04-20 23:03:41,854 - INFO - Move executed successfully: NecromobilePiece moved to (1, -2)
+2025-04-20 23:03:41,854 - INFO - Next player: 3
+2025-04-20 23:03:41,857 - INFO - Player 3 attempting move: piece at (2, 4) to (1, 5)
+2025-04-20 23:03:42,126 - INFO - Move executed successfully: MilitantPiece moved to (-3, 1)
+2025-04-20 23:03:42,126 - INFO - Next player: 1
+2025-04-20 23:03:42,129 - INFO - Player 1 attempting move: piece at (3, 7) to (4, 7)
+2025-04-20 23:03:42,398 - INFO - Move executed successfully: MilitantPiece moved to (0, 3)
+2025-04-20 23:03:42,398 - INFO - Next player: 2
+2025-04-20 23:03:42,401 - INFO - Player 2 attempting move: piece at (8, 3) to (8, 2)
+2025-04-20 23:03:44,022 - INFO - Move executed successfully: AssassinPiece moved to (4, -2)
+2025-04-20 23:03:44,023 - INFO - Next player: 1
+2025-04-20 23:03:44,030 - INFO - Player 1 attempting move: piece at (7, 3) to (4, 3)
+2025-04-20 23:03:44,344 - INFO - Move executed successfully: DiplomatPiece moved to (0, -1)
+2025-04-20 23:03:44,344 - INFO - Next player: 2
+2025-04-20 23:03:44,348 - INFO - Player 2 attempting move: piece at (2, 5) to (3, 5)
+2025-04-20 23:03:44,630 - INFO - Move executed successfully: NecromobilePiece moved to (-1, 1)
+2025-04-20 23:03:44,630 - INFO - Next player: 1
+2025-04-20 23:03:44,634 - INFO - Player 1 attempting move: piece at (4, 3) to (0, 7)
+2025-04-20 23:03:44,911 - INFO - Move executed successfully: DiplomatPiece moved to (-4, 3)
+2025-04-20 23:03:44,911 - INFO - Next player: 2
+2025-04-20 23:03:44,914 - INFO - Player 2 attempting move: piece at (3, 5) to (3, 7)
+2025-04-20 23:03:45,181 - INFO - Move executed successfully: NecromobilePiece moved to (-1, 3)
+2025-04-20 23:03:45,181 - INFO - Next player: 1
+2025-04-20 23:03:45,184 - INFO - Player 1 attempting move: piece at (7, 5) to (8, 4)
+2025-04-20 23:03:45,454 - INFO - Move executed successfully: MilitantPiece moved to (4, 0)
+2025-04-20 23:03:45,454 - INFO - Next player: 2
+2025-04-20 23:03:45,457 - INFO - Player 2 attempting move: piece at (2, 3) to (1, 3)
+2025-04-20 23:03:45,723 - INFO - Move executed successfully: DiplomatPiece moved to (-3, -1)
+2025-04-20 23:03:45,723 - INFO - Next player: 1
+2025-04-20 23:03:45,727 - INFO - Player 1 attempting move: piece at (0, 8) to (1, 8)
+2025-04-20 23:03:45,992 - INFO - Move executed successfully: MilitantPiece moved to (-3, 4)
+2025-04-20 23:03:45,992 - INFO - Next player: 2
+2025-04-20 23:03:45,995 - INFO - Player 2 attempting move: piece at (1, 5) to (1, 6)
+2025-04-20 23:03:46,266 - INFO - Move executed successfully: MilitantPiece moved to (-3, 2)
+2025-04-20 23:03:46,266 - INFO - Next player: 1
+2025-04-20 23:03:46,311 - INFO - Training paused
