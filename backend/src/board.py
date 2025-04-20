@@ -6,7 +6,6 @@ from .pieces import *
 from .player import Player
 from .minmax_player import MinMaxPlayer
 from .animation import animate_player_elimination, draw_player_turn
-from .pieces import hex_to_pixel, is_within_board
 
 
 
@@ -24,7 +23,6 @@ class Board:
                 if -q - r in range(-BOARD_SIZE + 1, BOARD_SIZE) or NB_PLAYER_MODE == 4:
                     self.hexagons.append((q, r))
 
-
         # Ajouter des pièces aux positions de départ
         self.initialize_pieces()
         self.rl = False
@@ -36,13 +34,12 @@ class Board:
         self.hex_pixel_positions = self.calculate_hex_pixel_positions()
         self.save_state(self.current_player_index)
 
-
     def create_board_surface(self):
         board_surface = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
         board_surface.fill(BLACK)
         for hex_coord in self.hexagons:
             q, r = hex_coord
-            x, y = hex_to_pixel(q, r)
+            x, y = self.hex_to_pixel(q, r)
             pygame.draw.polygon(board_surface, WHITE, self.hex_corners(x, y), 1)
             if q == 0 and r == 0:
                 pygame.draw.polygon(board_surface, CENTRAL_WHITE, self.hex_corners(x, y), 0)
@@ -53,9 +50,39 @@ class Board:
     def calculate_hex_pixel_positions(self):
         positions = {}
         for q, r in self.hexagons:
-            x, y = hex_to_pixel(q, r)
+            x, y = self.hex_to_pixel(q, r)
             positions[(q, r)] = (x, y)
         return positions
+
+    def is_within_board(self, q, r):
+        """Vérifie si les coordonnées q, r sont dans les limites du plateau."""
+        if NB_PLAYER_MODE in [3, 6]:
+            s = -q - r  # Coordonnée s dans un système hexagonal
+            return abs(q) < BOARD_SIZE and abs(r) < BOARD_SIZE and abs(s) < BOARD_SIZE
+        elif NB_PLAYER_MODE == 4:
+            return abs(q) < BOARD_SIZE and abs(r) < BOARD_SIZE
+
+    def hex_to_pixel(self, q, r):
+        if NB_PLAYER_MODE in [3, 6]:
+            x = HEX_RADIUS * 3/2 * q
+            y = HEX_RADIUS * math.sqrt(3) * (r + q/2)
+        elif NB_PLAYER_MODE == 4:
+            x = math.sqrt(3) * HEX_RADIUS * q  # Ajustement pour le mode 4 joueurs
+            y = math.sqrt(3) * HEX_RADIUS * r  # Ajustement pour le mode 4 joueurs
+        # Décalage vertical pour centrer le plateau plus haut
+        pixel_coords = (
+            int(x + WINDOW_WIDTH // 2),
+            int(y + (WINDOW_HEIGHT // 2) - VERTICAL_OFFSET)
+        )
+        return pixel_coords
+
+    def find_adjacent_vectors(self, dq, dr):
+        for v1 in ADJACENT_DIRECTIONS:
+            for v2 in ADJACENT_DIRECTIONS:
+                if v1 != v2:  # Vérifie que v1 et v2 sont différents
+                    if (v1[0] + v2[0] == dq) and (v1[1] + v2[1] == dr):
+                        return v1, v2  # Retourne les vecteurs trouvés
+        return None  
 
     def initialize_pieces(self):
         # Position de départ des pièces (exemple arbitraire)
@@ -137,7 +164,7 @@ class Board:
         for q in range(-BOARD_SIZE + 1, BOARD_SIZE):
             for r in range(-BOARD_SIZE + 1, BOARD_SIZE):
                 # Vérifier si la case est sur le plateau
-                if is_within_board(q, r):
+                if self.is_within_board(q, r):
                     # Exclure la case centrale et les cases occupées
                     if (q != 0 or r != 0) and not self.is_occupied(q, r):
                         unoccupied_cells.append((q, r))
@@ -183,7 +210,6 @@ class Board:
         if self.current_player_index >= len(self.players):
             self.current_player_index = -1
 
-
     def draw(self, screen, selected_piece=None, piece_to_place=None):
         if self.rl:
             return
@@ -200,7 +226,7 @@ class Board:
         self.current_player_color = self.players[self.current_player_index].color
         for piece in self.pieces:
             is_current_player = (piece.color == self.current_player_color and selected_piece is None and piece_to_place is None)
-            piece.draw(screen, is_current_player)
+            piece.draw(self, screen, is_current_player)
 
     def hex_corners(self, x, y):
         """Retourne les coins de l'hexagone en fonction de sa position pixel."""
@@ -308,7 +334,7 @@ class Board:
         if self.rl:
             return
         for q, r in self.available_cells:
-            x, y = hex_to_pixel(q, r)
+            x, y = self.hex_to_pixel(q, r)
             pygame.draw.circle(screen, GREY, (int(x), int(y)), 10)
 
     def pixel_to_hex(self, x, y):
@@ -333,7 +359,7 @@ class Board:
         if self.rl:
             return
         for q, r in possible_moves:
-            x, y = hex_to_pixel(q, r)
+            x, y = self.hex_to_pixel(q, r)
             pygame.draw.circle(screen, (100, 100, 100), (int(x), int(y)), 10)
 
     def get_player_of_color(self, color):
@@ -366,7 +392,7 @@ class Board:
             self.draw(screen)
             
             # Dessiner la pièce en mouvement par-dessus
-            x, y = hex_to_pixel(current_q, current_r)
+            x, y = self.hex_to_pixel(current_q, current_r)
             pygame.draw.circle(screen, piece.color, (int(x), int(y)), PIECE_RADIUS)
             if piece.class_image:
                 class_image_rect = piece.class_image.get_rect(center=(int(x), int(y)))

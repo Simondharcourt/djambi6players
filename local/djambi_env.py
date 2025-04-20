@@ -29,7 +29,7 @@ sys.path.append(project_root)
 from backend.src import (
     Board,
     BOARD_SIZE, COLORS, START_POSITIONS, NB_PLAYER_MODE, NAMES,
-    create_piece, hex_to_pixel, is_within_board,
+    create_piece,
     Player,
     MinMaxPlayer
 )
