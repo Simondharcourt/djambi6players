@@ -270,9 +270,21 @@ class DjambiEnv(gym.Env):
                 terminated = True
                 break
 
-        # # Passer au joueur suivant
-        # self.board.next_player()
-        # logger.info(f"Next player: {self.board.current_player_index + 1}")
+        # Si une pièce a été tuée et doit être placée
+        if self.board.piece_to_place is not None:
+            # Choisir une position aléatoire valide pour placer la pièce morte
+            if self.board.available_cells:
+                placement_q, placement_r = random.choice(self.board.available_cells)
+                placement_success = self.board.place_dead_piece(placement_q, placement_r)
+                if not placement_success:
+                    logger.warning("Failed to place dead piece")
+                    return self._get_observation(), -0.1, False, False, self._get_info()
+            else:
+                logger.warning("No available cells for dead piece placement")
+                return self._get_observation(), -0.1, False, False, self._get_info()
+
+        # Le next_player() est déjà appelé dans board.move_piece() et board.place_dead_piece()
+        logger.info(f"Next player: {self.board.current_player_index + 1}")
 
         if self.render_mode == "human":
             self.render()
