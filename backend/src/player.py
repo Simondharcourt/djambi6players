@@ -39,6 +39,7 @@ class Player:
         self.relative_score = (
             self.score * 600 // sum(player.score for player in list(set(board.players)))
         )
+        return self.relative_score
 
     def evaluate_threat_score(self, board):
         threat_score = 0

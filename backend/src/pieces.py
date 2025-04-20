@@ -374,14 +374,10 @@ class AssassinPiece(Piece):
             return []  # ne peut se dplacer.
         possible_moves = []
         for dq, dr in board.directions["all"]:
-            print(dq, dr)
-            print(board.directions["diagonal"])
             step = 1
             new_q, new_r = self.q, self.r
             if (dq, dr) in board.directions["diagonal"]:
-                print(dq, dr)
                 v1, v2 = board.find_adjacent_vectors(dq, dr)
-                print(v1, v2)
             while True:
                 if board.advanced_rules:
                     if (

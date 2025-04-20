@@ -236,6 +236,10 @@ class DjambiEnv(gym.Env):
             logger.warning("Invalid move attempted")
             return self._get_observation(), -0.1, False, False, self._get_info()
 
+        current_player = self.board.players[self.board.current_player_index]
+        score_initial = current_player.compute_relative_score(self.board)
+
+
         # Convertir les coordonnées
         piece_q = piece_q - (self.board.board_size - 1)
         piece_r = piece_r - (self.board.board_size - 1)
@@ -255,13 +259,18 @@ class DjambiEnv(gym.Env):
         )
 
         # Vérifier les éliminations
-        reward = 0.0
         terminated = False
 
-        # Vérifier si le joueur actuel a éliminé quelqu'un
+        # Calculer le score relatif du joueur actuel
+        current_player = self.board.players[self.board.current_player_index]
+        reward = current_player.compute_relative_score(self.board) - score_initial
+
+        if reward > 0:
+            logger.info(f"Player {self.board.current_player_index + 1} has improved his score by {reward}")
+        elif reward < 0:
+            logger.info(f"Player {self.board.current_player_index + 1} has lost {reward} points")
+
         if self.board.eliminated_players:
-            reward = 1.0  # Le joueur actuel a éliminé un autre joueur
-            logger.info(f"Current player has eliminated another player")
             terminated = True
 
         # Si une pièce a été tuée et doit être placée
