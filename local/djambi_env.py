@@ -38,7 +38,7 @@ class DjambiEnv(gym.Env):
 
     def __init__(self, nb_players: int = 3, render: bool = False):
         super().__init__()
-        logger.info("Initializing Djambi environment")
+        logger.debug("Initializing Djambi environment")
 
         self.render_mode = "human" if render else None
         self.nb_players = nb_players
@@ -128,7 +128,7 @@ class DjambiEnv(gym.Env):
         """
         Réinitialise l'environnement pour une nouvelle partie.
         """
-        logger.info("Resetting environment")
+        logger.debug("Resetting environment")
         super().reset(seed=seed)
 
         # Réinitialiser le plateau
@@ -145,7 +145,7 @@ class DjambiEnv(gym.Env):
 
         # Joueur actuel (commence aléatoirement)
         self.board.current_player_index = random.randint(0, self.nb_players - 1)
-        logger.info(f"Game started with player {self.board.current_player_index + 1}")
+        logger.debug(f"Game started with player {self.board.current_player_index + 1}")
 
         if self.render_mode == "human":
             self.render()
@@ -227,13 +227,13 @@ class DjambiEnv(gym.Env):
         Exécute une action et retourne (observation, reward, terminated, truncated, info)
         """
         piece_q, piece_r, move_q, move_r = action
-        # logger.info(
+        # logger.debug(
         #     f"Player {self.board.current_player_index + 1} attempting move: piece at ({piece_q}, {piece_r}) to ({move_q}, {move_r})"
         # )
 
         # Vérifie si l'action est valide
         if not self._is_valid_move(piece_q, piece_r, move_q, move_r):
-            logger.warning("Invalid move attempted")
+            logger.debug("Invalid move attempted")
             return self._get_observation(), -0.1, False, False, self._get_info()
 
         current_player = self.board.players[self.board.current_player_index]
@@ -250,10 +250,10 @@ class DjambiEnv(gym.Env):
         success = self.board.move_piece(piece, move_q, move_r)
 
         if not success:
-            logger.warning("Move execution failed")
+            logger.debug("Move execution failed")
             return self._get_observation(), -0.1, False, False, self._get_info()
 
-        logger.info(
+        logger.debug(
             f"Move executed successfully: {piece.__class__.__name__} {current_player.name} moved from ({piece_q}, {piece_r}) to ({move_q}, {move_r})"
         )
 
@@ -264,9 +264,9 @@ class DjambiEnv(gym.Env):
         reward = current_player.compute_relative_score(self.board) - score_initial
 
         if reward > 0:
-            logger.info(f"Player {current_player.name} has improved his score by {reward}")
+            logger.debug(f"Player {current_player.name} has improved his score by {reward}")
         elif reward < 0:
-            logger.info(f"Player {current_player.name} has lost {reward} points")
+            logger.debug(f"Player {current_player.name} has lost {reward} points")
 
         if self.board.eliminated_players:
             terminated = True
@@ -276,17 +276,17 @@ class DjambiEnv(gym.Env):
             # Choisir une position aléatoire valide pour placer la pièce morte
             if self.board.available_cells:
                 placement_q, placement_r = random.choice(self.board.available_cells)
-                logger.info(f"Placing dead piece {self.board.piece_to_place.__class__.__name__} at ({placement_q}, {placement_r})")
+                logger.debug(f"Placing dead piece {self.board.piece_to_place.__class__.__name__} at ({placement_q}, {placement_r})")
                 placement_success = self.board.place_dead_piece(placement_q, placement_r)
                 if not placement_success:
-                    logger.warning("Failed to place dead piece")
+                    logger.debug("Failed to place dead piece")
                     return self._get_observation(), -0.1, False, False, self._get_info()
             else:
-                logger.warning("No available cells for dead piece placement")
+                logger.debug("No available cells for dead piece placement")
                 return self._get_observation(), -0.1, False, False, self._get_info()
 
         # Le next_player() est déjà appelé dans board.move_piece() et board.place_dead_piece()
-        logger.info(f"Next player: {self.board.players[self.board.current_player_index].name}")
+        logger.debug(f"Next player: {self.board.players[self.board.current_player_index].name}")
 
         if self.render_mode == "human":
             self.render()
@@ -306,7 +306,7 @@ class DjambiEnv(gym.Env):
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         self.paused = not self.paused
-                        logger.info(
+                        logger.debug(
                             f"Training {'paused' if self.paused else 'resumed'}"
                         )
 
@@ -324,7 +324,7 @@ class DjambiEnv(gym.Env):
             pygame.display.flip()
             self.clock.tick(60)
         else:
-            logger.info("Rendering current board state")
+            logger.debug("Rendering current board state")
             print("\nPlateau actuel:")
             board_state = self._get_observation()["board"]
             print(board_state)

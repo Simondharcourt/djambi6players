@@ -10563,3 +10563,16 @@
 2025-04-21 01:06:43,703 - INFO - Next player: Rouge
 2025-04-21 01:06:43,747 - INFO - Move executed successfully: NecromobilePiece Rouge moved from (-2, 2) to (-4, 4)
 2025-04-21 01:06:43,747 - INFO - Next player: Vert
+2025-04-21 01:08:36,281 - INFO - Initializing Djambi environment
+2025-04-21 01:08:36,359 - INFO - Resetting environment
+2025-04-21 01:08:36,417 - INFO - Game started with player 2
+2025-04-21 01:08:37,104 - INFO - Resetting environment
+2025-04-21 01:08:37,167 - INFO - Game started with player 3
+2025-04-21 01:08:37,202 - INFO - Resetting environment
+2025-04-21 01:08:37,260 - INFO - Game started with player 1
+2025-04-21 01:08:38,248 - INFO - Resetting environment
+2025-04-21 01:08:38,315 - INFO - Game started with player 3
+2025-04-21 01:08:42,575 - INFO - Resetting environment
+2025-04-21 01:08:42,639 - INFO - Game started with player 1
+2025-04-21 01:08:46,473 - INFO - Resetting environment
+2025-04-21 01:08:46,535 - INFO - Game started with player 2
