@@ -4,6 +4,15 @@ import random
 class Player:
     def __init__(self, color, pieces):
         self.color = color
+        names = {
+            (128, 0, 128): "Violet",
+            (0, 0, 255): "Bleu",
+            (255, 0, 0): "Rouge",
+            (255, 105, 180): "Rose",
+            (255, 255, 0): "Jaune",
+            (0, 255, 0): "Vert",
+        }
+        self.name = names[color]
         self.pieces = pieces
         self.score = 0
         self.relative_score = 0

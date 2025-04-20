@@ -36,15 +36,15 @@ class DjambiEnv(gym.Env):
     Utilise le backend existant pour la logique du jeu.
     """
 
-    def __init__(self, nb_players: int = 3, render_mode: Optional[str] = "human"):
+    def __init__(self, nb_players: int = 3, render: bool = False):
         super().__init__()
         logger.info("Initializing Djambi environment")
 
-        self.render_mode = render_mode
+        self.render_mode = "human" if render else None
         self.nb_players = nb_players
         self.paused = False  # État de pause
 
-        if True:
+        if self.render_mode == "human":
             pygame.init()
             self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
             pygame.display.set_caption("Djambi")
@@ -55,7 +55,7 @@ class DjambiEnv(gym.Env):
         # Initialisation du plateau
         self.board = Board(self.nb_players, current_player_index=0)
         self.board.rl = (
-            render_mode != "human"
+            self.render_mode != "human"
         )  # Set rl to False when rendering is enabled
 
         # Définition des espaces d'observation et d'action
@@ -227,9 +227,9 @@ class DjambiEnv(gym.Env):
         Exécute une action et retourne (observation, reward, terminated, truncated, info)
         """
         piece_q, piece_r, move_q, move_r = action
-        logger.info(
-            f"Player {self.board.current_player_index + 1} attempting move: piece at ({piece_q}, {piece_r}) to ({move_q}, {move_r})"
-        )
+        # logger.info(
+        #     f"Player {self.board.current_player_index + 1} attempting move: piece at ({piece_q}, {piece_r}) to ({move_q}, {move_r})"
+        # )
 
         # Vérifie si l'action est valide
         if not self._is_valid_move(piece_q, piece_r, move_q, move_r):
@@ -238,7 +238,6 @@ class DjambiEnv(gym.Env):
 
         current_player = self.board.players[self.board.current_player_index]
         score_initial = current_player.compute_relative_score(self.board)
-
 
         # Convertir les coordonnées
         piece_q = piece_q - (self.board.board_size - 1)
@@ -255,20 +254,19 @@ class DjambiEnv(gym.Env):
             return self._get_observation(), -0.1, False, False, self._get_info()
 
         logger.info(
-            f"Move executed successfully: {piece.__class__.__name__} moved to ({move_q}, {move_r})"
+            f"Move executed successfully: {piece.__class__.__name__} {current_player.name} moved from ({piece_q}, {piece_r}) to ({move_q}, {move_r})"
         )
 
         # Vérifier les éliminations
         terminated = False
 
         # Calculer le score relatif du joueur actuel
-        current_player = self.board.players[self.board.current_player_index]
         reward = current_player.compute_relative_score(self.board) - score_initial
 
         if reward > 0:
-            logger.info(f"Player {self.board.current_player_index + 1} has improved his score by {reward}")
+            logger.info(f"Player {current_player.name} has improved his score by {reward}")
         elif reward < 0:
-            logger.info(f"Player {self.board.current_player_index + 1} has lost {reward} points")
+            logger.info(f"Player {current_player.name} has lost {reward} points")
 
         if self.board.eliminated_players:
             terminated = True
@@ -278,6 +276,7 @@ class DjambiEnv(gym.Env):
             # Choisir une position aléatoire valide pour placer la pièce morte
             if self.board.available_cells:
                 placement_q, placement_r = random.choice(self.board.available_cells)
+                logger.info(f"Placing dead piece {self.board.piece_to_place.__class__.__name__} at ({placement_q}, {placement_r})")
                 placement_success = self.board.place_dead_piece(placement_q, placement_r)
                 if not placement_success:
                     logger.warning("Failed to place dead piece")
@@ -287,7 +286,7 @@ class DjambiEnv(gym.Env):
                 return self._get_observation(), -0.1, False, False, self._get_info()
 
         # Le next_player() est déjà appelé dans board.move_piece() et board.place_dead_piece()
-        logger.info(f"Next player: {self.board.current_player_index + 1}")
+        logger.info(f"Next player: {self.board.players[self.board.current_player_index].name}")
 
         if self.render_mode == "human":
             self.render()

@@ -110,13 +110,19 @@ def parse_arguments():
         default=3,
         help="Nombre de joueurs (3, 4 ou 6)",
     )
+    parser.add_argument(
+        "--render",
+        type=bool,
+        default=False,
+        help="Mode de rendu (human ou none)",
+    )
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_arguments()
     # Créer l'environnement
-    env = DjambiEnv(nb_players=args.nb_player_mode, render_mode="human")  # Set to "human" to see the game
+    env = DjambiEnv(nb_players=args.nb_player_mode, render=args.render)  # Set to "human" to see the game
 
     # Définir la forme de l'état et le nombre d'actions
     board_shape = env.observation_space["board"].shape

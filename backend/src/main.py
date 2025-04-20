@@ -168,8 +168,6 @@ def main():
 
         # Afficher "Player's turn" avec le jeton du joueur actuel ou le message de victoire
         pygame.display.flip()
-
-        # Limiter la vitesse à 30 FPS
         clock.tick(30)
 
     # Quitter proprement
