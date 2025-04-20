@@ -9,9 +9,13 @@ from .player import Player
 from .minmax_player import MinMaxPlayer
 
 __all__ = [
-    'Board',
-    'BOARD_SIZE', 'COLORS', 'START_POSITIONS', 'NB_PLAYER_MODE', 'NAMES',
-    'create_piece', 
-    'Player',
-    'MinMaxPlayer',
+    "Board",
+    "BOARD_SIZE",
+    "COLORS",
+    "START_POSITIONS",
+    "NB_PLAYER_MODE",
+    "NAMES",
+    "create_piece",
+    "Player",
+    "MinMaxPlayer",
 ]

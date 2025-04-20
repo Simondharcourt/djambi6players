@@ -1,5 +1,6 @@
 import random
 
+
 class Player:
     def __init__(self, color, pieces):
         self.color = color
@@ -11,21 +12,33 @@ class Player:
     def compute_score(self, board):
         """Calcule le score actuel du joueur en fonction des pièces qu'il possède."""
         piece_values = {
-            'militant': 60,
-            'assassin': 120,
-            'chief': 180,
-            'diplomat': 120,
-            'necromobile': 120,
-            'reporter': 120,
+            "militant": 60,
+            "assassin": 120,
+            "chief": 180,
+            "diplomat": 120,
+            "necromobile": 120,
+            "reporter": 120,
         }
-        score = sum(piece_values[piece.piece_class] for piece in self.pieces if not piece.is_dead)
-        if any(piece.piece_class == 'chief' and not piece.is_dead and piece.on_central_cell for piece in self.pieces):
-            score += (score-180) * (len([player for player in board.players if player.color != self.color])-1)
-            
+        score = sum(
+            piece_values[piece.piece_class]
+            for piece in self.pieces
+            if not piece.is_dead
+        )
+        if any(
+            piece.piece_class == "chief" and not piece.is_dead and piece.on_central_cell
+            for piece in self.pieces
+        ):
+            score += (score - 180) * (
+                len([player for player in board.players if player.color != self.color])
+                - 1
+            )
+
         self.score = score + self.evaluate_threat_score(board)
 
     def compute_relative_score(self, board):
-        self.relative_score = self.score * 600 // sum(player.score for player in list(set(board.players)))
+        self.relative_score = (
+            self.score * 600 // sum(player.score for player in list(set(board.players)))
+        )
 
     def evaluate_threat_score(self, board):
         threat_score = 0
@@ -33,7 +46,6 @@ class Player:
             threat_score += piece.evaluate_threat_score(board)
         self.threat_score = threat_score
         return threat_score
-            
 
     def get_all_valid_moves(self, board):
         all_moves = []
@@ -63,4 +75,4 @@ class Player:
 
     def add_piece(self, piece):
         self.pieces.append(piece)
-        piece.color = self.color 
+        piece.color = self.color

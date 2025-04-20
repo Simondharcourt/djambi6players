@@ -5,7 +5,10 @@ from .constants import *
 from .board import Board
 from .animation import draw_player_turn, draw_legend, draw_button
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 
 def main():
     pygame.init()
@@ -45,7 +48,7 @@ def main():
                 possible_moves = []
                 board.piece_to_place = None
                 board.available_cells = []
-                
+
                 if event.key == pygame.K_ESCAPE:
                     running = False
                 elif event.key == pygame.K_SPACE and not game_over and not auto_play:
@@ -64,10 +67,12 @@ def main():
                     new_index = board.redo()
                     if new_index is not None:
                         board.current_player_index = new_index
-            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over and not auto_play:
+            elif (
+                event.type == pygame.MOUSEBUTTONDOWN and not game_over and not auto_play
+            ):
                 x, y = pygame.mouse.get_pos()
                 q, r = board.pixel_to_hex(x, y)
-                
+
                 if board.piece_to_place:
                     if board.place_dead_piece(q, r):
                         selected_piece = None
@@ -99,7 +104,7 @@ def main():
             if auto_play:
                 board.players[board.current_player_index].play_turn(board)
                 board.next_player()  # Utiliser la nouvelle méthode ici aussi
-            
+
             # Récupérer le joueur actuel
             current_player = board.players[board.current_player_index]
             draw_player_turn(screen, board.players, board.current_player_index)
@@ -110,7 +115,7 @@ def main():
                 board.draw_possible_moves(screen, possible_moves)
             if board.piece_to_place and not auto_play:
                 board.draw_available_cells(screen)
-            
+
             # Ajouter la légende
             draw_legend(screen)
         else:
@@ -120,12 +125,24 @@ def main():
             screen.blit(win_text, win_rect)
 
             # Dessiner le bouton "Rejouer"
-            draw_button(screen, "Rejouer", button_x, button_y, button_width, button_height, WHITE, BLACK)
+            draw_button(
+                screen,
+                "Rejouer",
+                button_x,
+                button_y,
+                button_width,
+                button_height,
+                WHITE,
+                BLACK,
+            )
 
             # Vérifier si le bouton "Rejouer" est cliqué
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                if button_x <= mouse_x <= button_x + button_width and button_y <= mouse_y <= button_y + button_height:
+                if (
+                    button_x <= mouse_x <= button_x + button_width
+                    and button_y <= mouse_y <= button_y + button_height
+                ):
                     # Réinitialiser le jeu
                     current_player_index = 4
                     board = Board(current_player_index)
@@ -145,6 +162,6 @@ def main():
     pygame.quit()
     sys.exit()
 
+
 if __name__ == "__main__":
     main()
-
