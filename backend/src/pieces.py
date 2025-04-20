@@ -558,7 +558,6 @@ class NecromobilePiece(Piece):
                 if not is_within_board(new_q, new_r):
                     break
 
-                
                 piece_at_position = board.get_piece_at(new_q, new_r)
                 if piece_at_position:
                     if piece_at_position.is_dead:
@@ -627,8 +626,22 @@ class ReporterPiece(Piece):
                     piece.die()
         else:
             # implement only one kill from the reporter.
-            pass
-        
+            adjacent_enemies = []
+            for dq, dr in ADJACENT_DIRECTIONS:
+                adjacent_q = self.q + dq
+                adjacent_r = self.r + dr
+                piece = board.get_piece_at(adjacent_q, adjacent_r)
+                if piece and piece.color != self.color and not piece.is_dead:
+                    adjacent_enemies.append(piece)
+            
+            # Si des ennemis sont adjacents, en choisir un au hasard à éliminer
+            if adjacent_enemies:
+                target_piece = max(adjacent_enemies, key=lambda p: p.std_value)
+                logging.debug(f"Le reporter tue la pièce ennemie en {target_piece.q}, {target_piece.r} (valeur: {target_piece.std_value})")
+                if isinstance(target_piece, ChiefPiece):
+                    board.chief_killed(target_piece, board.get_chief_of_color(self.color))
+                target_piece.die()
+
         self.update_threat_and_protections(board)
         return True
 
