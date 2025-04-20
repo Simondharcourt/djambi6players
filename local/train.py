@@ -7,7 +7,7 @@ from tqdm import tqdm
 import os
 import random
 import pygame
-
+import argparse
 
 def train(
     env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: str = "models"
@@ -100,9 +100,23 @@ def train(
     return rewards, epsilons, wins
 
 
+# Ajout de la fonction pour traiter les arguments
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Choisissez les paramètres du jeu.")
+    parser.add_argument(
+        "--nb_player_mode",
+        type=int,
+        choices=[3, 4, 6],
+        default=3,
+        help="Nombre de joueurs (3, 4 ou 6)",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
+    args = parse_arguments()
     # Créer l'environnement
-    env = DjambiEnv(render_mode="human")  # Set to "human" to see the game
+    env = DjambiEnv(nb_players=args.nb_player_mode, render_mode="human")  # Set to "human" to see the game
 
     # Définir la forme de l'état et le nombre d'actions
     board_shape = env.observation_space["board"].shape

@@ -27,7 +27,13 @@ local-6:
 
 # Training mode
 train-3:
-	PYTHONPATH=. poetry run python -m local.train
+	PYTHONPATH=. poetry run python -m local.train --nb_player_mode 3
+
+train-4:
+	PYTHONPATH=. poetry run python -m local.train --nb_player_mode 4
+
+train-6:
+	PYTHONPATH=. poetry run python -m local.train --nb_player_mode 6
 
 # Clean up
 clean:

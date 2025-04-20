@@ -36,11 +36,12 @@ class DjambiEnv(gym.Env):
     Utilise le backend existant pour la logique du jeu.
     """
 
-    def __init__(self, render_mode: Optional[str] = "human"):
+    def __init__(self, nb_players: int = 3, render_mode: Optional[str] = "human"):
         super().__init__()
         logger.info("Initializing Djambi environment")
 
         self.render_mode = render_mode
+        self.nb_players = nb_players
         self.paused = False  # État de pause
 
         if True:
@@ -52,7 +53,7 @@ class DjambiEnv(gym.Env):
             self.font = pygame.font.Font(None, FONT_SIZE)
 
         # Initialisation du plateau
-        self.board = Board(3, current_player_index=0)
+        self.board = Board(self.nb_players, current_player_index=0)
         self.board.rl = (
             render_mode != "human"
         )  # Set rl to False when rendering is enabled
@@ -62,12 +63,12 @@ class DjambiEnv(gym.Env):
             {
                 "board": spaces.Box(
                     low=0,
-                    high=3,
+                    high=self.nb_players,
                     shape=(self.board.board_size * 2 - 1, self.board.board_size * 2 - 1),
                     dtype=np.int8,
                 ),
-                "player_status": spaces.Box(low=0, high=1, shape=(3,), dtype=np.int8),
-                "current_player": spaces.Discrete(3),
+                "player_status": spaces.Box(low=0, high=1, shape=(self.nb_players,), dtype=np.int8),
+                "current_player": spaces.Discrete(self.nb_players),
             }
         )
 
@@ -131,13 +132,11 @@ class DjambiEnv(gym.Env):
         super().reset(seed=seed)
 
         # Réinitialiser le plateau
-        self.board = Board(3, current_player_index=0)
+        self.board = Board(self.nb_players, current_player_index=0)
         self.board.rl = (
             self.render_mode != "human"
         )  # Use self.render_mode instead of render_mode
 
-        # Garder seulement 3 joueurs
-        self.board.players = self.board.players[:3]
         self.board.pieces = [
             p
             for p in self.board.pieces
@@ -145,7 +144,7 @@ class DjambiEnv(gym.Env):
         ]
 
         # Joueur actuel (commence aléatoirement)
-        self.board.current_player_index = random.randint(0, 2)
+        self.board.current_player_index = random.randint(0, self.nb_players - 1)
         logger.info(f"Game started with player {self.board.current_player_index + 1}")
 
         if self.render_mode == "human":
@@ -168,7 +167,7 @@ class DjambiEnv(gym.Env):
                 board_state[q, r] = color_index
 
         # État des joueurs
-        player_status = np.ones(3, dtype=np.int8)
+        player_status = np.ones(self.nb_players, dtype=np.int8)
         for i, player in enumerate(self.board.players):
             if not any(not p.is_dead for p in player.pieces):
                 player_status[i] = 0
@@ -271,9 +270,9 @@ class DjambiEnv(gym.Env):
                 terminated = True
                 break
 
-        # Passer au joueur suivant
-        self.board.next_player()
-        logger.info(f"Next player: {self.board.current_player_index + 1}")
+        # # Passer au joueur suivant
+        # self.board.next_player()
+        # logger.info(f"Next player: {self.board.current_player_index + 1}")
 
         if self.render_mode == "human":
             self.render()
