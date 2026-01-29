@@ -78,7 +78,7 @@ Find the remaning bugs and fix them.
 
 #### - ai part.
 2 parts: minimax and rl.
--- minimax part: it is actually a maxn algorithm, not a minmax, as it is a 6 players game. There is a lot of challenges about it, on complexity, as the depth should be at least to be pertinent. A pre-sort of the action should be made to filter all possible moves. 
+-- minimax part: it is actually a maxn algorithm, not a minmax, as it is a 6 players game. There is a lot of challenges about it, on complexity, as the depth should be at least to be pertinent. A pre-sort of the action should be made to filter all possible moves.
 -- rl part: train the model on a platform. Get inspired by trainings on chess. Many possibilities to define the state space and the action space.
 
 #### - game part.

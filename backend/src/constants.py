@@ -1,6 +1,5 @@
-import os
 import argparse
-
+import os
 
 HEX_RADIUS = 35  # Rayon des hexagones
 WINDOW_WIDTH = 1000

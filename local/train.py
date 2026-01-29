@@ -1,13 +1,15 @@
-import gymnasium as gym
-import numpy as np
-from .djambi_env import DjambiEnv
-from .dqn_model import DQNAgent
-import matplotlib.pyplot as plt
-from tqdm import tqdm
+import argparse
 import os
 import random
+
+import gymnasium as gym
+import matplotlib.pyplot as plt
+import numpy as np
 import pygame
-import argparse
+from tqdm import tqdm
+
+from .djambi_env import DjambiEnv
+from .dqn_model import DQNAgent
 
 
 def train(

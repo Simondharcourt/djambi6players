@@ -1,10 +1,12 @@
 import asyncio
 import json
-import websockets
+import logging
 import os
+
+import websockets
+
 from .board import Board
 from .database import Database
-import logging
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

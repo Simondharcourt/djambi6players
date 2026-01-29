@@ -1,6 +1,7 @@
-import random
 import copy
 import logging
+import random
+
 from .player import Player
 
 

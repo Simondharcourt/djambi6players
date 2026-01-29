@@ -1,14 +1,15 @@
-import numpy as np
-import gymnasium as gym
-from gymnasium import spaces
-from typing import Tuple, Dict, List, Optional
+import logging
+import os
 import random
 import sys
-import os
-import logging
-import pygame
-from backend.src.constants import WINDOW_WIDTH, WINDOW_HEIGHT, FONT_SIZE
+from typing import Dict, List, Optional, Tuple
 
+import gymnasium as gym
+import numpy as np
+import pygame
+from gymnasium import spaces
+
+from backend.src.constants import FONT_SIZE, WINDOW_HEIGHT, WINDOW_WIDTH
 
 # Configure logging
 logging.basicConfig(
@@ -22,12 +23,7 @@ logger = logging.getLogger(__name__)
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
 
-from backend.src import (
-    Board,
-    create_piece,
-    Player,
-    MinMaxPlayer,
-)
+from backend.src import Board, MinMaxPlayer, Player, create_piece
 
 
 class DjambiEnv(gym.Env):

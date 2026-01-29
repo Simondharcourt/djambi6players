@@ -1,11 +1,13 @@
-from .constants import *
-import math
-import pygame
 import logging
-from .pieces import *
-from .minmax_player import MinMaxPlayer
+import math
+
+import pygame
+
 from .animation import animate_player_elimination, draw_player_turn
-from .utils import get_directions, get_colors, get_start_positions
+from .constants import *
+from .minmax_player import MinMaxPlayer
+from .pieces import *
+from .utils import get_colors, get_directions, get_start_positions
 
 
 class Board:

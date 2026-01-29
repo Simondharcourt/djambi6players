@@ -1,10 +1,12 @@
-from .constants import *
 import logging
-import pygame
-import cairosvg
-from io import BytesIO
-import random
 import math
+import random
+from io import BytesIO
+
+import cairosvg
+import pygame
+
+from .constants import *
 
 
 class Piece:

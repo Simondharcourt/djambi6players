@@ -1,11 +1,12 @@
+import random
+from collections import deque
+from typing import Dict, List, Tuple
+
+import numpy as np
 import torch
 import torch.nn as nn
-import torch.optim as optim
-import numpy as np
-from collections import deque
-import random
-from typing import Tuple, Dict, List
 import torch.nn.functional as F
+import torch.optim as optim
 
 
 class DQN(nn.Module):

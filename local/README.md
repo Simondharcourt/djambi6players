@@ -103,4 +103,4 @@ local/
 
 - [Deep Q-Learning with Double Q-Learning](https://arxiv.org/abs/1509.06461)
 - [Proximal Policy Optimization](https://arxiv.org/abs/1707.06347)
-- [Mastering Chess and Shogi by Self-Play](https://arxiv.org/abs/1712.01815) 
+- [Mastering Chess and Shogi by Self-Play](https://arxiv.org/abs/1712.01815)

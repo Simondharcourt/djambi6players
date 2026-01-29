@@ -105,7 +105,7 @@ function startGame(playerCount) {
 
     document.getElementById('mainMenu').style.display = 'none';
     document.querySelector('.game-container').style.display = 'flex';
-    
+
     resetInactivityTimer();
 
     ws.send(JSON.stringify({
@@ -151,7 +151,7 @@ function resetInactivityTimer() {
     if (inactivityTimer) {
         clearTimeout(inactivityTimer);
     }
-    
+
     // Démarrer un nouveau timer
     inactivityTimer = setTimeout(() => {
         if (isLoggedIn && gameState) {
@@ -185,14 +185,14 @@ function undoMove() {
     ws.send(JSON.stringify({
         type: 'undo'
     }));
-    
+
     resetSelection();
     draw();
 }
 
 function redoMove() {
     if (!gameState || !isLoggedIn || !clientAssignedIndices.includes(gameState.current_player_index)) return;
-    
+
     ws.send(JSON.stringify({
         type: 'redo'
     }));
@@ -389,8 +389,8 @@ function isWithinBoard(q, r) {
 function drawPieces() {
     if (gameState && gameState.pieces) {
         gameState.pieces.forEach(piece => {
-            if (animationInProgress && animationPiece && 
-                animationPiece.q === piece.q && 
+            if (animationInProgress && animationPiece &&
+                animationPiece.q === piece.q &&
                 animationPiece.r === piece.r) {
                 return;
             }
@@ -488,14 +488,14 @@ canvas.addEventListener('mousemove', () => {
 
 function handleInteraction(event) {
     event.preventDefault(); // Empêcher le zoom et autres comportements par défaut sur mobile
-    
+
     if (!gameState) return;
     resetInactivityTimer();
 
     // Obtenir les coordonnées selon le type d'événement
     const coordinates = getEventCoordinates(event);
     if (!coordinates) return;
-    
+
     const [q, r] = pixelToHex(coordinates.x, coordinates.y);
 
     if (selectedPiece) {
@@ -504,13 +504,13 @@ function handleInteraction(event) {
         selectPiece(q, r);
         availableCells = [];
     }
-    
+
     draw();
 }
 
 function getEventCoordinates(event) {
     const rect = canvas.getBoundingClientRect();
-    
+
     // Pour les événements tactiles
     if (event.type === 'touchstart') {
         if (event.touches.length > 0) {
@@ -522,7 +522,7 @@ function getEventCoordinates(event) {
         }
         return null;
     }
-    
+
     // Pour les événements de souris
     return {
         x: event.clientX - rect.left,
@@ -549,8 +549,8 @@ function handleSelectedPieceClick(q, r) {
 }
 
 function isClickOnSelectedPiece(q, r) {
-    return selectedPiece.q === q && 
-           selectedPiece.r === r && 
+    return selectedPiece.q === q &&
+           selectedPiece.r === r &&
            !targetedPiece;
 }
 
@@ -598,7 +598,7 @@ function selectPiece(q, r) {
             console.log("gameState.current_player_color", gameState.current_player_color)
             console.log("piece.color", piece.color)
             console.log("clientAssignedColors", clientAssignedColors)
-            if (areColorsEqual(gameState.current_player_color, piece.color) && 
+            if (areColorsEqual(gameState.current_player_color, piece.color) &&
                 clientAssignedColors.includes(piece.color)) {
                 selectedPiece = piece;
                 possibleMoves = calculatePossibleMoves(piece);
@@ -654,7 +654,7 @@ function calculatePossibleMoves(piece) {
             while (true) {
                 const newQ = piece.q + dq * step;
                 const newR = piece.r + dr * step;
-                
+
                 if (!isWithinBoard(newQ, newR)) {
                     break;
                 }
@@ -818,12 +818,12 @@ function initializeDefaultState() {
         [-5, -1, 'purple', 'assassin'], [-4, -2, 'purple', 'militant'], [-6, 0, 'purple', 'chief'],
         [-4, -1, 'purple', 'militant'], [-5, 0, 'purple', 'diplomat'], [-4, 0, 'purple', 'necromobile'],
         [-5, 1, 'purple', 'militant'], [-6, 1, 'purple', 'reporter'], [-6, 2, 'purple', 'militant'],
-        
+
         // Pièces bleues (en haut)
         [0, -6, 'blue', 'chief'], [1, -6, 'blue', 'reporter'], [2, -6, 'blue', 'militant'],
         [0, -5, 'blue', 'diplomat'], [-1, -4, 'blue', 'militant'], [-2, -4, 'blue', 'militant'],
         [0, -4, 'blue', 'necromobile'], [1, -5, 'blue', 'militant'], [-1, -5, 'blue', 'assassin'],
-        
+
         // Pièces rouges (en bas à droite)
         [6, -4, 'red', 'militant'], [6, -5, 'red', 'assassin'], [6, -6, 'red', 'chief'],
         [5, -6, 'red', 'reporter'], [4, -6, 'red', 'militant'], [5, -5, 'red', 'diplomat'],
@@ -838,7 +838,7 @@ function initializeDefaultState() {
         [0, 5, 'yellow', 'diplomat'], [-1, 5, 'yellow', 'militant'], [-2, 6, 'yellow', 'militant'],
         [-1, 6, 'yellow', 'assassin'], [1, 5, 'yellow', 'reporter'], [0, 6, 'yellow', 'chief'],
         [0, 4, 'yellow', 'necromobile'], [2, 4, 'yellow', 'militant'], [1, 4, 'yellow', 'militant'],
-        
+
         // Pièces vertes (en haut à gauche)
         [-5, 6, 'green', 'assassin'], [-4, 6, 'green', 'militant'], [-6, 6, 'green', 'chief'],
         [-6, 5, 'green', 'reporter'], [-6, 4, 'green', 'militant'], [-5, 5, 'green', 'diplomat'],
@@ -962,11 +962,11 @@ function startAnimation(fromQ, fromR, toQ, toR) {
     animationProgress = 0;
     startPos = hexToPixel(fromQ, fromR);
     endPos = hexToPixel(toQ, toR);
-    
+
     // Trouver la pièce à animer
     animationPiece = gameState.pieces.find(p => p.q === fromQ && p.r === fromR);
     animationPiece.q = toQ;
-    animationPiece.r = toR; 
+    animationPiece.r = toR;
     console.log("animationPiece", animationPiece);
     // Démarrer la boucle d'animation
     requestAnimationFrame(animate);
@@ -976,11 +976,11 @@ function animate(timestamp) {
     if (!animationInProgress) return;
     animationProgress += 0.05;
     draw();
-    
+
     // Calculer la position actuelle
     const currentX = startPos[0] + (endPos[0] - startPos[0]) * animationProgress;
     const currentY = startPos[1] + (endPos[1] - startPos[1]) * animationProgress;
-    
+
     // Dessiner la pièce en mouvement
     if (animationPiece) {
         // Dessiner le cercle de la pièce
@@ -988,7 +988,7 @@ function animate(timestamp) {
         ctx.beginPath();
         ctx.arc(currentX, currentY, PIECE_RADIUS, 0, 2 * Math.PI);
         ctx.fill();
-        
+
         // Dessiner l'image de la pièce
         if (allImagesLoaded) {
             const img = pieceImages[animationPiece.piece_class];
@@ -1044,11 +1044,11 @@ function drawPlayerScores() {
     const nameSpacing = 60; // Espacement pour le nom
 
     ctx.font = '20px Arial';
-    
+
     gameState.players.forEach((player, index) => {
         // Position du jeton
         const y = startY + index * (jetonRadius * 2 + spacing);
-        
+
         // Dessiner le jeton
         ctx.beginPath();
         ctx.arc(startX, y, jetonRadius, 0, 2 * Math.PI);
@@ -1074,7 +1074,7 @@ function createAccount() {
     if (!username) return;
 
     const password = prompt('Entrez votre mot de passe :');
-    
+
     if (!username || !password) {
         alert('Le nom d\'utilisateur et le mot de passe sont requis');
         return;
@@ -1093,7 +1093,7 @@ function login() {
     if (!username) return;
 
     const password = prompt('Entrez votre mot de passe :');
-    
+
     if (!username || !password) {
         alert('Le nom d\'utilisateur et le mot de passe sont requis');
         return;
@@ -1111,20 +1111,20 @@ function login() {
 function updateUIAfterAuth(username) {
     isLoggedIn = true;
     currentUsername = username;
-    
+
     // Cacher le bouton Compte
     const accountButton = document.getElementById('accountButton');
     if (accountButton) {
         accountButton.style.display = 'none';
     }
-    
+
     const loginButton = document.querySelector('button[onclick="login()"]');
     const createAccountButton = document.querySelector('button[onclick="createAccount()"]');
-    
+
     if (loginButton && createAccountButton) {
         loginButton.style.display = 'none';
         createAccountButton.style.display = 'none';
-        
+
         const menuContainer = document.querySelector('.menu-container');
         const logoutButton = document.createElement('button');
         logoutButton.className = 'menu-button';
@@ -1140,11 +1140,10 @@ function updateUIAfterAuth(username) {
 function logout() {
     isLoggedIn = false;
     currentUsername = null;
-    
+
     ws.send(JSON.stringify({
         type: 'logout'
     }));
-    
+
     location.reload();
 }
-
