@@ -11,24 +11,24 @@ class MinMaxPlayer(Player):
         self.depth = depth
 
     def think_and_play_turn(self, board):
-        """Joue un tour en utilisant l'algorithme MinMax avec élagage alpha-beta."""
+        """Plays a turn using the MinMax algorithm with alpha-beta pruning."""
         best_move = self.alpha_beta(board, self.depth, float("-inf"), float("inf"))[1]
         if best_move:
             piece, move = best_move
             piece.move(move[0], move[1], board)
             logging.info(
-                f"MinMax a joué : {piece.piece_class} de ({piece.q}, {piece.r}) à {move}, eval: {self.evaluate_board(board)}"
+                f"MinMax played: {piece.piece_class} from ({piece.q}, {piece.r}) to {move}, eval: {self.evaluate_board(board)}"
             )
 
     def get_best_moves(self, board):  # should go in minmax class
-        best_moves = {}
+        best_moves: dict[tuple, float] = {}
         for piece in self.pieces:
             best_moves.update(piece.update_piece_best_moves(board))
-        best_moves = sorted(best_moves.items(), key=lambda x: x[1], reverse=True)
-        print(best_moves)
+        best_moves_sorted = sorted(best_moves.items(), key=lambda x: x[1], reverse=True)
+        print(best_moves_sorted)
         return [
-            move[0] for move in best_moves
-        ]  # Retourne uniquement les tuples (piece, move)
+            move[0] for move in best_moves_sorted
+        ]  # Returns only the tuples (piece, move)
 
     def alpha_beta(self, board, depth, alpha, beta):
         if depth == 0:
@@ -45,7 +45,7 @@ class MinMaxPlayer(Player):
 
         max_eval = float("-inf")
         best_move = None
-        for piece, move in best_moves:  # Utilisation des coups triés
+        for piece, move in best_moves:  # Use sorted moves
             new_board = self.copy_board_state(board)
             new_piece = new_board.pieces_by_pos[(piece.q, piece.r)]
             new_piece.move(move[0], move[1], new_board)
@@ -53,7 +53,7 @@ class MinMaxPlayer(Player):
             next_player = new_board.players[new_board.current_player_index]
             eval = -next_player.alpha_beta(new_board, depth - 1, -beta, -alpha)[
                 0
-            ]  # Négamax
+            ]  # Negamax
             if eval > max_eval:
                 max_eval = eval
                 best_move = (piece, move)
@@ -64,20 +64,20 @@ class MinMaxPlayer(Player):
         return max_eval, best_move
 
     def evaluate_board(self, board):
-        """Évalue le plateau en fonction de la différence de score relatif."""
+        """Evaluates the board based on the relative score difference."""
         board.update_all_scores()
         print([player.relative_score for player in board.players])
         return self.relative_score
 
     def copy_board_state(self, board):
-        """Crée une copie légère du plateau avec seulement les données nécessaires pour MinMax."""
+        """Creates a lightweight copy of the board with only the data needed for MinMax."""
         new_board = type(board)()
 
         new_pieces = [self.copy_piece(p) for p in board.pieces]
         new_board.pieces = new_pieces
         new_board.pieces_by_pos = {(p.q, p.r): p for p in new_pieces}
 
-        pieces_by_color = {}
+        pieces_by_color: dict[tuple[int, int, int], list] = {}
         for piece in new_pieces:
             pieces_by_color.setdefault(piece.color, []).append(piece)
 
@@ -91,8 +91,8 @@ class MinMaxPlayer(Player):
         return new_board
 
     def copy_piece(self, piece):
-        """Crée une copie d'une pièce avec seulement les attributs essentiels."""
-        # Créer une nouvelle instance avec tous les arguments requis
+        """Creates a copy of a piece with only the essential attributes."""
+        # Create a new instance with all required arguments
         new_piece = type(piece)(
             q=piece.q,
             r=piece.r,

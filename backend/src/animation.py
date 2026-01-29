@@ -6,29 +6,29 @@ from .constants import *
 def draw_player_turn(
     screen, players, current_player_index, next_player_index=None, t=None
 ):
-    """Affiche l'ordre des joueurs avec des jetons colorés et une flèche animée pour le joueur actuel."""
+    """Displays the player order with colored tokens and an animated arrow for the current player."""
     jeton_radius = 15
     spacing = 10
     start_x = 20
     start_y = 300
     arrow_size = 20
-    font = pygame.font.Font(None, 36)  # Assurez-vous d'initialiser la police
+    font = pygame.font.Font(None, 36)  # Make sure to initialize the font
 
     for i, player in enumerate(players):
-        # Position du jeton
+        # Token position
         x = start_x
         y = start_y + i * (jeton_radius * 2 + spacing)
 
-        # Dessiner le jeton
+        # Draw the token
         pygame.draw.circle(screen, player.color, (x, y), jeton_radius)
 
-        # Afficher le score à côté du jeton
+        # Display the score next to the token
         score_text = font.render(str(player.relative_score), True, WHITE)
         screen.blit(
             score_text, (x + jeton_radius + spacing, y - score_text.get_height() // 2)
         )
 
-    # Dessiner la flèche animée
+    # Draw the animated arrow
     if next_player_index is not None and t is not None:
         current_y = start_y + current_player_index * (jeton_radius * 2 + spacing)
         next_y = start_y + next_player_index * (jeton_radius * 2 + spacing)
@@ -40,8 +40,8 @@ def draw_player_turn(
 
 
 def draw_arrow(screen, x, y, arrow_size, jeton_radius, spacing):
-    """Dessine une flèche à la position spécifiée."""
-    offset = 60  # Décalage vers la droite en pixels
+    """Draws an arrow at the specified position."""
+    offset = 60  # Offset to the right in pixels
     arrow_points = [
         (x + jeton_radius + spacing + offset, y),
         (x + jeton_radius + spacing + arrow_size + offset, y - arrow_size // 2),
@@ -68,7 +68,7 @@ def draw_legend(screen):
     for key, value in legend_items:
         text = font.render(f"{key}: {value}", True, WHITE)
         screen.blit(text, (start_x, y))
-        start_x += text.get_width() + 20  # Espace entre les éléments
+        start_x += text.get_width() + 20  # Space between elements
 
 
 def animate_player_elimination(screen, players, eliminated_player_index, board):
@@ -76,12 +76,12 @@ def animate_player_elimination(screen, players, eliminated_player_index, board):
     spacing = 10
     start_x = 20
     start_y = 300
-    fall_duration = 60  # Nombre de frames pour l'animation de chute
+    fall_duration = 60  # Number of frames for fall animation
 
     for frame in range(fall_duration):
-        screen.fill(BLACK)  # Effacer l'écran
+        screen.fill(BLACK)  # Clear the screen
 
-        # Redessiner le plateau
+        # Redraw the board
         board.draw(screen)
 
         for i, player in enumerate(players):
@@ -89,22 +89,22 @@ def animate_player_elimination(screen, players, eliminated_player_index, board):
             y = start_y + i * (jeton_radius * 2 + spacing)
 
             if i == eliminated_player_index:
-                # Animer la chute du jeton éliminé
+                # Animate the fall of the eliminated token
                 fall_distance = (
                     frame / fall_duration
-                ) ** 2 * WINDOW_HEIGHT  # Accélération de la chute
-                y += fall_distance
+                ) ** 2 * WINDOW_HEIGHT  # Fall acceleration
+                y = int(y + fall_distance)
 
-            if y < WINDOW_HEIGHT:  # Ne dessiner le jeton que s'il est encore visible
+            if y < WINDOW_HEIGHT:  # Only draw the token if it's still visible
                 pygame.draw.circle(screen, player.color, (int(x), int(y)), jeton_radius)
 
-        # Dessiner la flèche pour le joueur actuel
+        # Draw the arrow for the current player
         current_player_index = board.current_player_index % len(players)
         arrow_y = start_y + current_player_index * (jeton_radius * 2 + spacing)
         draw_arrow(screen, start_x, arrow_y, 20, jeton_radius, spacing)
 
         pygame.display.flip()
-        pygame.time.wait(16)  # Environ 60 FPS
+        pygame.time.wait(16)  # About 60 FPS
 
 
 def draw_button(screen, text, x, y, width, height, color, text_color):

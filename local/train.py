@@ -16,84 +16,84 @@ def train(
     env: DjambiEnv, agent: DQNAgent, num_episodes: int = 1000, save_path: str = "models"
 ):
     """
-    Entraîne l'agent DQN sur l'environnement Djambi.
+    Trains the DQN agent on the Djambi environment.
     """
-    # Créer le dossier de sauvegarde
+    # Create the save directory
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
-    # Statistiques
+    # Statistics
     rewards = []
     epsilons = []
     wins = 0
 
-    # Barre de progression
+    # Progress bar
     pbar = tqdm(range(num_episodes))
 
     for episode in pbar:
-        # Réinitialiser l'environnement
+        # Reset the environment
         state, _ = env.reset()
-        episode_reward = 0
+        episode_reward = 0.0
         done = False
 
         while not done:
-            # Vérifier si l'entraînement est en pause
+            # Check if training is paused
             while env.paused:
                 env.render()
-                pygame.time.delay(100)  # Réduire la charge CPU pendant la pause
+                pygame.time.delay(100)  # Reduce CPU load during pause
 
-            # Sélectionner une action
+            # Select an action
             if random.random() < agent.eps:
-                # Exploration: choisir une action valide aléatoire
+                # Exploration: choose a random valid action
                 action = env.sample_action()
             else:
-                # Exploitation: utiliser le modèle
+                # Exploitation: use the model
                 action = agent.select_action(state)
 
-            # Exécuter l'action
+            # Execute the action
             next_state, reward, terminated, truncated, _ = env.step(action)
             done = terminated or truncated
 
-            # Stocker l'expérience
+            # Store the experience
             agent.memory.push(state, action, reward, next_state, done)
 
-            # Optimiser le modèle
+            # Optimize the model
             agent.optimize_model()
 
-            # Mettre à jour l'état et la récompense
+            # Update the state and reward
             state = next_state
             episode_reward += reward
 
-            # Si un joueur a gagné
+            # If a player has won
             if reward == 1.0:
                 wins += 1
 
-        # Mettre à jour les statistiques
+        # Update the statistics
         rewards.append(episode_reward)
         epsilons.append(agent.eps)
 
-        # Mettre à jour la barre de progression
+        # Update the progress bar
         pbar.set_description(
             f"Episode {episode+1}/{num_episodes} - Reward: {episode_reward:.2f} - Epsilon: {agent.eps:.2f} - Wins: {wins}"
         )
 
-        # Sauvegarder le modèle tous les 100 épisodes
+        # Save the model every 100 episodes
         if (episode + 1) % 100 == 0:
             agent.save(os.path.join(save_path, f"dqn_episode_{episode+1}.pt"))
 
-    # Afficher les statistiques
+    # Display the statistics
     plt.figure(figsize=(12, 4))
 
     plt.subplot(1, 2, 1)
     plt.plot(rewards)
-    plt.title("Récompenses par épisode")
-    plt.xlabel("Épisode")
-    plt.ylabel("Récompense")
+    plt.title("Rewards per episode")
+    plt.xlabel("Episode")
+    plt.ylabel("Reward")
 
     plt.subplot(1, 2, 2)
     plt.plot(epsilons)
-    plt.title("Epsilon par épisode")
-    plt.xlabel("Épisode")
+    plt.title("Epsilon per episode")
+    plt.xlabel("Episode")
     plt.ylabel("Epsilon")
 
     plt.tight_layout()
@@ -103,51 +103,51 @@ def train(
     return rewards, epsilons, wins
 
 
-# Ajout de la fonction pour traiter les arguments
+# Add function to process arguments
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Choisissez les paramètres du jeu.")
+    parser = argparse.ArgumentParser(description="Choose game parameters.")
     parser.add_argument(
         "--nb_player_mode",
         type=int,
         choices=[3, 4, 6],
         default=3,
-        help="Nombre de joueurs (3, 4 ou 6)",
+        help="Number of players (3, 4 or 6)",
     )
     parser.add_argument(
         "--render",
         type=bool,
         default=False,
-        help="Mode de rendu (human ou none)",
+        help="Render mode (human or none)",
     )
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_arguments()
-    # Créer l'environnement
+    # Create the environment
     env = DjambiEnv(
         nb_players=args.nb_player_mode, render=args.render
     )  # Set to "human" to see the game
 
-    # Définir la forme de l'état et le nombre d'actions
+    # Define the state shape and number of actions
     board_shape = env.observation_space["board"].shape
-    state_shape = (1, board_shape[0], board_shape[1])  # Ajouter la dimension du channel
-    n_actions = np.prod(env.action_space.nvec)
+    state_shape = (1, board_shape[0], board_shape[1])  # Add the channel dimension
+    n_actions = int(np.prod(env.action_space.nvec))
 
     print(f"Board shape: {board_shape}")
     print(f"State shape: {state_shape}")
     print(f"Number of actions: {n_actions}")
 
-    # Créer l'agent
+    # Create the agent
     agent = DQNAgent(state_shape, n_actions)
 
-    # Entraîner l'agent
+    # Train the agent
     rewards, epsilons, wins = train(env, agent, num_episodes=1000)
 
-    print(f"\nEntraînement terminé !")
-    print(f"Nombre total de victoires : {wins}")
-    print(f"Récompense moyenne : {np.mean(rewards):.2f}")
-    print(f"Récompense maximale : {np.max(rewards):.2f}")
+    print(f"\nTraining complete!")
+    print(f"Total number of wins: {wins}")
+    print(f"Average reward: {np.mean(rewards):.2f}")
+    print(f"Maximum reward: {np.max(rewards):.2f}")
 
     # Fermer l'environnement
     env.close()

@@ -41,7 +41,7 @@ class Piece:
         }
         self.name = names[color]
         self.on_central_cell = (
-            False  # Nouvel attribut pour suivre si le chef est sur la case centrale
+            False  # New attribute to track if the chief is on the central cell
         )
 
         # self.menace_score = menace_score
@@ -109,7 +109,7 @@ class Piece:
                 0, self.std_value - threat.std_value * is_protected
             ) * (len(board.players) - 1)
 
-        best_moves = {}
+        best_moves: dict[tuple, float] = {}
         possible_moves = self.all_possible_moves(board)
 
         if isinstance(self, ChiefPiece) and (0, 0) in possible_moves:
@@ -133,14 +133,14 @@ class Piece:
         return best_moves
 
     def die(self):
-        """Marque la pièce comme morte et change sa couleur en grise."""
+        """Marks the piece as dead and changes its color to grey."""
         self.is_dead = True
-        self.color = DARKER_GREY  # Couleur grise pour les pièces mortes
-        logging.debug(f"Pièce en {self.q}, {self.r} est morte")
+        self.color = DARKER_GREY  # Grey color for dead pieces
+        logging.debug(f"Piece at {self.q}, {self.r} is dead")
 
     @staticmethod
     def load_svg_as_surface(svg_path, target_size=(SIZE_IMAGE, SIZE_IMAGE)):
-        """Charge le fichier SVG et le convertit directement à la taille désirée."""
+        """Loads the SVG file and converts it directly to the desired size."""
         if IS_PRODUCTION:
             return None
         with open(svg_path, "rb") as f:
@@ -151,10 +151,10 @@ class Piece:
             output_height=target_size[1],
         )
         image = pygame.image.load(BytesIO(png_data))
-        return image  # Retourner directement l'image sans redimensionnement
+        return image  # Return the image directly without resizing
 
     def load_image(self):
-        # Charger l'image seulement quand nécessaire
+        # Load the image only when needed
         self.class_image = self.load_svg_as_surface(self.svg_path)
 
     @classmethod
@@ -170,8 +170,9 @@ class Piece:
 
         if not self.is_dead:
             pygame.draw.circle(screen, self.color, (x, y), PIECE_RADIUS)
-            class_image_rect = self.class_image.get_rect(center=(x, y))
-            screen.blit(self.class_image, class_image_rect)
+            if self.class_image is not None:
+                class_image_rect = self.class_image.get_rect(center=(x, y))
+                screen.blit(self.class_image, class_image_rect)
 
             if is_current_player:
                 pygame.draw.circle(
@@ -181,12 +182,12 @@ class Piece:
             pygame.draw.circle(screen, GREY, (x, y), PIECE_RADIUS)
 
     def all_possible_moves(self, board):
-        """Retourne une liste de toutes les cases possibles où la pièce peut aller."""
+        """Returns a list of all possible cells where the piece can go."""
         if self.is_dead:
-            return []  # ne peut se déplacer.
+            return []  # cannot move.
 
         possible_moves = []
-        # Pour chaque direction, explorer les cases jusqu'à rencontrer un obstacle ou le bord du plateau
+        # For each direction, explore cells until encountering an obstacle or board edge
         for dq, dr in board.directions["all"]:
             step = 1
             if (dq, dr) in board.directions["diagonal"]:
@@ -234,16 +235,18 @@ class Piece:
             new_r = self.r + dr
 
             if not board.is_within_board(new_q, new_r):
-                continue  # Case hors du plateau, considérée comme non-encerclement
+                continue  # Cell outside the board, considered as non-surrounding
             piece_at_position = board.get_piece_at(new_q, new_r)
             if piece_at_position is None:
-                return False  # Il y a une case vide, donc pas encerclé
+                return False  # There is an empty cell, so not surrounded
             if piece_at_position.is_dead:
-                continue  # Continue d'examiner les autres directions
+                continue  # Continue examining other directions
             if piece_at_position.color == self.color:
                 if not piece_at_position.is_surrounded(board, visited):
-                    return False  # Trouvé une pièce alliée qui n'est pas encerclée
-        return True  # Toutes les directions sont bloquées ou conduisent à des pièces mortes/alliées encerclées
+                    return False  # Found an allied piece that is not surrounded
+        return (
+            True  # All directions are blocked or lead to dead/surrounded allied pieces
+        )
 
 
 class MilitantPiece(Piece):
@@ -335,12 +338,12 @@ class MilitantPiece(Piece):
                 return False  # moved_piece_position is not a valid position.
             target_piece.q, target_piece.r = new_position
             logging.debug(
-                f"Le militant a tué la pièce en {new_q}, {new_r} et l'a déplacée en {target_piece.q,}, {target_piece.r}"
+                f"The militant killed the piece at {new_q}, {new_r} and moved it to {target_piece.q,}, {target_piece.r}"
             )
 
         self.q, self.r = new_q, new_r
         logging.debug(
-            f"Le militant s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}"
+            f"The militant moved from {original_q}, {original_r} to {new_q}, {new_r}"
         )
         self.update_threat_and_protections(board)
         return True
@@ -370,10 +373,10 @@ class AssassinPiece(Piece):
         )
 
     def all_possible_moves(self, board):
-        """Retourne tous les mouvements possibles pour l'assassin, y compris les cases occupées par des ennemis,
-        et en traversant les pièces alliées."""
+        """Returns all possible moves for the assassin, including cells occupied by enemies,
+        and passing through allied pieces."""
         if self.is_dead:
-            return []  # ne peut se dplacer.
+            return []  # cannot move.
         possible_moves = []
         for dq, dr in board.directions["all"]:
             step = 1
@@ -406,7 +409,7 @@ class AssassinPiece(Piece):
                     elif piece_at_position.color != self.color:
                         possible_moves.append(
                             (new_q, new_r)
-                        )  # L'assassin peut se déplacer sur une pièce ennemie
+                        )  # The assassin can move to an enemy piece
                         break
                     elif not board.advanced_rules:
                         break
@@ -420,13 +423,13 @@ class AssassinPiece(Piece):
         return possible_moves
 
     def move(self, new_q, new_r, board):
-        """Déplace l'assassin et tue la pièce ennemie si présente."""
+        """Moves the assassin and kills the enemy piece if present."""
         original_q, original_r = self.q, self.r
         if (new_q, new_r) not in self.all_possible_moves(board):
             return False  # new_q, new_r is not a valid move.
         target_piece = board.get_piece_at(new_q, new_r)
 
-        # Ajouter l'animation du mouvement
+        # Add the move animation
         board.animate_move(
             pygame.display.get_surface(), self, original_q, original_r, new_q, new_r
         )
@@ -441,13 +444,13 @@ class AssassinPiece(Piece):
             target_piece.die()
             target_piece.q, target_piece.r = original_q, original_r
             logging.debug(
-                f"L'assassin a tué la pièce en {new_q}, {new_r} et l'a déplacée en {original_q}, {original_r}"
+                f"The assassin killed the piece at {new_q}, {new_r} and moved it to {original_q}, {original_r}"
             )
 
-        # Déplacer l'assassin
+        # Move the assassin
         self.q, self.r = new_q, new_r
         logging.debug(
-            f"L'assassin s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}"
+            f"The assassin moved from {original_q}, {original_r} to {new_q}, {new_r}"
         )
         self.update_threat_and_protections(board)
         return True
@@ -478,9 +481,7 @@ class ChiefPiece(Piece):
 
     def all_possible_moves(self, board):
         if self.is_dead:
-            return (
-                []
-            )  # ne peut se déplacer. # Le chef ne bouge plus s'il est sur la case centrale
+            return []  # cannot move. # The chief no longer moves if on the central cell
         possible_moves = []
         for dq, dr in board.directions["all"]:
             step = 1
@@ -539,18 +540,18 @@ class ChiefPiece(Piece):
                 return False  # moved_piece_position is not a valid position.
             target_piece.q, target_piece.r = new_position
             logging.debug(
-                f"Le chef a tué la pièce en {new_q}, {new_r} et l'a déplacée en {target_piece.q,}, {target_piece.r}"
+                f"The chief killed the piece at {new_q}, {new_r} and moved it to {target_piece.q,}, {target_piece.r}"
             )
 
-        # Déplacer le chef
+        # Move the chief
         self.q, self.r = new_q, new_r
         logging.debug(
-            f"Le chef s'est déplacé de {original_q}, {original_r} à {new_q}, {new_r}"
+            f"The chief moved from {original_q}, {original_r} to {new_q}, {new_r}"
         )
 
         self.update_threat_and_protections(board)
 
-        # Vérifier si le chef est sur la case centrale
+        # Check if the chief is on the central cell
         if not self.on_central_cell and self.q == 0 and self.r == 0:
             self.enter_central_cell(board)
         elif self.on_central_cell and (self.q != 0 or self.r != 0):
@@ -560,7 +561,7 @@ class ChiefPiece(Piece):
     def enter_central_cell(self, board):
         self.on_central_cell = True
         self.std_value += 5
-        logging.debug(f"Le chef {self.name} est arrivé sur la case centrale!")
+        logging.debug(f"Chief {self.name} has entered the central cell!")
         new_order = []
         for player_index in range(
             board.current_player_index + 1,
@@ -574,7 +575,7 @@ class ChiefPiece(Piece):
     def leave_central_cell(self, board):
         self.on_central_cell = False
         self.std_value -= 5
-        logging.debug(f"Le chef {self.name} n'est plus sur la case centrale.")
+        logging.debug(f"Chief {self.name} is no longer on the central cell.")
         new_order = []
         for player_index in range(
             board.current_player_index + 1,
@@ -589,7 +590,9 @@ class ChiefPiece(Piece):
 
     def is_surrounded(self, board, visited=None):
         if self.on_central_cell:
-            return False  # Le chef n'est jamais considéré comme encerclé s'il est sur la case centrale
+            return (
+                False  # The chief is never considered surrounded if on the central cell
+            )
         return super().is_surrounded(board, visited)
 
 

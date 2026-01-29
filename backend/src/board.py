@@ -18,7 +18,7 @@ class Board:
         self.eliminated_players = []
         self.current_player_index = current_player_index
         self.one_player_mode = one_player_mode
-        logging.debug("Initialisation du plateau")
+        logging.debug("Initializing the board")
 
         if self.nb_players in [3, 4]:
             self.board_size = 5
@@ -33,7 +33,7 @@ class Board:
         self.colors, self.color_reverse, self.names = get_colors(self.nb_players)
         self.start_positions = get_start_positions(self.nb_players)
 
-        # Initialisation des hexagones du plateau
+        # Initialize the board hexagons
         for q in range(-self.board_size + 1, self.board_size):
             for r in range(-self.board_size + 1, self.board_size):
                 if (
@@ -42,13 +42,13 @@ class Board:
                 ):
                     self.hexagons.append((q, r))
 
-        # Ajouter des pièces aux positions de départ
+        # Add pieces to starting positions
         self.initialize_pieces()
         self.rl = False
         self.history = []
         self.future = []
-        self.piece_to_place = None  # Pièce tuée à placer manuellement
-        self.available_cells = []  # Cellules disponibles pour placer la pièce tuée
+        self.piece_to_place = None  # Killed piece to be placed manually
+        self.available_cells = []  # Available cells to place the killed piece
         self.board_surface = self.create_board_surface()
         self.hex_pixel_positions = self.calculate_hex_pixel_positions()
         self.save_state(self.current_player_index)
@@ -76,7 +76,7 @@ class Board:
         return positions
 
     def is_within_board(self, q, r):
-        """Vérifie si les coordonnées q, r sont dans les limites du plateau."""
+        """Checks if the coordinates q, r are within the board limits."""
         if self.nb_players in [3, 6]:
             s = -q - r  # Coordonnée s dans un système hexagonal
             return (
@@ -92,9 +92,9 @@ class Board:
             x = HEX_RADIUS * 3 / 2 * q
             y = HEX_RADIUS * math.sqrt(3) * (r + q / 2)
         elif self.nb_players == 4:
-            x = math.sqrt(3) * HEX_RADIUS * q  # Ajustement pour le mode 4 joueurs
-            y = math.sqrt(3) * HEX_RADIUS * r  # Ajustement pour le mode 4 joueurs
-        # Décalage vertical pour centrer le plateau plus haut
+            x = math.sqrt(3) * HEX_RADIUS * q  # Adjustment for 4-player mode
+            y = math.sqrt(3) * HEX_RADIUS * r  # Adjustment for 4-player mode
+        # Vertical offset to center the board higher
         pixel_coords = (
             int(x + WINDOW_WIDTH // 2),
             int(y + (WINDOW_HEIGHT // 2) - VERTICAL_OFFSET),
@@ -104,14 +104,14 @@ class Board:
     def find_adjacent_vectors(self, dq, dr):
         for v1 in self.directions["adjacent"]:
             for v2 in self.directions["adjacent"]:
-                if v1 != v2:  # Vérifie que v1 et v2 sont différents
+                if v1 != v2:  # Check that v1 and v2 are different
                     if (v1[0] + v2[0] == dq) and (v1[1] + v2[1] == dr):
-                        return v1, v2  # Retourne les vecteurs trouvés
+                        return v1, v2  # Returns the found vectors
         return None
 
     def initialize_pieces(self):
-        # Position de départ des pièces (exemple arbitraire)
-        logging.debug("Initialisation des pièces")
+        # Starting positions of the pieces (arbitrary example)
+        logging.debug("Initializing pieces")
 
         class_svg_paths = {
             "assassin": ASSET_PATH + "assassin.svg",
@@ -173,9 +173,7 @@ class Board:
         return state["current_player_index"]
 
     def undo(self):
-        if (
-            len(self.history) > 1
-        ):  # Assurez-vous qu'il reste au moins un état après l'annulation
+        if len(self.history) > 1:  # Make sure at least one state remains after undoing
             self.future.append(self.history.pop())
             previous_state = self.history[-1]
             return self.load_state(previous_state)
@@ -189,27 +187,27 @@ class Board:
         return None
 
     def get_piece_at(self, q, r):
-        """Retourne la pièce à la position (q, r) si elle existe, sinon None."""
+        """Returns the piece at position (q, r) if it exists, otherwise None."""
         for piece in self.pieces:
             if piece.q == q and piece.r == r:
                 return piece
         return None
 
     def is_occupied(self, q, r):
-        """Vérifie si une case est déjà occupée par une pièce."""
+        """Checks if a cell is already occupied by a piece."""
         for piece in self.pieces:
             if piece.q == q and piece.r == r:
                 return True
         return False
 
     def get_unoccupied_cells(self):
-        """Renvoie toutes les cases inoccupées qui ne sont pas la case centrale."""
+        """Returns all unoccupied cells that are not the central cell."""
         unoccupied_cells = []
         for q in range(-self.board_size + 1, self.board_size):
             for r in range(-self.board_size + 1, self.board_size):
-                # Vérifier si la case est sur le plateau
+                # Check if the cell is on the board
                 if self.is_within_board(q, r):
-                    # Exclure la case centrale et les cases occupées
+                    # Exclude the central cell and occupied cells
                     if (q != 0 or r != 0) and not self.is_occupied(q, r):
                         unoccupied_cells.append((q, r))
         return unoccupied_cells
@@ -240,25 +238,25 @@ class Board:
 
         if killed_player is None:
             logging.error(
-                f"Erreur : Impossible de trouver le joueur tué. Killed chief color: {killed_chief.color}"
+                f"Error: Unable to find the killed player. Killed chief color: {killed_chief.color}"
             )
             return
 
         self.eliminated_players.append(killed_player)
-        # Changer la couleur de toutes les pièces du joueur tué
+        # Change the color of all pieces of the killed player
         for piece in killed_player.pieces:
             if killer_player:
                 piece.color = killer_player.color
                 piece.name = self.names[killer_player.color]
                 piece.load_image()
             else:
-                piece.die()  # Si pas de tueur spécifique, les pièces meurent simplement
+                piece.die()  # If no specific killer, the pieces simply die
 
-        # Transférer toutes les pièces au joueur qui a tué le chef, s'il y en a un
+        # Transfer all pieces to the player who killed the chief, if there is one
         if killer_player:
             killer_player.pieces.extend(killed_player.pieces)
 
-        # Supprimer toutes les occurrences du joueur tué
+        # Remove all occurrences of the killed player
         while killed_player in self.players:
             killed_player_index = self.players.index(killed_player)
             if not self.rl:
@@ -271,10 +269,10 @@ class Board:
             self.players.pop(killed_player_index)
 
         logging.debug(
-            f"Le chef {killed_chief.name} a été tué{'.' if not killer_chief else f' par le chef {killer_chief.name}.'} Toutes ses pièces sont maintenant {'mortes' if not killer_chief else f'contrôlées par {killer_chief.name}'}."
+            f"Chief {killed_chief.name} has been killed{'.' if not killer_chief else f' by chief {killer_chief.name}.'} All their pieces are now {'dead' if not killer_chief else f'controlled by {killer_chief.name}'}."
         )
 
-        # Mettre à jour l'index du joueur courant si nécessaire
+        # Update the current player index if necessary
         if self.current_player_index >= len(self.players):
             self.current_player_index = -1
 
@@ -289,11 +287,11 @@ class Board:
             if q == 0 and r == 0:
                 pygame.draw.polygon(
                     screen, CENTRAL_WHITE, self.hex_corners(x, y), 0
-                )  # Remplissage complet
+                )  # Full fill
             else:
                 pygame.draw.polygon(
                     screen, WHITE, self.hex_corners(x, y), 1
-                )  # Seulement le contour
+                )  # Only the outline
 
         self.current_player_color = self.players[self.current_player_index].color
         for piece in self.pieces:
@@ -305,7 +303,7 @@ class Board:
             piece.draw(self, screen, is_current_player)
 
     def hex_corners(self, x, y):
-        """Retourne les coins de l'hexagone en fonction de sa position pixel."""
+        """Returns the hexagon corners based on its pixel position."""
         corners = []
         if self.nb_players in [3, 6]:
             for i in range(6):
@@ -315,15 +313,15 @@ class Board:
                 corner_y = y + HEX_RADIUS * math.sin(angle_rad)
                 corners.append((corner_x, corner_y))
         elif self.nb_players == 4:
-            # Créer un carré en utilisant des offsets directs
+            # Create a square using direct offsets
             half_size = (
                 HEX_RADIUS * math.sqrt(3) / 2
-            )  # Ajusté pour avoir la même taille approximative que l'hexagone
+            )  # Adjusted to have approximately the same size as the hexagon
             corners = [
-                (x - half_size, y - half_size),  # Coin supérieur gauche
-                (x + half_size, y - half_size),  # Coin supérieur droit
-                (x + half_size, y + half_size),  # Coin inférieur droit
-                (x - half_size, y + half_size),  # Coin inférieur gauche
+                (x - half_size, y - half_size),  # Top left corner
+                (x + half_size, y - half_size),  # Top right corner
+                (x + half_size, y + half_size),  # Bottom right corner
+                (x - half_size, y + half_size),  # Bottom left corner
             ]
         return corners
 
@@ -335,53 +333,51 @@ class Board:
             p.evaluate_threat_score(self)
 
     def select_piece(self, q, r):
-        """Sélectionne une pièce à la position (q, r)."""
+        """Selects a piece at position (q, r)."""
         piece = self.get_piece_at(q, r)
         if piece and piece.color == self.players[self.current_player_index].color:
             return piece
         return None
 
     def get_possible_moves(self, piece):
-        """Retourne les mouvements possibles pour une pièce."""
+        """Returns possible moves for a piece."""
         return piece.all_possible_moves(self)
 
     def next_player(self):
-        """Passe au joueur suivant et effectue les vérifications nécessaires."""
+        """Moves to the next player and performs necessary checks."""
         self.check_surrounded_chiefs()
         self.update_all_scores()
         self.current_player_index = (self.current_player_index + 1) % len(self.players)
         self.save_state(self.current_player_index)
 
     def move_piece(self, piece, new_q, new_r):
-        """Déplace une pièce vers une nouvelle position."""
+        """Moves a piece to a new position."""
         if (new_q, new_r) in self.get_possible_moves(piece):
             target_piece = self.get_piece_at(new_q, new_r)
             original_q, original_r = piece.q, piece.r
             logging.debug(
-                f"Le {piece.piece_class} {piece.name} se déplace de {piece.q},{piece.r} à {new_q},{new_r}"
+                f"The {piece.piece_class} {piece.name} moves from {piece.q},{piece.r} to {new_q},{new_r}"
             )
             if target_piece and isinstance(
                 piece, (MilitantPiece, ChiefPiece, DiplomatPiece, NecromobilePiece)
             ):
-                # Tuer la pièce ennemie
+                # Kill the enemy piece
                 if isinstance(piece, (MilitantPiece, ChiefPiece)):
                     if isinstance(target_piece, ChiefPiece):
                         self.chief_killed(
                             target_piece, self.get_chief_of_color(piece.color)
                         )
                         logging.debug(
-                            f"Le chef {target_piece.name} a été tué par le {piece.piece_class} {piece.name}."
+                            f"Chief {target_piece.name} has been killed by the {piece.piece_class} {piece.name}."
                         )
 
                     if target_piece.on_central_cell and isinstance(piece, ChiefPiece):
                         piece.enter_central_cell(self)
-                        logging.debug(
-                            f"Le chef {piece.name} entre sur la case centrale."
-                        )
+                        logging.debug(f"Chief {piece.name} enters the central cell.")
 
                     target_piece.die()
                     logging.debug(
-                        f"Le {target_piece.piece_class} {target_piece.name} a té tué par le {piece.piece_class} {piece.name}."
+                        f"The {target_piece.piece_class} {target_piece.name} has been killed by the {piece.piece_class} {piece.name}."
                     )
 
                 if (
@@ -391,17 +387,17 @@ class Board:
                     and not target_piece.is_dead
                 ):
                     logging.debug(
-                        f"Le diplomate {piece.name} fait quitter le chef {target_piece.name} de la case centrale."
+                        f"The diplomat {piece.name} makes chief {target_piece.name} leave the central cell."
                     )
                     target_piece.leave_central_cell(self)
 
                 self.piece_to_place = (
-                    target_piece  # Stocker la pièce tuée pour un placement manuel
+                    target_piece  # Store the killed piece for manual placement
                 )
                 self.available_cells = self.get_unoccupied_cells() + [
                     (original_q, original_r)
-                ]  # Obtenir les cellules disponibles
-                # Déplacer la pièce qui a tué à la position de la cible
+                ]  # Get available cells
+                # Move the piece that killed to the target's position
                 self.animate_move(
                     pygame.display.get_surface(),
                     piece,
@@ -426,12 +422,12 @@ class Board:
             if chief and not chief.on_central_cell:
                 if chief.is_surrounded(self):
                     logging.debug(
-                        f"Le chef {chief.name} a été éliminé car il était encerclé!"
+                        f"Chief {chief.name} has been eliminated because they were surrounded!"
                     )
                     self.chief_killed(chief, None)
 
     def place_dead_piece(self, new_q, new_r):
-        """Place une pièce morte à une nouvelle position."""
+        """Places a dead piece at a new position."""
         if self.piece_to_place and (new_q, new_r) in self.available_cells:
             self.piece_to_place.q = new_q
             self.piece_to_place.r = new_r
@@ -442,7 +438,7 @@ class Board:
         return False
 
     def draw_available_cells(self, screen):
-        """Dessine les cellules disponibles pour placer la pièce tuée."""
+        """Draws available cells to place the killed piece."""
         if self.rl:
             return
         for q, r in self.available_cells:
@@ -450,7 +446,7 @@ class Board:
             pygame.draw.circle(screen, GREY, (int(x), int(y)), 10)
 
     def pixel_to_hex(self, x, y):
-        """Convertit les coordonnées pixel en coordonnées hexagonales."""
+        """Converts pixel coordinates to hexagonal coordinates."""
 
         if self.nb_players in [3, 6]:
             x = (x - WINDOW_WIDTH // 2) / (HEX_RADIUS * 3 / 2)
@@ -461,19 +457,19 @@ class Board:
             r = y - x / 2
             return round(q), round(r)
         elif self.nb_players == 4:
-            # Ajustement pour le mode 4 joueurs (carrés)
+            # Adjustment for 4-player mode (squares)
             x = (x - WINDOW_WIDTH // 2) / (
                 HEX_RADIUS * math.sqrt(3)
-            )  # Ajusté pour les carrés
+            )  # Adjusted for squares
             y = (y - (WINDOW_HEIGHT // 2 - VERTICAL_OFFSET)) / (
                 HEX_RADIUS * math.sqrt(3)
-            )  # Ajusté pour les carrés
+            )  # Adjusted for squares
             q = x
             r = y
             return round(q), round(r)
 
     def draw_possible_moves(self, screen, possible_moves):
-        """Dessine les mouvements possibles sur l'écran."""
+        """Draws possible moves on the screen."""
         if self.rl:
             return
         for q, r in possible_moves:
@@ -481,21 +477,21 @@ class Board:
             pygame.draw.circle(screen, (100, 100, 100), (int(x), int(y)), 10)
 
     def get_player_of_color(self, color):
-        """Retourne le joueur correspondant à la couleur donnée."""
+        """Returns the player corresponding to the given color."""
         for player in self.players:
             if player.color == color:
                 return player
-        return None  # Retourne None si aucun joueur ne correspond à la couleur
+        return None  # Returns None if no player matches the color
 
     def animate_move(self, screen, piece, start_q, start_r, end_q, end_r):
         if self.rl:
             return
-        frames = 30  # Nombre de frames pour l'animation
+        frames = 30  # Number of frames for animation
         logging.debug(
-            f"Animation de déplacement de {piece.piece_class} {piece.name} de {start_q},{start_r} à {end_q},{end_r}"
+            f"Move animation of {piece.piece_class} {piece.name} from {start_q},{start_r} to {end_q},{end_r}"
         )
 
-        original_q, original_r = piece.q, piece.r  # Sauvegarder la position originale
+        original_q, original_r = piece.q, piece.r  # Save the original position
         current_player_index = self.current_player_index
         next_player_index = (current_player_index + 1) % len(self.players)
 
@@ -504,32 +500,32 @@ class Board:
             current_q = start_q + (end_q - start_q) * t
             current_r = start_r + (end_r - start_r) * t
 
-            # Mettre à jour temporairement la position de la pièce
+            # Temporarily update the piece position
             piece.q, piece.r = current_q, current_r
 
-            # Redessiner le plateau complet
+            # Redraw the complete board
             screen.fill(BLACK)
             self.draw(screen)
 
-            # Dessiner la pièce en mouvement par-dessus
+            # Draw the moving piece on top
             x, y = self.hex_to_pixel(current_q, current_r)
             pygame.draw.circle(screen, piece.color, (int(x), int(y)), PIECE_RADIUS)
             if piece.class_image:
                 class_image_rect = piece.class_image.get_rect(center=(int(x), int(y)))
                 screen.blit(piece.class_image, class_image_rect)
 
-            # Dessiner l'ordre des joueurs avec l'animation de la flèche
+            # Draw the player order with arrow animation
             draw_player_turn(
                 screen, self.players, current_player_index, next_player_index, t
             )
 
             pygame.display.flip()
-            pygame.time.wait(5)  # Attendre 5ms entre chaque frame
+            pygame.time.wait(5)  # Wait 5ms between each frame
 
-        # Remettre la pièce à sa position finale
+        # Put the piece back to its final position
         piece.q, piece.r = end_q, end_r
 
-        # Redessiner une dernière fois pour s'assurer que tout est à jour
+        # Redraw one last time to ensure everything is up to date
         screen.fill(BLACK)
         self.draw(screen)
         draw_player_turn(screen, self.players, next_player_index)
@@ -545,56 +541,54 @@ class Board:
         self, player_color, selected_pos, destination_pos, captured_piece_pos=None
     ):
         """
-        Gère le mouvement d'un client.
+        Handles a client's move.
 
-        :param player_color: La couleur du joueur qui fait le mouvement
-        :param selected_pos: Tuple (q, r) de la position de la pièce sélectionnée
-        :param destination_pos: Tuple (q, r) de la destination de la pièce
-        :param captured_piece_pos: Tuple (q, r) optionnel pour la position de la pièce capturée
-        :return: Boolean indiquant si le mouvement a été effectué avec succès
+        :param player_color: The color of the player making the move
+        :param selected_pos: Tuple (q, r) of the selected piece position
+        :param destination_pos: Tuple (q, r) of the piece destination
+        :param captured_piece_pos: Optional tuple (q, r) for the captured piece position
+        :return: Boolean indicating if the move was successfully performed
         """
-        # Vérifier si c'est le tour du joueur
+        # Check if it's the player's turn
         current_player = self.players[self.current_player_index]
         if tuple(current_player.color) != tuple(self.colors[player_color]):
             logging.debug(
-                f"Ce n'est pas le tour du joueur {tuple(self.colors[player_color])} mais du joueur {tuple(current_player.color)}"
+                f"It's not the turn of player {tuple(self.colors[player_color])} but of player {tuple(current_player.color)}"
             )
             return False
 
-        # Sélectionner la pièce
+        # Select the piece
         selected_piece = self.get_piece_at(*selected_pos)
         if not selected_piece or tuple(selected_piece.color) != tuple(
             self.colors[player_color]
         ):
-            logging.debug(f"Pièce invalide sélectionnée à {selected_pos}")
+            logging.debug(f"Invalid piece selected at {selected_pos}")
             return False
 
-        # Vérifier si le mouvement est valide
+        # Check if the move is valid
         if destination_pos not in self.get_possible_moves(selected_piece):
-            logging.debug(f"Mouvement invalide de {selected_pos} à {destination_pos}")
+            logging.debug(f"Invalid move from {selected_pos} to {destination_pos}")
             return False
 
-        # Effectuer le mouvement
+        # Perform the move
         success = self.move_piece(selected_piece, *destination_pos)
         if not success:
-            logging.debug(f"Échec du déplacement de {selected_pos} à {destination_pos}")
+            logging.debug(f"Failed to move from {selected_pos} to {destination_pos}")
             return False
 
-        # Gérer la pièce capturée si nécessaire
+        # Handle the captured piece if necessary
         if self.piece_to_place and captured_piece_pos:
             if not self.place_dead_piece(*captured_piece_pos):
-                logging.debug(
-                    f"Échec du placement de la pièce capturée à {captured_piece_pos}"
-                )
+                logging.debug(f"Failed to place captured piece at {captured_piece_pos}")
                 return False
 
-        # Si tout s'est bien passé, passer au joueur suivant
+        # If everything went well, move to the next player
         # self.next_player() // there is probably another next player somewhere else, idk where
         return True
 
     def send_state(self):
         """
-        Prépare et renvoie l'état actuel du plateau sous forme de chaîne JSON.
+        Prepares and returns the current board state as a JSON string.
         """
         return {
             "pieces": [

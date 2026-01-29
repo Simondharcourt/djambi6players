@@ -15,24 +15,22 @@ logging.basicConfig(
 
 class DjambiServer:
     def __init__(self):
-        self.board = Board(6, 0)  # Initialiser le plateau de jeu
+        self.board = Board(6, 0)  # Initialize the game board
         self.board.rl = True
-        self.clients = {}  # Dictionnaire pour stocker les clients avec leur couleur
+        self.clients = {}  # Dictionary to store clients with their color
         self.current_player_index = 0
         self.lock = asyncio.Lock()
         self.available_colors = list(self.board.colors.keys())
-        self.waiting_clients = []  # Nouvelle liste pour les clients en attente
-        self.db = Database()  # Initialisation de la base de données
+        self.waiting_clients = []  # New list for waiting clients
+        self.db = Database()  # Initialize the database
         self.authenticated_users = {}  # websocket -> username
-        self.connected_usernames = set()  # Pour suivre les noms d'utilisateur connectés
+        self.connected_usernames = set()  # To track connected usernames
 
     async def register(self, websocket):
-        # Au lieu d'attribuer directement une couleur, on met le client en attente
+        # Instead of directly assigning a color, put the client in waiting
         self.waiting_clients.append(websocket)
         await websocket.send(
-            json.dumps(
-                {"type": "waiting", "message": "En attente de démarrage de partie"}
-            )
+            json.dumps({"type": "waiting", "message": "Waiting for game start"})
         )
 
     async def start_game(self, websocket, nb_players):
@@ -45,36 +43,36 @@ class DjambiServer:
             or (nb_players == 6 and not self.available_colors)
         ):
             await websocket.send(
-                json.dumps({"type": "error", "message": "La partie est pleine"})
+                json.dumps({"type": "error", "message": "The game is full"})
             )
             return
 
-        # Préparer les couleurs et indices
+        # Prepare colors and indices
         if nb_players == 2:
             colors = [self.available_colors.pop(0) for _ in range(3)]
-            player_index = 1  # Pour le joueur 2
+            player_index = 1  # For player 2
 
         elif nb_players == 3:
             colors = [self.available_colors.pop(0) for _ in range(2)]
-            player_index = 1  # Pour le joueur 2
+            player_index = 1  # For player 2
 
         else:  # nb_players == 6
             self.waiting_clients.remove(websocket)
             colors = [self.available_colors.pop(0)]
             player_index = list(self.board.colors.keys()).index(colors[0])
 
-        # Enregistrer le client
+        # Register the client
         self.clients[websocket] = colors
 
-        # Préparer la réponse pour le client
+        # Prepare the response for the client
         color_indices = [
             list(self.board.colors.keys()).index(color) for color in colors
         ]
 
-        # Envoyer l'état initial
+        # Send the initial state
         await self.send_board_state(websocket)
 
-        # Envoyer l'attribution des couleurs
+        # Send color assignment
         await websocket.send(
             json.dumps(
                 {
@@ -88,7 +86,7 @@ class DjambiServer:
             )
         )
 
-        # Mettre à jour l'état pour tous les clients
+        # Update the state for all clients
         await self._prepare_and_send_state()
 
     async def unregister(self, websocket):
@@ -102,14 +100,14 @@ class DjambiServer:
                 self._reset_game()
                 await self.broadcast(
                     json.dumps(
-                        {"type": "game_reset", "message": "Le jeu a été réinitialisé"}
+                        {"type": "game_reset", "message": "The game has been reset"}
                     )
                 )
 
     async def _prepare_and_send_state(
         self, include_last_move=None, specific_client=None
     ):
-        """Méthode utilitaire pour préparer et envoyer l'état du jeu"""
+        """Utility method to prepare and send the game state"""
         state = self.board.send_state()
         state["type"] = "state"
         state["available_colors"] = self.available_colors
@@ -123,14 +121,14 @@ class DjambiServer:
                     if player["color"] == color:
                         player["name"] = self.authenticated_users[websocket]
 
-        # Envoyer soit à un client spécifique, soit à tous
+        # Send either to a specific client or to all
         if specific_client:
             await specific_client.send(json.dumps(state))
         else:
             await self.broadcast(json.dumps(state))
 
     def _reset_game(self):
-        """Réinitialise l'état du jeu"""
+        """Resets the game state"""
         self.board = Board(0)
         self.board.rl = True
         self.current_player_index = 0
@@ -145,7 +143,7 @@ class DjambiServer:
         websockets.broadcast(self.clients, message)
 
     async def handle_authentication(self, websocket, data):
-        """Gère les requêtes d'authentification"""
+        """Handles authentication requests"""
         message_type = data["type"]
         if "username" in data:
             username = data["username"]
@@ -160,7 +158,7 @@ class DjambiServer:
                         {
                             "type": "auth_response",
                             "success": True,
-                            "message": "Compte créé avec succès",
+                            "message": "Account created successfully",
                         }
                     )
                 )
@@ -170,20 +168,20 @@ class DjambiServer:
                         {
                             "type": "auth_response",
                             "success": False,
-                            "message": "Nom d'utilisateur déjà pris",
+                            "message": "Username already taken",
                         }
                     )
                 )
 
         elif message_type == "login":
-            # Vérifier si l'utilisateur est déjà connecté
+            # Check if user is already connected
             if username in self.connected_usernames:
                 await websocket.send(
                     json.dumps(
                         {
                             "type": "auth_response",
                             "success": False,
-                            "message": "Cet utilisateur est déjà connecté sur une autre session",
+                            "message": "This user is already connected on another session",
                         }
                     )
                 )
@@ -191,16 +189,14 @@ class DjambiServer:
 
             if self.db.verify_user(username, password):
                 self.authenticated_users[websocket] = username
-                self.connected_usernames.add(
-                    username
-                )  # Ajouter à la liste des connectés
+                self.connected_usernames.add(username)  # Add to connected list
                 stats = self.db.get_user_stats(username)
                 await websocket.send(
                     json.dumps(
                         {
                             "type": "auth_response",
                             "success": True,
-                            "message": "Connexion réussie",
+                            "message": "Login successful",
                             "username": username,
                             "stats": {"games_played": stats[0], "games_won": stats[1]},
                         }
@@ -212,7 +208,7 @@ class DjambiServer:
                         {
                             "type": "auth_response",
                             "success": False,
-                            "message": "Identifiants incorrects",
+                            "message": "Incorrect credentials",
                         }
                     )
                 )
@@ -220,29 +216,27 @@ class DjambiServer:
         elif message_type == "logout":
             if websocket in self.authenticated_users:
                 username = self.authenticated_users[websocket]
-                self.connected_usernames.remove(
-                    username
-                )  # Retirer de la liste des connectés
+                self.connected_usernames.remove(username)  # Remove from connected list
                 del self.authenticated_users[websocket]
                 await websocket.send(
                     json.dumps(
                         {
                             "type": "auth_response",
                             "success": True,
-                            "message": "Déconnexion réussie",
+                            "message": "Logout successful",
                         }
                     )
                 )
 
     async def handler(self, websocket, path):
-        logging.info(f"Nouvelle connexion établie : {websocket.remote_address}")
+        logging.info(f"New connection established: {websocket.remote_address}")
         await self.register(websocket)
         try:
             async for message in websocket:
                 data = json.loads(message)
-                logging.info(f"Message reçu du client : {data}")
+                logging.info(f"Message received from client: {data}")
 
-                # Gérer l'authentification
+                # Handle authentication
                 if data["type"] in ["create_account", "login", "logout"]:
                     await self.handle_authentication(websocket, data)
                     continue
@@ -269,16 +263,14 @@ class DjambiServer:
                         )
 
                         if success:
-                            logging.info("Mouvement réussi")
+                            logging.info("Move successful")
                             await self._prepare_and_send_state(data)
                         else:
                             await websocket.send(
-                                json.dumps(
-                                    {"type": "error", "message": "Mouvement invalide"}
-                                )
+                                json.dumps({"type": "error", "message": "Invalid move"})
                             )
                 elif data["type"] in ["undo", "redo"]:
-                    logging.info(f"Commande {data['type']} reçue")
+                    logging.info(f"Command {data['type']} received")
                     async with self.lock:
                         new_index = (
                             self.board.undo()
@@ -287,36 +279,32 @@ class DjambiServer:
                         )
                         if new_index is not None:
                             self.board.current_player_index = new_index
-                        logging.info(f"{data['type']} effectué : {success}")
+                        logging.info(f"{data['type']} performed: {success}")
                         await self._prepare_and_send_state()
         finally:
-            logging.info(f"Connexion fermée : {websocket.remote_address}")
+            logging.info(f"Connection closed: {websocket.remote_address}")
             if websocket in self.authenticated_users:
                 username = self.authenticated_users[websocket]
-                self.connected_usernames.remove(
-                    username
-                )  # Nettoyer lors de la déconnexion
+                self.connected_usernames.remove(username)  # Clean up on disconnect
                 del self.authenticated_users[websocket]
             await self.unregister(websocket)
 
     async def quit_game(self, websocket):
-        logging.info(f"Client {websocket.remote_address} quitte la partie")
+        logging.info(f"Client {websocket.remote_address} quits the game")
 
-        # Gérer les couleurs du joueur qui quitte
+        # Handle the colors of the player who quits
         colors = self.clients.pop(websocket)
         self.waiting_clients.append(websocket)
         self.available_colors = colors + self.available_colors
 
-        # Envoyer l'état mis à jour
+        # Send the updated state
         await self._prepare_and_send_state()
 
-        # Réinitialiser le jeu si tous les joueurs sont partis
+        # Reset the game if all players have left
         if len(self.available_colors) == 6:
             self._reset_game()
             await self.broadcast(
-                json.dumps(
-                    {"type": "game_reset", "message": "Le jeu a été réinitialisé"}
-                )
+                json.dumps({"type": "game_reset", "message": "The game has been reset"})
             )
 
     async def update_game_stats(self, winner_websocket):
@@ -329,7 +317,7 @@ async def main():
     port = int(os.environ.get("PORT", 8765))
     server = DjambiServer()
     async with websockets.serve(server.handler, "0.0.0.0", port):
-        logging.info(f"Serveur lancé sur le port {port}")
+        logging.info(f"Server started on port {port}")
         await asyncio.Future()  # Run forever
 
 
