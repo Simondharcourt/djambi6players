@@ -65,7 +65,9 @@ class DjambiServer:
         self.clients[websocket] = colors
 
         # Préparer la réponse pour le client
-        color_indices = [list(self.board.colors.keys()).index(color) for color in colors]
+        color_indices = [
+            list(self.board.colors.keys()).index(color) for color in colors
+        ]
 
         # Envoyer l'état initial
         await self.send_board_state(websocket)

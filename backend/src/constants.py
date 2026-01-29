@@ -2,7 +2,6 @@ import os
 import argparse
 
 
-
 HEX_RADIUS = 35  # Rayon des hexagones
 WINDOW_WIDTH = 1000
 WINDOW_HEIGHT = 1000
@@ -21,4 +20,3 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 ASSET_PATH = os.path.join(os.path.dirname(CURRENT_DIR), "assets/")
 IS_PRODUCTION = os.environ.get("ENVIRONMENT") == "production"
 HIGHLIGHT_WIDTH = 3  # Épaisseur du cercle de surbrillance
-

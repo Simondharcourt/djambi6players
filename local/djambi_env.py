@@ -64,10 +64,15 @@ class DjambiEnv(gym.Env):
                 "board": spaces.Box(
                     low=0,
                     high=self.nb_players,
-                    shape=(self.board.board_size * 2 - 1, self.board.board_size * 2 - 1),
+                    shape=(
+                        self.board.board_size * 2 - 1,
+                        self.board.board_size * 2 - 1,
+                    ),
                     dtype=np.int8,
                 ),
-                "player_status": spaces.Box(low=0, high=1, shape=(self.nb_players,), dtype=np.int8),
+                "player_status": spaces.Box(
+                    low=0, high=1, shape=(self.nb_players,), dtype=np.int8
+                ),
                 "current_player": spaces.Discrete(self.nb_players),
             }
         )
@@ -157,10 +162,16 @@ class DjambiEnv(gym.Env):
         Retourne l'observation actuelle.
         """
         # Créer une représentation du plateau
-        board_state = np.zeros((self.board.board_size * 2 - 1, self.board.board_size * 2 - 1), dtype=np.int8)
+        board_state = np.zeros(
+            (self.board.board_size * 2 - 1, self.board.board_size * 2 - 1),
+            dtype=np.int8,
+        )
         for piece in self.board.pieces:
             if not piece.is_dead:
-                q, r = piece.q + self.board.board_size - 1, piece.r + self.board.board_size - 1
+                q, r = (
+                    piece.q + self.board.board_size - 1,
+                    piece.r + self.board.board_size - 1,
+                )
                 # Utiliser l'index de la couleur dans la liste des couleurs
                 color_name = self.board.names[piece.color]
                 color_index = list(self.board.names.keys()).index(piece.color) + 1
@@ -264,7 +275,9 @@ class DjambiEnv(gym.Env):
         reward = current_player.compute_relative_score(self.board) - score_initial
 
         if reward > 0:
-            logger.debug(f"Player {current_player.name} has improved his score by {reward}")
+            logger.debug(
+                f"Player {current_player.name} has improved his score by {reward}"
+            )
         elif reward < 0:
             logger.debug(f"Player {current_player.name} has lost {reward} points")
 
@@ -276,17 +289,29 @@ class DjambiEnv(gym.Env):
             # Choisir une position aléatoire valide pour placer la pièce morte
             if self.board.available_cells:
                 placement_q, placement_r = random.choice(self.board.available_cells)
-                logger.debug(f"Placing dead piece {self.board.piece_to_place.__class__.__name__} at ({placement_q}, {placement_r})")
-                placement_success = self.board.place_dead_piece(placement_q, placement_r)
+                logger.debug(
+                    f"Placing dead piece {self.board.piece_to_place.__class__.__name__} at ({placement_q}, {placement_r})"
+                )
+                placement_success = self.board.place_dead_piece(
+                    placement_q, placement_r
+                )
                 if not placement_success:
                     logger.debug("Failed to place dead piece")
-                    return self._get_observation(), -10.0, False, False, self._get_info()
+                    return (
+                        self._get_observation(),
+                        -10.0,
+                        False,
+                        False,
+                        self._get_info(),
+                    )
             else:
                 logger.debug("No available cells for dead piece placement")
                 return self._get_observation(), -10.0, False, False, self._get_info()
 
         # Le next_player() est déjà appelé dans board.move_piece() et board.place_dead_piece()
-        logger.debug(f"Next player: {self.board.players[self.board.current_player_index].name}")
+        logger.debug(
+            f"Next player: {self.board.players[self.board.current_player_index].name}"
+        )
 
         if self.render_mode == "human":
             self.render()

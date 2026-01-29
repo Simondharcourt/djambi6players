@@ -1,18 +1,12 @@
-
-
-
-
-
-
 def get_colors(nb_players):
     if nb_players == 6:
         colors = {
-        "yellow": (255, 255, 0),
-        "pink": (255, 105, 180),
-        "red": (255, 0, 0),
-        "blue": (0, 0, 255),
-        "purple": (128, 0, 128),
-        "green": (0, 255, 0),
+            "yellow": (255, 255, 0),
+            "pink": (255, 105, 180),
+            "red": (255, 0, 0),
+            "blue": (0, 0, 255),
+            "purple": (128, 0, 128),
+            "green": (0, 255, 0),
         }
         names = {
             (128, 0, 128): "Violet",
@@ -194,7 +188,6 @@ def get_start_positions(nb_players):
         ]
 
 
-
 def get_directions(nb_players):
     if nb_players == 6:
         adjacent_directions = [
@@ -233,5 +226,5 @@ def get_directions(nb_players):
     return {
         "adjacent": adjacent_directions,
         "diagonal": diag_directions,
-        "all": all_directions
+        "all": all_directions,
     }

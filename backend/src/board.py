@@ -7,6 +7,7 @@ from .minmax_player import MinMaxPlayer
 from .animation import animate_player_elimination, draw_player_turn
 from .utils import get_directions, get_colors, get_start_positions
 
+
 class Board:
     def __init__(self, nb_players, current_player_index=0, one_player_mode=False):
         self.hexagons = []
@@ -33,7 +34,10 @@ class Board:
         # Initialisation des hexagones du plateau
         for q in range(-self.board_size + 1, self.board_size):
             for r in range(-self.board_size + 1, self.board_size):
-                if -q - r in range(-self.board_size + 1, self.board_size) or self.nb_players == 4:
+                if (
+                    -q - r in range(-self.board_size + 1, self.board_size)
+                    or self.nb_players == 4
+                ):
                     self.hexagons.append((q, r))
 
         # Ajouter des pièces aux positions de départ
@@ -73,7 +77,11 @@ class Board:
         """Vérifie si les coordonnées q, r sont dans les limites du plateau."""
         if self.nb_players in [3, 6]:
             s = -q - r  # Coordonnée s dans un système hexagonal
-            return abs(q) < self.board_size and abs(r) < self.board_size and abs(s) < self.board_size
+            return (
+                abs(q) < self.board_size
+                and abs(r) < self.board_size
+                and abs(s) < self.board_size
+            )
         elif self.nb_players == 4:
             return abs(q) < self.board_size and abs(r) < self.board_size
 

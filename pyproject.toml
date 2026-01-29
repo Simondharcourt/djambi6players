@@ -1,35 +1,58 @@
-[tool.poetry]
+[project]
 name = "djambi6players"
 version = "0.1.0"
 description = "Djambi game with 6 players and reinforcement learning"
-authors = ["Your Name <your.email@example.com>"]
+authors = [
+    { name = "Simon d'Harcourt", email = "simondharcourt@gmail.com" }
+]
 readme = "README.md"
-packages = [
-    { include = "backend/src", from = "." },
-    { include = "local", from = "." }
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.24.0",
+    "gymnasium>=0.29.0",
+    "torch>=2.0.0",
+    "matplotlib>=3.7.0",
+    "tqdm>=4.65.0",
+    "pygame>=2.6.1",
+    "cairosvg>=2.7.1",
+    "websockets>=10.4",
+    "gunicorn>=21.2.0",
 ]
 
-[tool.poetry.dependencies]
-python = "3.11"
-numpy = "^1.24.0"
-gymnasium = "^0.29.0"
-torch = "^2.0.0"
-matplotlib = "^3.7.0"
-tqdm = "^4.65.0"
-pygame = "^2.6.1"
-cairosvg = "^2.7.1"
-websockets = "^10.4"
-gunicorn = "^21.2.0"
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "black>=23.7.0",
+    "isort>=5.12.0",
+    "flake8>=6.1.0",
+    "mypy>=1.0.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.0"
-black = "^23.7.0"
-isort = "^5.12.0"
-flake8 = "^6.1.0"
+[project.scripts]
+djambi = "backend.src.main:main"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry.scripts]
-djambi = "backend.src.main:main" 
+[tool.hatch.build.targets.wheel]
+packages = ["backend/src", "local"]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_equality = true
+ignore_missing_imports = true

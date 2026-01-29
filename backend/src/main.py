@@ -22,6 +22,7 @@ def parse_arguments():
     )
     return parser.parse_args()
 
+
 def main():
     # Récupération des arguments
     args = parse_arguments()
