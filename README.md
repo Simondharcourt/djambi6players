@@ -4,41 +4,66 @@ A Python implementation of the Djambi board game with 6 players and reinforcemen
 
 ## Installation
 
-1. Install Poetry if you haven't already:
+1. Install uv if you haven't already:
 ```bash
-curl -sSL https://install.python-poetry.org | python3 -
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 2. Clone this repository and install dependencies:
 ```bash
 git clone https://github.com/simondharcourt/djambi6players.git
 cd djambi6players
-poetry install
+uv sync
 ```
 
 ## Usage
 
 To run the game:
 ```bash
-poetry run djambi
+uv run djambi
 ```
 
 For reinforcement learning:
 ```bash
-poetry run python local/train.py
+uv run python local/train.py
+```
+
+To run the multiplayer server:
+```bash
+uv run python backend/src/server.py
 ```
 
 ## Development
 
-To run tests:
+The project uses pre-commit hooks for code quality. Install them with:
 ```bash
-poetry run pytest
+uv run pre-commit install
 ```
 
-To format code:
+Pre-commit will automatically run on each commit:
+- **black** for code formatting
+- **isort** for import sorting
+- **mypy** for type checking
+
+To run pre-commit manually on all files:
 ```bash
-poetry run black .
-poetry run isort .
+uv run pre-commit run --all-files
+```
+
+To run tests:
+```bash
+uv run pytest
+```
+
+To manually format code:
+```bash
+uv run black .
+uv run isort .
+```
+
+To run type checking:
+```bash
+uv run mypy .
 ```
 
 ## License

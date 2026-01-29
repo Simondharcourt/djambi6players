@@ -1,105 +1,112 @@
 # Djambi Reinforcement Learning
 
-Ce projet vise à développer un agent de reinforcement learning capable de jouer au jeu Djambi à 6 joueurs. L'objectif est d'entraîner un agent qui peut éliminer les autres joueurs et gagner la partie.
+This project aims to develop a reinforcement learning agent capable of playing the 6-player Djambi game. The goal is to train an agent that can eliminate other players and win the game.
 
-## Approches Proposées
+## Proposed Approaches
 
 ### 1. Deep Q-Network (DQN)
 
-**Architecture proposée :**
-- **État du jeu :**
-  - Encodage du plateau (6x6)
-  - Position des pièces de chaque joueur
-  - État des pièces (vivantes/mortes)
-  - Joueur actuel
-  - Historique des derniers mouvements
+**Proposed Architecture:**
+- **Game State:**
+  - Board encoding (6x6)
+  - Position of each player's pieces
+  - Piece status (alive/dead)
+  - Current player
+  - Recent move history
 
-- **Réseau de neurones :**
-  - Couches convolutives pour traiter le plateau
-  - Couches fully connected pour la prise de décision
-  - Double DQN pour plus de stabilité
+- **Neural Network:**
+  - Convolutional layers to process the board
+  - Fully connected layers for decision making
+  - Double DQN for improved stability
   - Prioritized Experience Replay
 
-- **Fonction de récompense :**
-  - +1.0 pour éliminer un joueur
-  - -1.0 pour être éliminé
-  - +0.1 pour des mouvements stratégiques
-  - -0.1 pour des mouvements risqués
+- **Reward Function:**
+  - +1.0 for eliminating a player
+  - -1.0 for being eliminated
+  - +0.1 for strategic moves
+  - -0.1 for risky moves
 
 ### 2. Policy Gradient Methods (PPO)
 
-**Avantages :**
-- Meilleure gestion des actions continues
-- Plus stable pour les environnements complexes
-- Peut apprendre des stratégies plus sophistiquées
+**Advantages:**
+- Better handling of continuous actions
+- More stable for complex environments
+- Can learn more sophisticated strategies
 
-**Architecture :**
-- Actor-Critic avec deux réseaux
-- PPO pour la stabilité de l'entraînement
+**Architecture:**
+- Actor-Critic with two networks
+- PPO for training stability
 - GAE (Generalized Advantage Estimation)
 
 ### 3. Monte Carlo Tree Search (MCTS) + Deep Learning
 
-**Approche hybride :**
-- MCTS pour l'exploration
-- Réseau de neurones pour l'évaluation des positions
+**Hybrid Approach:**
+- MCTS for exploration
+- Neural network for position evaluation
 - AlphaZero-like implementation
 
-## Implémentation
+## Implementation
 
-### Prérequis
-- Python 3.8+
+### Prerequisites
+- Python 3.11+
 - PyTorch
 - Gymnasium
 - NumPy
-- Matplotlib (pour la visualisation)
+- Matplotlib (for visualization)
+- uv (for package management)
 
-### Structure du Projet
+### Project Structure
 ```
 local/
-├── env.py              # Environnement du jeu
-├── models/             # Modèles de RL
-│   ├── dqn.py
-│   ├── ppo.py
-│   └── mcts.py
-├── utils/              # Utilitaires
-│   ├── replay_buffer.py
-│   └── visualization.py
-└── train.py           # Script d'entraînement
+├── djambi_env.py       # Game environment
+├── dqn_model.py        # DQN model implementation
+├── train.py            # Training script
+└── README.md           # This file
 ```
 
-### Entraînement
+### Training
 
-1. **Phase 1 : Apprentissage de base**
-   - Entraînement contre des agents aléatoires
-   - Focus sur les règles de base
-   - Durée : ~100,000 épisodes
+To train the agent:
+```bash
+# With rendering (visual feedback)
+uv run python local/train.py --nb_player_mode 3 --render true
 
-2. **Phase 2 : Apprentissage avancé**
-   - Entraînement contre des versions précédentes
-   - Focus sur la stratégie
-   - Durée : ~500,000 épisodes
+# Without rendering (faster training)
+uv run python local/train.py --nb_player_mode 3 --render false
+```
 
-3. **Phase 3 : Fine-tuning**
-   - Entraînement contre des humains
-   - Optimisation des stratégies
-   - Durée : Variable
+**Training Phases:**
 
-### Métriques d'Évaluation
-- Taux de victoire
-- Nombre moyen de tours par partie
-- Taux de survie
-- Efficacité des attaques
+1. **Phase 1: Basic Learning**
+   - Training against random agents
+   - Focus on basic rules
+   - Duration: ~100,000 episodes
 
-## Prochaines Étapes
+2. **Phase 2: Advanced Learning**
+   - Training against previous versions
+   - Focus on strategy
+   - Duration: ~500,000 episodes
 
-1. [ ] Implémentation de l'environnement de base
-2. [ ] Développement du DQN
-3. [ ] Entraînement initial
-4. [ ] Évaluation et optimisation
-5. [ ] Implémentation des méthodes avancées
+3. **Phase 3: Fine-tuning**
+   - Training against humans
+   - Strategy optimization
+   - Duration: Variable
 
-## Références
+### Evaluation Metrics
+- Win rate
+- Average number of turns per game
+- Survival rate
+- Attack efficiency
+
+## Next Steps
+
+1. [ ] Implement base environment ✅
+2. [ ] Develop DQN ✅
+3. [ ] Initial training
+4. [ ] Evaluation and optimization
+5. [ ] Implement advanced methods
+
+## References
 
 - [Deep Q-Learning with Double Q-Learning](https://arxiv.org/abs/1509.06461)
 - [Proximal Policy Optimization](https://arxiv.org/abs/1707.06347)
