@@ -6,7 +6,7 @@ from io import BytesIO
 import cairosvg
 import pygame
 
-from .constants import *
+from backend.src.constants import *
 
 
 class Piece:

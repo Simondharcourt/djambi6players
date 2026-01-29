@@ -3,11 +3,11 @@ import math
 
 import pygame
 
-from .animation import animate_player_elimination, draw_player_turn
-from .constants import *
-from .minmax_player import MinMaxPlayer
-from .pieces import *
-from .utils import get_colors, get_directions, get_start_positions
+from backend.src.animation import animate_player_elimination, draw_player_turn
+from backend.src.constants import *
+from backend.src.minmax_player import MinMaxPlayer
+from backend.src.pieces import *
+from backend.src.utils import get_colors, get_directions, get_start_positions
 
 
 class Board:

@@ -2,7 +2,7 @@ import copy
 import logging
 import random
 
-from .player import Player
+from backend.src.player import Player
 
 
 class MinMaxPlayer(Player):

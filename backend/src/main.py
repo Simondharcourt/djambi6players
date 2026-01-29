@@ -1,11 +1,12 @@
+import argparse
 import logging
 import sys
 
 import pygame
 
-from .animation import draw_button, draw_legend, draw_player_turn
-from .board import Board
-from .constants import *
+from backend.src.animation import draw_button, draw_legend, draw_player_turn
+from backend.src.board import Board
+from backend.src.constants import *
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"

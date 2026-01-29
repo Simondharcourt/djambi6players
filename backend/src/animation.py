@@ -1,6 +1,6 @@
 import pygame
 
-from .constants import *
+from backend.src.constants import *
 
 
 def draw_player_turn(
